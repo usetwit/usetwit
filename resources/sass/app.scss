@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'primeicons/primeicons.css';
+@import 'checkbox';
+@import 'primevue';
+
+@font-face {
+    font-family: 'Inter';
+    src: local('Inter'), local('Inter-Regular'), url('../fonts/Inter_18pt-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: local('Roboto'), local('Roboto-Regular'), url('../fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+@layer components {
+    h3 {
+        @apply text-xl border-t border-slate-200 text-slate-700 p-4 bg-slate-200 uppercase;
+    }
+}
+
+.table-input {
+    tr {
+        &:not(:last-child) > td {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 0.5rem 0.25rem;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        &:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        &:last-child > td {
+            background-color: #ffffff;
+        }
+    }
+}
+
+label,
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+.breadcrumbs {
+    > li:before {
+        content: '/';
+        display: inline-block;
+        margin: 0 6px;
+    }
+
+    > li:first-child:before {
+        content: "";
+        margin: 0;
+    }
+}
