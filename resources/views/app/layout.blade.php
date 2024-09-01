@@ -37,7 +37,7 @@
 
         @yield('breadcrumbs')
 
-        <main class="bg-white border-y dark:bg-slate-800 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4">
+        <main class="leading-3 bg-white border-y dark:bg-slate-800 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4">
             @include('app._errors')
 
             @yield('content')

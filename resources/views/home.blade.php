@@ -16,11 +16,6 @@
 
 @section('content')
     <div id="home">
-
-        <form>
-
-            <home></home>
-
-        </form>
+        <home></home>
     </div>
 @endsection

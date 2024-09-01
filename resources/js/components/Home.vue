@@ -11,18 +11,9 @@ const change = () => {
 </script>
 
 <template>
-    You are home<br><button type="button" @click="change">jjjjjjjjjjjjjjjj</button>
+    <form class="form-horizontal">
+        <InputText value="Hi" class="rounded" :disabled="x"/>
 
-    <Button :loading="x" icon="pi pi-save" label="Save" severity="primary"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" severity="secondary"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" severity="warning"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" severity="success"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" severity="danger"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" border severity="primary"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" border severity="secondary"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" border severity="warning"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" border severity="success"></Button>
-    <Button :loading="x" icon="pi pi-save" label="Save" border severity="danger"></Button>
-    <br>
-    <InputText value="Hi" :disabled="x"/>
+        <Button type="button" icon="pi pi-save" :loading="x" label="Save" badge="9" severity="primary"></Button>
+    </form>
 </template>
