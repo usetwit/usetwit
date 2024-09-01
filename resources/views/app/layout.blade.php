@@ -23,7 +23,7 @@
     </div>
 @endif
 
-<div class="bg-slate-100 flex">
+<div class="bg-slate-100 dark:bg-slate-900 flex">
 
     <aside id="sidebar" class="flex">
         @include('app._sidebar')
@@ -37,7 +37,7 @@
 
         @yield('breadcrumbs')
 
-        <main class="bg-white border-y lg:border-x border-gray-200 mx-0 lg:mx-4">
+        <main class="bg-white border-y dark:bg-slate-800 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4">
             @include('app._errors')
 
             @yield('content')
