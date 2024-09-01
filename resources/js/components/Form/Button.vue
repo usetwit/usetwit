@@ -42,18 +42,18 @@ const severityClasses = computed(() => {
 
     const borderClass = {
         normal: {
-            primary: 'dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 bg-white border-slate-700 text-slate-700',
-            secondary: 'dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 bg-white border-gray-500 text-gray-500',
-            success: 'dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 bg-white border-green-600 text-green-600',
-            warning: 'dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 bg-white border-yellow-600 text-yellow-600',
+            primary: 'dark:text-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 bg-white border-slate-700 text-slate-700',
+            secondary: 'dark:text-white dark:bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-500 bg-white border-gray-500 text-gray-500',
+            success: 'dark:bg-gray-800 dark:hover:bg-gray-700 hover:bg-gray-100 bg-white border-green-500 text-green-500',
+            warning: 'dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 bg-white border-yellow-500 text-yellow-500',
             danger: 'dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 bg-white border-red-600 text-red-600',
         },
         loading: {
-            primary: 'bg-slate-100 border-slate-700 text-slate-700',
-            secondary: 'bg-gray-100 border-gray-500 text-gray-500',
-            success: 'bg-slate-100 border-green-600 text-green-600',
-            warning: 'bg-slate-100 border-yellow-600 text-yellow-600',
-            danger: 'bg-slate-100 border-red-600 text-red-600',
+            primary: 'bg-slate-600 border-slate-700 text-white',
+            secondary: 'bg-gray-500 border-gray-500 text-white',
+            success: 'bg-slate-600 border-green-500 text-green-500',
+            warning: 'bg-slate-600 border-yellow-500 text-yellow-500',
+            danger: 'bg-slate-600 border-red-600 text-red-600',
         },
     };
 
@@ -72,13 +72,13 @@ const severityClasses = computed(() => {
 </script>
 
 <template>
-    <button class="border rounded leading-3 py-3 px-3 inline-flex justify-center items-center"
+    <button class="border rounded leading-3 py-2.5 px-3 inline-flex justify-center items-center"
             :class="severityClasses"
             :aria-label="ariaLabel"
             :disabled="disabled || loading"
             :aria-disabled="disabled"
     >
-        <i v-if="loading" class="pi pi-spin pi-spinner mr-2"></i>
+        <i v-if="loading" class="pi pi-spin pi-spinner-dotted mr-2"></i>
         <i v-if="props.icon && !loading" :class="props.icon" class="mr-2"></i>
         <span v-if="label">{{ label }}</span>
         <span v-else><slot></slot></span>
