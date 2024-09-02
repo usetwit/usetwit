@@ -1,27 +1,57 @@
-import { ref, watch, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
-export function useDropdownPosition(positionX = 'left', positionY = 'bottom') {
-    const inputRef = ref(null);
-    const dropdownStyle = ref();
-    const showDropdown = ref(false);
+export function useDropdownPosition(positionX = 'left', positionY = 'bottom', maxHeight = -1) {
+    const inputRef = ref(null)
+    const dropdownStyle = ref()
+    const showDropdown = ref(false)
 
     const updateDropdownPosition = () => {
-        if (inputRef.value) {
-            // console.log(inputRef.value.inputElement.getBoundingClientRect())
+        if (inputRef.value instanceof HTMLElement) {
             console.log(inputRef.value.getBoundingClientRect())
-            // console.log(inputRef.value)
         }
-    };
+    }
 
     const toggleDropdown = () => {
-        showDropdown.value = !showDropdown.value;
-        updateDropdownPosition()
-    };
+        showDropdown.value = !showDropdown.value
+
+        if (showDropdown.value) {
+            updateDropdownPosition()
+        }
+    }
+
+    const handleResize = () => {
+        if (showDropdown.value) {
+            updateDropdownPosition()
+        }
+    }
+
+    const handleScroll = () => {
+        if (showDropdown.value) {
+            updateDropdownPosition()
+        }
+    }
+
+    onMounted(() => {
+        window.addEventListener('resize', handleResize)
+        window.addEventListener('scroll', handleScroll)
+    })
+
+    onBeforeUnmount(() => {
+        window.removeEventListener('resize', handleResize)
+        window.removeEventListener('scroll', handleScroll)
+    })
 
     return {
         inputRef,
         dropdownStyle,
         showDropdown,
         toggleDropdown,
-    };
+    }
+
+    return {
+        inputRef,
+        dropdownStyle,
+        showDropdown,
+        toggleDropdown,
+    }
 }
