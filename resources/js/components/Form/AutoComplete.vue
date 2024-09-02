@@ -15,10 +15,11 @@ const model = defineModel()
 
 <template>
     <InputGroup>
-        <InputText ref="inputRef" v-model="model"/>
+        <InputText v-model="model" ref="inputRef"/>
         <button v-if="props.dropdown"
                 class="inline-flex bg-gray-200 text-gray-700 items-center py-2.5 px-3 align-middle"
-                @click="toggleDropdown">
+                @click="toggleDropdown"
+        >
             <i class="pi pi-chevron-down"></i>
         </button>
     </InputGroup>

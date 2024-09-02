@@ -7,7 +7,9 @@ export function useDropdownPosition(positionX = 'left', positionY = 'bottom') {
 
     const updateDropdownPosition = () => {
         if (inputRef.value) {
-            console.log(inputRef.value.inputElement.getBoundingClientRect())
+            // console.log(inputRef.value.inputElement.getBoundingClientRect())
+            console.log(inputRef.value.getBoundingClientRect())
+            // console.log(inputRef.value)
         }
     };
 
