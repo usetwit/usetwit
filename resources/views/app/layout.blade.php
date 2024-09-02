@@ -29,7 +29,7 @@
         @include('app._sidebar')
     </aside>
 
-    <div class="flex-1 overflow-x-auto pb-4">
+    <div class="flex-1 pb-4 overflow-x-auto">
 
         <header class="mx-4 mt-8 font-bold text-2xl text-slate-700">
             @yield('heading')
@@ -37,7 +37,7 @@
 
         @yield('breadcrumbs')
 
-        <main class="p-4 bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4">
+        <main class="p-4 bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto">
             @include('app._errors')
 
             @yield('content')
