@@ -15,7 +15,5 @@ const value = ref('jhjhjh')
 </script>
 
 <template>
-    <div class="p-4 relative">
-        <AutoComplete v-model="value" :items="items" dropdown/>
-    </div>
+    <AutoComplete v-model="value" :items="items" dropdown/>
 </template>

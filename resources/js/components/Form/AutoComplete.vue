@@ -34,7 +34,7 @@ onMounted(() => {
         <InputGroup>
             <InputText v-model="model" ref="inputTextRef" style="width: 600px"/>
             <button v-if="props.dropdown"
-                    class="inline-flex bg-gray-200 text-gray-700 items-center py-2.5 px-3 align-middle"
+                    class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center py-2.5 px-3 align-middle"
                     @click="toggleDropdown"
                     type="button"
                     ref="buttonRef"
