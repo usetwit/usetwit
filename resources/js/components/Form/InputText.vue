@@ -30,5 +30,5 @@ defineExpose({
            :disabled="disabled"
            v-model="model"
            ref="inputElement"
-    />
+    >
 </template>

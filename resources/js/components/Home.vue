@@ -1,9 +1,6 @@
 <script setup>
 import AutoComplete from "./Form/AutoComplete.vue";
 import { ref } from "vue";
-import InputGroup from "./Form/InputGroup.vue";
-import InputGroupAddon from "./Form/InputGroupAddon.vue";
-import InputText from "./Form/InputText.vue";
 
 const items = ref([
     {
@@ -14,19 +11,11 @@ const items = ref([
     },
 ])
 
-const value = ref()
+const value = ref('jhjhjh')
 </script>
 
 <template>
-    <div>
-        <InputGroup>
-            <InputText/>
-            <InputGroupAddon>
-                <i class="pi pi-save"></i>
-            </InputGroupAddon>
-        </InputGroup>
-    </div>
     <div class="p-4 relative">
-        <AutoComplete v-model="value" :items="items"/>
+        <AutoComplete v-model="value" :items="items" dropdown/>
     </div>
 </template>

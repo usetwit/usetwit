@@ -1,37 +1,20 @@
 import { ref, watch, onMounted } from 'vue';
 
-export function useDropdownPosition(position = 'left') {
+export function useDropdownPosition(positionX = 'left', positionY = 'bottom') {
     const inputRef = ref(null);
     const dropdownStyle = ref();
     const showDropdown = ref(false);
 
     const updateDropdownPosition = () => {
         if (inputRef.value) {
-            const inputRect = inputRef.value.getBoundingClientRect();
-            dropdownStyle.value = {
-                top: `${inputRect.bottom}px`,
-                left: `${inputRect.left}px`,
-                width: `${inputRect.width}px`,
-            };
+            console.log(inputRef.value.inputElement.getBoundingClientRect())
         }
     };
 
-    const toggleDropdown = (shouldShow) => {
-        showDropdown.value = shouldShow;
-        if (shouldShow) {
-            updateDropdownPosition();
-        }
+    const toggleDropdown = () => {
+        showDropdown.value = !showDropdown.value;
+        updateDropdownPosition()
     };
-
-    watch(showDropdown, (newValue) => {
-        if (newValue) {
-            updateDropdownPosition();
-        }
-    });
-
-    onMounted(() => {
-        // Optionally initialize or update position when mounted
-    });
 
     return {
         inputRef,
