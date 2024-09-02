@@ -11,17 +11,6 @@ const props = defineProps({
     badge: { type: [String, Number], default: null },
 })
 
-const slots = useSlots()
-const ariaLabel = computed(() => {
-    if (props.label) {
-        return props.label
-    }
-
-    if (slots.default) {
-        return slots.default()[0].children
-    }
-})
-
 const severityClasses = {
     normal: {
         normal: {
@@ -72,7 +61,6 @@ const setClasses = computed(() => {
 <template>
     <button class="leading-5 border rounded py-2 px-3 inline-flex justify-center items-center align-middle transition-colors duration-300 ease-in-out"
             :class="setClasses"
-            :aria-label="ariaLabel"
             :disabled="disabled || loading"
             :aria-disabled="disabled || loading"
     >

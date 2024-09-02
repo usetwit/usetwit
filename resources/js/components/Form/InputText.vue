@@ -1,33 +1,34 @@
 <script setup>
-import { computed, defineProps } from 'vue';
+import { computed, defineProps, ref } from 'vue';
 
 const props = defineProps({
     disabled: { type: Boolean, default: false },
-    ariaLabel: { type: String, default: null },
-    ariaLabelledby: { type: String, default: null },
     invalid: { type: Boolean, default: false },
-    fluid: { type: Boolean, default: false },
 });
 
 const setClasses = computed(() => {
-    const disabled = 'bg-gray-100 dark:bg-gray-600 border-gray-200'
-    const normal = 'bg-white    dark:bg-gray-800 border-gray-600'
-    const invalid = 'bg-white    dark:bg-gray-800 border-red-500'
+    const disabled = 'bg-gray-100 dark:bg-gray-600 border-gray-400 cursor-not-allowed'
+    const invalid = 'bg-white dark:bg-gray-900 border-red-600 focus:outline-red-600/50 hover:border-red-500'
+    const normal = 'bg-white dark:bg-gray-900 border-gray-400 hover:border-gray-500 dark:hover:border-gray-300 focus:outline-slate-400/50'
 
     return props.disabled ? disabled : props.invalid ? invalid : normal
 });
 
-const setFluidClass = () => {
-    return props.fluid ? 'w-full' : 'w-56';
-}
+const model = defineModel()
+
+const inputElement = ref(null)
+
+defineExpose({
+    inputElement,
+})
 </script>
 
 <template>
     <input type="text"
-           class="leading-5 border align-middle py-2 px-2 text-gray-800 dark:text-gray-300 transition-colors duration-200 ease-in-out"
-           :class="[setClasses, setFluidClass]"
-           :aria-labelledby="ariaLabelledby"
-           :aria-label="ariaLabel"
+           class="ring-0 outline-offset-0 focus:outline focus:invalid:outline-red-600/50 hover:invalid:border-red-500 invalid:border-red-600 focus:invalid:border-red-600 leading-5 border align-middle py-2 px-2 text-gray-800 dark:text-gray-300 transition-colors duration-200 ease-in-out"
+           :class="setClasses"
            :disabled="disabled"
+           v-model="model"
+           ref="inputElement"
     />
 </template>

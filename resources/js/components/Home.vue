@@ -1,19 +1,32 @@
 <script setup>
-import Button from './Form/Button.vue'
+import AutoComplete from "./Form/AutoComplete.vue";
 import { ref } from "vue";
+import InputGroup from "./Form/InputGroup.vue";
+import InputGroupAddon from "./Form/InputGroupAddon.vue";
 import InputText from "./Form/InputText.vue";
 
-const x = ref(false)
-const change = () => {
-    x.value = !x.value
-}
+const items = ref([
+    {
+        name: 'Lee', id: 1,
+    },
+    {
+        name: 'Sandra', id: 2,
+    },
+])
 
+const value = ref()
 </script>
 
 <template>
-    <form class="form-horizontal">
-        <InputText value="Hi" class="rounded" :disabled="x"/>
-
-        <Button type="button" icon="pi pi-save" :loading="x" label="Save" badge="9" severity="primary"></Button>
-    </form>
+    <div>
+        <InputGroup>
+            <InputText/>
+            <InputGroupAddon>
+                <i class="pi pi-save"></i>
+            </InputGroupAddon>
+        </InputGroup>
+    </div>
+    <div class="p-4 relative">
+        <AutoComplete v-model="value" :items="items"/>
+    </div>
 </template>
