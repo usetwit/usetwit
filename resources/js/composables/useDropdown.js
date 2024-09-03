@@ -1,6 +1,6 @@
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-export function useDropdownPosition(positionX = 'left', positionY = 'bottom', setMinWidth = null, maxHeight = 0, gap = 2) {
+export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidth = null, maxHeight = 0, gap = 2) {
     const inputRef = ref(null)
     const dropdownRef = ref(null)
     const buttonRef = ref(null)
@@ -30,7 +30,7 @@ export function useDropdownPosition(positionX = 'left', positionY = 'bottom', se
 
             if (setMinWidth === true) {
                 dropdownStyle.value.minWidth = `${inputRect.width}px`
-            } else if (typeof setMinWidth === 'number' && setMinWidth > 0) {
+            } else if (typeof setMinWidth === 'number' || typeof setMinWidth === 'string' && setMinWidth > 0) {
                 dropdownStyle.value.minWidth = `${setMinWidth}px`
             } else {
                 dropdownStyle.value.minWidth = 'auto'
@@ -58,6 +58,14 @@ export function useDropdownPosition(positionX = 'left', positionY = 'bottom', se
         }
     }
 
+    watch(showDropdown, async () => {
+        if (showDropdown.value)
+        {
+            await nextTick()
+            updateDropdownPosition()
+        }
+    })
+
     const setDropdownPosition = (topValue, bottomValue) => {
         dropdownStyle.value.top = topValue
         dropdownStyle.value.bottom = bottomValue
@@ -72,8 +80,13 @@ export function useDropdownPosition(positionX = 'left', positionY = 'bottom', se
         }
     }
 
-    const setShowDropdown = (value) => {
+    const setShowDropdown = async (value) => {
         showDropdown.value = value
+
+        if (showDropdown.value) {
+            await nextTick()
+            updateDropdownPosition()
+        }
     }
 
     const handleResizeOrScroll = () => {
@@ -88,7 +101,7 @@ export function useDropdownPosition(positionX = 'left', positionY = 'bottom', se
             !inputRef.value?.contains(event.target) &&
             !buttonRef.value?.contains(event.target)
         ) {
-            setShowDropdown(false)
+            showDropdown.value = false
         }
     }
 
@@ -110,6 +123,7 @@ export function useDropdownPosition(positionX = 'left', positionY = 'bottom', se
         buttonRef,
         dropdownStyle,
         showDropdown,
+        setShowDropdown,
         toggleDropdown,
     }
 }
