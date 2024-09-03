@@ -2,7 +2,7 @@
 import { useDropdown } from '../../composables/useDropdown'
 import InputText from './InputText.vue'
 import InputGroup from './InputGroup.vue'
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
     items: { type: Array, default: [] },
@@ -15,8 +15,6 @@ const props = defineProps({
     optionLabel: { type: String, required: true },
     optionGroupLabel: { type: String, default: '' },
     optionGroupItems: { type: String, default: '' },
-    apiKey: { type: String, default: '' },
-    defaultText: { type: String, default: '' },
 })
 
 const {
@@ -28,8 +26,7 @@ const {
     toggleDropdown
 } = useDropdown(props.positionX, props.positionY, props.minWidth, props.maxHeight)
 
-const parent = defineModel()
-const textInput = ref(props.defaultText)
+const model = defineModel()
 const inputTextRef = ref(null)
 
 onMounted(() => {
@@ -39,26 +36,21 @@ onMounted(() => {
 })
 
 const itemSelected = (item) => {
-    textInput.value = item[props.optionLabel]
-
-    if(props.apiKey){
-        parent.value =  item[props.apiKey]
-    }else{
-        parent.value = item
-    }
-
+    model.value = item[props.optionLabel]
     showDropdown.value = false
 }
 
 const handleInput = () => {
-    showDropdown.value = textInput.value.length > 0;
+    nextTick(() => {
+        showDropdown.value = model.value.length > 0
+    })
 }
 </script>
 
 <template>
     <div class="inline-block">
         <InputGroup>
-            <InputText v-model="textInput" ref="inputTextRef" :disabled="props.disabled" @input="handleInput"/>
+            <InputText v-model="model" ref="inputTextRef" :disabled="props.disabled" @input="handleInput"/>
             <button v-if="props.dropdown"
                     class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center py-2.5 px-3 align-middle"
                     @click="toggleDropdown"
@@ -78,7 +70,7 @@ const handleInput = () => {
                 <ul v-if="!props.optionGroupLabel && items.length">
                     <li v-for="item in items"
                         @click="itemSelected(item)"
-                        class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center p-2 mx-1 rounded"
+                        class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded"
                     >
                         <slot name="item" v-bind="item">{{ item[props.optionLabel] }}</slot>
                     </li>
@@ -86,19 +78,19 @@ const handleInput = () => {
                 <ul v-else-if="props.optionGroupLabel && items.length">
                     <li v-for="item in items">
                         <slot name="optiongroup" v-bind="item">
-                            <div class="font-bold p-2 mx-1 rounded">{{ item[props.optionGroupLabel] }}</div>
+                            <div class="font-bold px-2 py-1.5 mx-1 rounded">{{ item[props.optionGroupLabel] }}</div>
                         </slot>
                         <ul v-if="item[props.optionGroupItems] && item[props.optionGroupItems].length">
                             <li v-for="subitem in item[props.optionGroupItems]"
                                 @click="itemSelected(subitem)"
-                                class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center p-2 mx-1 rounded"
+                                class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded"
                             >
                                 <slot name="item" v-bind="subitem">{{ subitem[props.optionLabel] }}</slot>
                             </li>
                         </ul>
                     </li>
                 </ul>
-                <div v-else class="italic p-2 mx-1">
+                <div v-else class="italic px-2 py-1.5 mx-1">
                     No Results
                 </div>
             </div>
