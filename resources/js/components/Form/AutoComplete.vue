@@ -2,7 +2,7 @@
 import { useDropdown } from '../../composables/useDropdown'
 import InputText from './InputText.vue'
 import InputGroup from './InputGroup.vue'
-import { nextTick, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { nextTick, onMounted, useTemplateRef } from 'vue'
 
 const props = defineProps({
     items: { type: Array, default: [] },
