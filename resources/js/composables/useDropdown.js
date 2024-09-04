@@ -15,13 +15,11 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
     })
 
     const updateDropdownPosition = () => {
-        console.log('jjjjjjjjjj')
         if (inputRef.value instanceof HTMLElement && dropdownRef.value instanceof HTMLElement) {
             requestAnimationFrame(() => {
                 const inputRect = inputRef.value.getBoundingClientRect()
                 const dropdownRect = dropdownRef.value.getBoundingClientRect()
 
-                // what you can see
                 const viewportHeight = window.innerHeight
                 const viewportWidth = window.innerWidth
 
@@ -43,36 +41,34 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
 
                 if (positionX === 'right') {
                     if (dropdownRect.width > viewportWidth) {
-                        setDropdownPositionX('auto', '0px')
+                        setDropdownPositionX('auto', '0')
                     } else if (inputRect.right >= dropdownRect.width) {
                         setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
                     } else if (viewportWidth - inputRect.left >= dropdownRect.width) {
                         setDropdownPositionX(`${left}px`, 'auto');
                     } else {
-                        setDropdownPositionX('auto', '0px')
+                        setDropdownPositionX('auto', '0')
                     }
                 } else if (positionX === 'left') {
-                    console.log('here1')
-
                     if (dropdownRect.width > viewportWidth) {
-                        setDropdownPositionX('0px', 'auto');
+                        setDropdownPositionX('0', 'auto');
                     } else if (viewportWidth - inputRect.left >= dropdownRect.width) {
                         setDropdownPositionX(`${left}px`, 'auto');
                     } else if (inputRect.right >= dropdownRect.width) {
                         setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
                     } else {
-                        setDropdownPositionX('0px', 'auto');
+                        setDropdownPositionX('0', 'auto');
                     }
-                } else if (positionX === 'center') {
+                } else {
                     const inputCenter = inputRect.left + inputRect.width / 2
                     const dropdownCenter = dropdownRect.width / 2
 
                     if(dropdownRect.width > viewportWidth) {
                         setDropdownPositionX(`${inputCenter - dropdownCenter}px`, 'auto')
                     } else if (inputCenter + dropdownCenter > viewportWidth) {
-                        setDropdownPositionX('auto', '0px')
+                        setDropdownPositionX('auto', '0')
                     } else if(inputCenter < dropdownCenter){
-                        setDropdownPositionX('0px', 'auto')
+                        setDropdownPositionX('0', 'auto')
                     } else {
                         setDropdownPositionX(`${inputCenter - dropdownCenter}px`, 'auto')
                     }
@@ -89,10 +85,8 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                 } else {
                     if (spaceAbove >= dropdownRect.height + gap) {
                         setDropdownPositionY('auto', `${viewportHeight - top + gap}px`)
-                    } else if (spaceBelow >= dropdownRect.height + gap) {
-                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
                     } else {
-                        setDropdownPositionY('auto', `${viewportHeight - top + gap}px`)
+                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
                     }
                 }
             })
@@ -150,24 +144,26 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
     }
 
     onMounted(() => {
-        window.addEventListener('resize', handleResize)
-        window.addEventListener('scroll', handleScroll)
-        document.addEventListener('click', handleClickOutside)
-
-        const divs = document.querySelectorAll('main div');
-        divs.forEach(div => {
-            div.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('scroll', handleScroll);
+        document.addEventListener('click', handleClickOutside);
+        document.querySelector('main').addEventListener('scroll', handleScroll);
+        document.querySelectorAll('main div').forEach(div => {
+            if (window.getComputedStyle(div).overflowX === 'auto') {
+                div.addEventListener('scroll', handleScroll);
+            }
         })
-    })
+    });
 
     onBeforeUnmount(() => {
         window.removeEventListener('resize', handleResize)
         window.removeEventListener('scroll', handleScroll)
         document.removeEventListener('click', handleClickOutside)
-
-        const divs = document.querySelectorAll('main div');
-        divs.forEach(div => {
-            div.addEventListener('scroll', handleScroll);
+        document.querySelector('main').removeEventListener('scroll', handleScroll);
+        document.querySelectorAll('main div').forEach(div => {
+            if (window.getComputedStyle(div).overflowX === 'auto') {
+                div.removeEventListener('scroll', handleScroll);
+            }
         })
     })
 

@@ -74,7 +74,7 @@ const value = ref()
 
         <AutoComplete api-key="value" v-model="value" :items="groupedCities" optionLabel="label"
                       optionGroupLabel="label"
-                      optionGroupItems="items" max-height="300" position-x="center" dropdown position-y="top"
+                      optionGroupItems="items" max-height="300" position-x="left" dropdown position-y="top"
         >
             <template #item="item">
                 {{ item.label }} - {{ item.value }}

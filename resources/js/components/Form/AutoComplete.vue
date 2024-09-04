@@ -68,7 +68,7 @@ const handleInput = () => {
                 <ul v-if="!props.optionGroupLabel && items.length">
                     <li v-for="item in items"
                         @click="itemSelected(item)"
-                        class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded"
+                        class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded text-nowrap"
                     >
                         <slot name="item" v-bind="item">{{ item[props.optionLabel] }}</slot>
                     </li>
@@ -81,7 +81,7 @@ const handleInput = () => {
                         <ul v-if="item[props.optionGroupItems] && item[props.optionGroupItems].length">
                             <li v-for="subitem in item[props.optionGroupItems]"
                                 @click="itemSelected(subitem)"
-                                class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded"
+                                class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded text-nowrap"
                             >
                                 <slot name="item" v-bind="subitem">{{ subitem[props.optionLabel] }}</slot>
                             </li>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ config('app.locale') }}">
+<html lang="{{ config('app.locale') }}" class="overflow-x-hidden w-full">
 
 <head>
     @include('app._css')
@@ -37,7 +37,7 @@
 
         @yield('breadcrumbs')
 
-        <main class="p-4 bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto">
+        <main class="p-4 bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto" id="xxx">
             @include('app._errors')
 
             @yield('content')
