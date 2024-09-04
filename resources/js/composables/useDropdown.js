@@ -54,75 +54,75 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                         if(offViewportToRight){
                             setDropdownPositionX('auto', '0')
                         }else {
-                            setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
+                            setDropdownPositionX(`${right - dropdownRect.width}px`);
                         }
                     } else if (fitsFromLeft) {
                         if(offViewportToLeft){
-                            setDropdownPositionX('0', 'auto')
+                            setDropdownPositionX('0')
                         }else {
-                            setDropdownPositionX(`${left}px`, 'auto');
+                            setDropdownPositionX(`${left}px`);
                         }
                     } else {
                         setDropdownPositionX('auto', '0')
                     }
                 } else if (positionX === 'left') {
                     if (exceedsViewport) {
-                        setDropdownPositionX('0', 'auto');
+                        setDropdownPositionX('0');
                     } else if (fitsFromLeft) {
                         if(offViewportToLeft){
-                            setDropdownPositionX('0', 'auto')
+                            setDropdownPositionX('0')
                         }else {
-                            setDropdownPositionX(`${left}px`, 'auto');
+                            setDropdownPositionX(`${left}px`);
                         }
                     } else if (fitsFromRight) {
                         if(offViewportToRight){
                             setDropdownPositionX('auto', '0')
                         }else {
-                            setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
+                            setDropdownPositionX(`${right - dropdownRect.width}px`);
                         }
                     } else {
-                        setDropdownPositionX('0', 'auto');
+                        setDropdownPositionX('0');
                     }
                 } else {
                     const inputCenter = inputRect.left + inputRect.width / 2
                     const dropdownCenter = dropdownRect.width / 2
 
                     if(exceedsViewport) {
-                        setDropdownPositionX(`${inputCenter - dropdownCenter}px`, 'auto')
+                        setDropdownPositionX(`${inputCenter - dropdownCenter}px`)
                     } else if (inputCenter + dropdownCenter > viewportWidth) {
                         setDropdownPositionX('auto', '0')
                     } else if(inputCenter < dropdownCenter){
-                        setDropdownPositionX('0', 'auto')
+                        setDropdownPositionX('0')
                     } else {
-                        setDropdownPositionX(`${inputCenter - dropdownCenter}px`, 'auto')
+                        setDropdownPositionX(`${inputCenter - dropdownCenter}px`)
                     }
                 }
 
                 if (positionY === 'bottom') {
                     if (spaceBelow >= dropdownRect.height + gap) {
-                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
+                        setDropdownPositionY(`${bottom + gap}px`)
                     } else if (spaceAbove >= dropdownRect.height + gap) {
                         setDropdownPositionY('auto', `${viewportHeight - top + gap}px`)
                     } else {
-                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
+                        setDropdownPositionY(`${bottom + gap}px`)
                     }
                 } else {
                     if (spaceAbove >= dropdownRect.height + gap) {
                         setDropdownPositionY('auto', `${viewportHeight - top + gap}px`)
                     } else {
-                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
+                        setDropdownPositionY(`${bottom + gap}px`)
                     }
                 }
             })
         }
     }
 
-    const setDropdownPositionY = (topValue, bottomValue) => {
+    const setDropdownPositionY = (topValue, bottomValue = 'auto') => {
         dropdownStyle.value.top = topValue
         dropdownStyle.value.bottom = bottomValue
     }
 
-    const setDropdownPositionX = (leftValue, rightValue) => {
+    const setDropdownPositionX = (leftValue, rightValue = 'auto') => {
         dropdownStyle.value.left = leftValue
         dropdownStyle.value.right = rightValue
     }
