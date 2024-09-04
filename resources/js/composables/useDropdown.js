@@ -33,29 +33,53 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
 
                 if (setMinWidth === true) {
                     dropdownStyle.value.minWidth = `${inputRect.width}px`
-                } else if (typeof setMinWidth === 'number' || typeof setMinWidth === 'string' && setMinWidth > 0) {
+                } else if (typeof setMinWidth === 'number' && setMinWidth > 0) {
                     dropdownStyle.value.minWidth = `${setMinWidth}px`
+                }else if (typeof setMinWidth === 'string'){
+                    dropdownStyle.value.minWidth = `${setMinWidth}`
                 } else {
                     dropdownStyle.value.minWidth = 'auto'
                 }
 
+                const exceedsViewport = dropdownRect.width > viewportWidth
+                const fitsFromRight = inputRect.right >= dropdownRect.width
+                const fitsFromLeft = viewportWidth - inputRect.left >= dropdownRect.width
+                const offViewportToLeft = inputRect.left < 0
+                const offViewportToRight = inputRect.right > viewportWidth
+
                 if (positionX === 'right') {
-                    if (dropdownRect.width > viewportWidth) {
+                    if (exceedsViewport) {
                         setDropdownPositionX('auto', '0')
-                    } else if (inputRect.right >= dropdownRect.width) {
-                        setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
-                    } else if (viewportWidth - inputRect.left >= dropdownRect.width) {
-                        setDropdownPositionX(`${left}px`, 'auto');
+                    } else if (fitsFromRight) {
+                        if(offViewportToRight){
+                            setDropdownPositionX('auto', '0')
+                        }else {
+                            setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
+                        }
+                    } else if (fitsFromLeft) {
+                        if(offViewportToLeft){
+                            setDropdownPositionX('0', 'auto')
+                        }else {
+                            setDropdownPositionX(`${left}px`, 'auto');
+                        }
                     } else {
                         setDropdownPositionX('auto', '0')
                     }
                 } else if (positionX === 'left') {
-                    if (dropdownRect.width > viewportWidth) {
+                    if (exceedsViewport) {
                         setDropdownPositionX('0', 'auto');
-                    } else if (viewportWidth - inputRect.left >= dropdownRect.width) {
-                        setDropdownPositionX(`${left}px`, 'auto');
-                    } else if (inputRect.right >= dropdownRect.width) {
-                        setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
+                    } else if (fitsFromLeft) {
+                        if(offViewportToLeft){
+                            setDropdownPositionX('0', 'auto')
+                        }else {
+                            setDropdownPositionX(`${left}px`, 'auto');
+                        }
+                    } else if (fitsFromRight) {
+                        if(offViewportToRight){
+                            setDropdownPositionX('auto', '0')
+                        }else {
+                            setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
+                        }
                     } else {
                         setDropdownPositionX('0', 'auto');
                     }
@@ -63,7 +87,7 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                     const inputCenter = inputRect.left + inputRect.width / 2
                     const dropdownCenter = dropdownRect.width / 2
 
-                    if(dropdownRect.width > viewportWidth) {
+                    if(exceedsViewport) {
                         setDropdownPositionX(`${inputCenter - dropdownCenter}px`, 'auto')
                     } else if (inputCenter + dropdownCenter > viewportWidth) {
                         setDropdownPositionX('auto', '0')
