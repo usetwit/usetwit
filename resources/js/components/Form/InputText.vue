@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineProps, ref } from 'vue';
+import { computed, defineProps, ref, useTemplateRef } from 'vue';
 
 const props = defineProps({
     disabled: { type: Boolean, default: false },
@@ -16,7 +16,7 @@ const setClasses = computed(() => {
 
 const model = defineModel()
 
-const inputElement = ref(null)
+const inputElement = useTemplateRef('input')
 
 defineExpose({
     inputElement,
@@ -29,6 +29,6 @@ defineExpose({
            :class="setClasses"
            :disabled="disabled"
            v-model="model"
-           ref="inputElement"
+           ref="input"
     >
 </template>

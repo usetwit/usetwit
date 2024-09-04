@@ -1,9 +1,9 @@
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidth = null, maxHeight = 0, gap = 2) {
     const inputRef = ref(null)
-    const dropdownRef = ref(null)
-    const buttonRef = ref(null)
+    const dropdownRef = useTemplateRef('dropdownRef')
+    const buttonRef = useTemplateRef('buttonRef')
     const showDropdown = ref(false)
     const dropdownStyle = ref({
         left: 'auto',
@@ -16,59 +16,82 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
 
     const updateDropdownPosition = () => {
         if (inputRef.value instanceof HTMLElement && dropdownRef.value instanceof HTMLElement) {
-            const inputRect = inputRef.value.getBoundingClientRect()
-            const dropdownRect = dropdownRef.value.getBoundingClientRect()
+            requestAnimationFrame(() => {
+                const inputRect = inputRef.value.getBoundingClientRect()
+                const dropdownRect = dropdownRef.value.getBoundingClientRect()
 
-            const top = inputRect.top + window.scrollY
-            const bottom = inputRect.bottom + window.scrollY
-            const left = inputRect.left + window.scrollX
-            const right = inputRect.right + window.scrollX
+                // what you can see
+                const viewportHeight = window.innerHeight
+                const viewportWidth = window.innerWidth
 
-            const viewportHeight = window.innerHeight
-            const spaceBelow = viewportHeight - inputRect.bottom
-            const spaceAbove = inputRect.top
+                const top = inputRect.top + window.scrollY
+                const bottom = inputRect.bottom + window.scrollY
+                const left = inputRect.left + window.scrollX
+                const right = inputRect.right + window.scrollX
 
-            if (setMinWidth === true) {
-                dropdownStyle.value.minWidth = `${inputRect.width}px`
-            } else if (typeof setMinWidth === 'number' || typeof setMinWidth === 'string' && setMinWidth > 0) {
-                dropdownStyle.value.minWidth = `${setMinWidth}px`
-            } else {
-                dropdownStyle.value.minWidth = 'auto'
-            }
+                const spaceBelow = viewportHeight - inputRect.bottom
+                const spaceAbove = inputRect.top
 
-            dropdownStyle.value.left = `${left}px`
-
-            if (positionY === 'bottom') {
-                if (spaceBelow >= dropdownRect.height + gap) {
-                    setDropdownPosition(`${bottom + gap}px`, 'auto')
-                } else if (spaceAbove >= dropdownRect.height + gap) {
-                    setDropdownPosition('auto', `${viewportHeight - top + gap}px`)
+                if (setMinWidth === true) {
+                    dropdownStyle.value.minWidth = `${inputRect.width}px`
+                } else if (typeof setMinWidth === 'number' || typeof setMinWidth === 'string' && setMinWidth > 0) {
+                    dropdownStyle.value.minWidth = `${setMinWidth}px`
                 } else {
-                    setDropdownPosition(`${bottom + gap}px`, 'auto')
+                    dropdownStyle.value.minWidth = 'auto'
                 }
-            } else if (positionY === 'top') {
-                if (spaceAbove >= dropdownRect.height + gap) {
-                    setDropdownPosition('auto', `${viewportHeight - top + gap}px`)
-                } else if (spaceBelow >= dropdownRect.height + gap) {
-                    setDropdownPosition(`${bottom + gap}px`, 'auto')
-                } else {
-                    setDropdownPosition('auto', `${viewportHeight - top + gap}px`)
+
+                if (positionX === 'right') {
+                    if (dropdownRect.width > viewportWidth) {
+                        dropdownStyle.value.left = '0px'
+                    } else if (inputRect.right >= dropdownRect.width) {
+                        dropdownStyle.value.left = `${right - dropdownRect.width}px`
+                    } else if (viewportWidth - inputRect.left >= dropdownRect.width) {
+                        dropdownStyle.value.left = `${left}px`
+                    } else {
+                        dropdownStyle.value.left = `${right - dropdownRect.width - dropdownRect.left}px`
+                    }
+
+                } else if (positionX === 'left') {
+                    dropdownStyle.value.left = `${left}px`
+                    dropdownStyle.value.right = 'auto'
                 }
-            }
+
+                if (positionY === 'bottom') {
+                    if (spaceBelow >= dropdownRect.height + gap) {
+                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
+                    } else if (spaceAbove >= dropdownRect.height + gap) {
+                        setDropdownPositionY('auto', `${viewportHeight - top + gap}px`)
+                    } else {
+                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
+                    }
+                } else if (positionY === 'top') {
+                    if (spaceAbove >= dropdownRect.height + gap) {
+                        setDropdownPositionY('auto', `${viewportHeight - top + gap}px`)
+                    } else if (spaceBelow >= dropdownRect.height + gap) {
+                        setDropdownPositionY(`${bottom + gap}px`, 'auto')
+                    } else {
+                        setDropdownPositionY('auto', `${viewportHeight - top + gap}px`)
+                    }
+                }
+            })
         }
     }
 
     watch(showDropdown, async () => {
-        if (showDropdown.value)
-        {
+        if (showDropdown.value) {
             await nextTick()
             updateDropdownPosition()
         }
     })
 
-    const setDropdownPosition = (topValue, bottomValue) => {
+    const setDropdownPositionY = (topValue, bottomValue) => {
         dropdownStyle.value.top = topValue
         dropdownStyle.value.bottom = bottomValue
+    }
+
+    const setDropdownPositionX = (leftValue, rightValue) => {
+        dropdownStyle.value.left = leftValue
+        dropdownStyle.value.right = rightValue
     }
 
     const toggleDropdown = async () => {
@@ -89,10 +112,14 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         }
     }
 
-    const handleResizeOrScroll = () => {
+    const handleScroll = () => {
         if (showDropdown.value) {
             updateDropdownPosition()
         }
+    }
+
+    const handleResize = () => {
+        showDropdown.value = false
     }
 
     const handleClickOutside = (event) => {
@@ -106,21 +133,19 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
     }
 
     onMounted(() => {
-        window.addEventListener('resize', handleResizeOrScroll)
-        window.addEventListener('scroll', handleResizeOrScroll)
+        window.addEventListener('resize', handleResize)
+        window.addEventListener('scroll', handleScroll)
         document.addEventListener('click', handleClickOutside)
     })
 
     onBeforeUnmount(() => {
-        window.removeEventListener('resize', handleResizeOrScroll)
-        window.removeEventListener('scroll', handleResizeOrScroll)
+        window.removeEventListener('resize', handleResize)
+        window.removeEventListener('scroll', handleScroll)
         document.removeEventListener('click', handleClickOutside)
     })
 
     return {
         inputRef,
-        dropdownRef,
-        buttonRef,
         dropdownStyle,
         showDropdown,
         setShowDropdown,

@@ -2,7 +2,7 @@
 import { useDropdown } from '../../composables/useDropdown'
 import InputText from './InputText.vue'
 import InputGroup from './InputGroup.vue'
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 const props = defineProps({
     items: { type: Array, default: [] },
@@ -19,15 +19,13 @@ const props = defineProps({
 
 const {
     inputRef,
-    dropdownRef,
-    buttonRef,
     dropdownStyle,
     showDropdown,
     toggleDropdown
 } = useDropdown(props.positionX, props.positionY, props.minWidth, props.maxHeight)
 
 const model = defineModel()
-const inputTextRef = ref(null)
+const inputTextRef = useTemplateRef('inputTextComp')
 
 onMounted(() => {
     if (inputTextRef.value?.inputElement instanceof HTMLElement) {
@@ -50,7 +48,7 @@ const handleInput = () => {
 <template>
     <div class="inline-block">
         <InputGroup>
-            <InputText v-model="model" ref="inputTextRef" :disabled="props.disabled" @input="handleInput"/>
+            <InputText ref="inputTextComp" v-model="model" :disabled="props.disabled" @input="handleInput"/>
             <button v-if="props.dropdown"
                     class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center py-2.5 px-3 align-middle"
                     @click="toggleDropdown"
