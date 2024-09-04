@@ -42,19 +42,26 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
 
                 if (positionX === 'right') {
                     if (dropdownRect.width > viewportWidth) {
-                        dropdownStyle.value.left = '0px'
+                        setDropdownPositionX('auto', '0px')
                     } else if (inputRect.right >= dropdownRect.width) {
-                        dropdownStyle.value.left = `${right - dropdownRect.width}px`
+                        setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
                     } else if (viewportWidth - inputRect.left >= dropdownRect.width) {
-                        dropdownStyle.value.left = `${left}px`
+                        setDropdownPositionX(`${left}px`, 'auto');
                     } else {
-                        dropdownStyle.value.left = `${right - dropdownRect.width - dropdownRect.left}px`
+                        setDropdownPositionX('auto', '0px')
                     }
-
                 } else if (positionX === 'left') {
-                    dropdownStyle.value.left = `${left}px`
-                    dropdownStyle.value.right = 'auto'
+                    if (dropdownRect.width > viewportWidth) {
+                        setDropdownPositionX('0px', 'auto');
+                    } else if (viewportWidth - inputRect.left >= dropdownRect.width) {
+                        setDropdownPositionX(`${left}px`, 'auto');
+                    } else if (inputRect.right >= dropdownRect.width) {
+                        setDropdownPositionX(`${right - dropdownRect.width}px`, 'auto');
+                    } else {
+                        setDropdownPositionX('0px', 'auto');
+                    }
                 }
+
 
                 if (positionY === 'bottom') {
                     if (spaceBelow >= dropdownRect.height + gap) {
@@ -77,13 +84,6 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         }
     }
 
-    watch(showDropdown, async () => {
-        if (showDropdown.value) {
-            await nextTick()
-            updateDropdownPosition()
-        }
-    })
-
     const setDropdownPositionY = (topValue, bottomValue) => {
         dropdownStyle.value.top = topValue
         dropdownStyle.value.bottom = bottomValue
@@ -93,6 +93,13 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         dropdownStyle.value.left = leftValue
         dropdownStyle.value.right = rightValue
     }
+
+    watch(showDropdown, async () => {
+        if (showDropdown.value) {
+            await nextTick()
+            updateDropdownPosition()
+        }
+    })
 
     const toggleDropdown = async () => {
         showDropdown.value = !showDropdown.value
@@ -136,12 +143,22 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         window.addEventListener('resize', handleResize)
         window.addEventListener('scroll', handleScroll)
         document.addEventListener('click', handleClickOutside)
+
+        const divs = document.querySelectorAll('main div');
+        divs.forEach(div => {
+            div.addEventListener('scroll', handleScroll);
+        })
     })
 
     onBeforeUnmount(() => {
         window.removeEventListener('resize', handleResize)
         window.removeEventListener('scroll', handleScroll)
         document.removeEventListener('click', handleClickOutside)
+
+        const divs = document.querySelectorAll('main div');
+        divs.forEach(div => {
+            div.addEventListener('scroll', handleScroll);
+        })
     })
 
     return {
