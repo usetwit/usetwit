@@ -1,6 +1,7 @@
 <script setup>
 import AutoComplete from "./Form/AutoComplete.vue";
 import { ref } from "vue";
+import Datepicker from "./Form/Datepicker.vue";
 
 // const items = ref([
 //     {
@@ -45,11 +46,12 @@ const groupedCities = ref([
 ])
 
 const value = ref()
+const date = ref()
 </script>
 
 <template>
     <div class="text-nowrap">
-        <AutoComplete api-key="value" v-model="value" :items="groupedCities" optionLabel="label"
+        <AutoComplete v-model="value" :items="groupedCities" optionLabel="label"
                       optionGroupLabel="label"
                       optionGroupItems="items" max-height="300" position-x="left" dropdown position-y="top"
         >
@@ -57,5 +59,10 @@ const value = ref()
                 {{ item.label }} - {{ item.value }}
             </template>
         </AutoComplete>
+
+        &nbsp;
+
+        <Datepicker dropdown></Datepicker>
+
     </div>
 </template>

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 export function useAxios(url, params = {}, method = 'post') {
     const data = ref(null)
@@ -39,5 +39,5 @@ export function useAxios(url, params = {}, method = 'post') {
         }
     }
 
-    return {data, errors, getResponse}
+    return { data, errors, getResponse }
 }

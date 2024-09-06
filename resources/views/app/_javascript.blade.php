@@ -1,7 +1,6 @@
 @vite([
-    'resources/js/app.js',
-    'resources/js/sidebar.js',
-    'resources/js/navbar.js',
+    'resources/js/app/sidebar.js',
+    'resources/js/app/navbar.js',
 ])
 
 @yield('javascript')

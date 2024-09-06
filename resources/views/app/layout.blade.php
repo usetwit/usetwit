@@ -2,6 +2,7 @@
 <html lang="{{ config('app.locale') }}" class="overflow-x-hidden w-full">
 
 <head>
+    <title>{!! Breadcrumbs::view('app._title') !!}</title>
     @include('app._css')
     @include('app._meta')
     @include('app._javascript')

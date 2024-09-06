@@ -54,34 +54,34 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                         if(offViewportToRight){
                             setDropdownPositionX('auto', '0')
                         }else {
-                            setDropdownPositionX(`${right - dropdownRect.width}px`);
+                            setDropdownPositionX(`${right - dropdownRect.width}px`)
                         }
                     } else if (fitsFromLeft) {
                         if(offViewportToLeft){
                             setDropdownPositionX('0')
                         }else {
-                            setDropdownPositionX(`${left}px`);
+                            setDropdownPositionX(`${left}px`)
                         }
                     } else {
                         setDropdownPositionX('auto', '0')
                     }
                 } else if (positionX === 'left') {
                     if (exceedsViewport) {
-                        setDropdownPositionX('0');
+                        setDropdownPositionX('0')
                     } else if (fitsFromLeft) {
                         if(offViewportToLeft){
                             setDropdownPositionX('0')
                         }else {
-                            setDropdownPositionX(`${left}px`);
+                            setDropdownPositionX(`${left}px`)
                         }
                     } else if (fitsFromRight) {
                         if(offViewportToRight){
                             setDropdownPositionX('auto', '0')
                         }else {
-                            setDropdownPositionX(`${right - dropdownRect.width}px`);
+                            setDropdownPositionX(`${right - dropdownRect.width}px`)
                         }
                     } else {
-                        setDropdownPositionX('0');
+                        setDropdownPositionX('0')
                     }
                 } else {
                     const inputCenter = inputRect.left + inputRect.width / 2
@@ -168,25 +168,25 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
     }
 
     onMounted(() => {
-        window.addEventListener('resize', handleResize);
-        window.addEventListener('scroll', handleScroll);
-        document.addEventListener('click', handleClickOutside);
-        document.querySelector('main').addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleResize)
+        window.addEventListener('scroll', handleScroll)
+        document.addEventListener('click', handleClickOutside)
+        document.querySelector('main').addEventListener('scroll', handleScroll)
         document.querySelectorAll('main div').forEach(div => {
             if (window.getComputedStyle(div).overflowX === 'auto') {
-                div.addEventListener('scroll', handleScroll);
+                div.addEventListener('scroll', handleScroll)
             }
         })
-    });
+    })
 
     onBeforeUnmount(() => {
         window.removeEventListener('resize', handleResize)
         window.removeEventListener('scroll', handleScroll)
         document.removeEventListener('click', handleClickOutside)
-        document.querySelector('main').removeEventListener('scroll', handleScroll);
+        document.querySelector('main').removeEventListener('scroll', handleScroll)
         document.querySelectorAll('main div').forEach(div => {
             if (window.getComputedStyle(div).overflowX === 'auto') {
-                div.removeEventListener('scroll', handleScroll);
+                div.removeEventListener('scroll', handleScroll)
             }
         })
     })

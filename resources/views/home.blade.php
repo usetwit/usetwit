@@ -11,7 +11,7 @@
 @section('javascript')
     @parent
 
-    @vite(['resources/js/home.js'])
+    @vite(['resources/js/app/home.js'])
 @endsection
 
 @section('content')

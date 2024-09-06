@@ -58,43 +58,43 @@ const handleInput = () => {
                 <i class="pi pi-chevron-down"></i>
             </button>
         </InputGroup>
-
-        <Teleport to="body">
-            <div v-if="showDropdown"
-                 ref="dropdownRef"
-                 class="rounded absolute z-50 bg-white shadow border-gray-400 border flex flex-col overflow-y-auto"
-                 :style="dropdownStyle"
-            >
-                <ul v-if="!props.optionGroupLabel && items.length">
-                    <li v-for="item in items"
-                        @click="itemSelected(item)"
-                        class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded text-nowrap"
-                    >
-                        <slot name="item" v-bind="item">{{ item[props.optionLabel] }}</slot>
-                    </li>
-                </ul>
-                <ul v-else-if="props.optionGroupLabel && items.length">
-                    <li v-for="item in items">
-                        <slot name="optiongroup" v-bind="item">
-                            <div class="font-bold px-2 py-1.5 mx-1 rounded">{{
-                                    item[props.optionGroupLabel]
-                                }}
-                            </div>
-                        </slot>
-                        <ul v-if="item[props.optionGroupItems] && item[props.optionGroupItems].length">
-                            <li v-for="subitem in item[props.optionGroupItems]"
-                                @click="itemSelected(subitem)"
-                                class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded text-nowrap"
-                            >
-                                <slot name="item" v-bind="subitem">{{ subitem[props.optionLabel] }}</slot>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <div v-else class="italic px-2 py-1.5 mx-1">
-                    No Results
-                </div>
-            </div>
-        </Teleport>
     </div>
+
+    <Teleport to="body">
+        <div v-if="showDropdown"
+             ref="dropdownRef"
+             class="rounded absolute z-50 bg-white shadow border-gray-400 border flex flex-col overflow-y-auto"
+             :style="dropdownStyle"
+        >
+            <ul v-if="!props.optionGroupLabel && items.length">
+                <li v-for="item in items"
+                    @click="itemSelected(item)"
+                    class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded text-nowrap"
+                >
+                    <slot name="item" v-bind="item">{{ item[props.optionLabel] }}</slot>
+                </li>
+            </ul>
+            <ul v-else-if="props.optionGroupLabel && items.length">
+                <li v-for="item in items">
+                    <slot name="optiongroup" v-bind="item">
+                        <div class="font-bold px-2 py-1.5 mx-1 rounded">{{
+                                item[props.optionGroupLabel]
+                            }}
+                        </div>
+                    </slot>
+                    <ul v-if="item[props.optionGroupItems] && item[props.optionGroupItems].length">
+                        <li v-for="subitem in item[props.optionGroupItems]"
+                            @click="itemSelected(subitem)"
+                            class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 mx-1 rounded text-nowrap"
+                        >
+                            <slot name="item" v-bind="subitem">{{ subitem[props.optionLabel] }}</slot>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div v-else class="italic px-2 py-1.5 mx-1">
+                No Results
+            </div>
+        </div>
+    </Teleport>
 </template>
