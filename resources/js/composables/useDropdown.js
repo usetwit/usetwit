@@ -35,7 +35,7 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                     dropdownStyle.value.minWidth = `${inputRect.width}px`
                 } else if (typeof setMinWidth === 'number' && setMinWidth > 0) {
                     dropdownStyle.value.minWidth = `${setMinWidth}px`
-                }else if (typeof setMinWidth === 'string'){
+                } else if (typeof setMinWidth === 'string') {
                     dropdownStyle.value.minWidth = `${setMinWidth}`
                 } else {
                     dropdownStyle.value.minWidth = 'auto'
@@ -51,15 +51,15 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                     if (exceedsViewport) {
                         setDropdownPositionX('auto', '0')
                     } else if (fitsFromRight) {
-                        if(offViewportToRight){
+                        if (offViewportToRight) {
                             setDropdownPositionX('auto', '0')
-                        }else {
+                        } else {
                             setDropdownPositionX(`${right - dropdownRect.width}px`)
                         }
                     } else if (fitsFromLeft) {
-                        if(offViewportToLeft){
+                        if (offViewportToLeft) {
                             setDropdownPositionX('0')
-                        }else {
+                        } else {
                             setDropdownPositionX(`${left}px`)
                         }
                     } else {
@@ -69,15 +69,15 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                     if (exceedsViewport) {
                         setDropdownPositionX('0')
                     } else if (fitsFromLeft) {
-                        if(offViewportToLeft){
+                        if (offViewportToLeft) {
                             setDropdownPositionX('0')
-                        }else {
+                        } else {
                             setDropdownPositionX(`${left}px`)
                         }
                     } else if (fitsFromRight) {
-                        if(offViewportToRight){
+                        if (offViewportToRight) {
                             setDropdownPositionX('auto', '0')
-                        }else {
+                        } else {
                             setDropdownPositionX(`${right - dropdownRect.width}px`)
                         }
                     } else {
@@ -87,11 +87,11 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                     const inputCenter = inputRect.left + inputRect.width / 2
                     const dropdownCenter = dropdownRect.width / 2
 
-                    if(exceedsViewport) {
-                        setDropdownPositionX(`${inputCenter - dropdownCenter}px`)
+                    if (exceedsViewport) {
+                        setDropdownPositionX('0')
                     } else if (inputCenter + dropdownCenter > viewportWidth) {
                         setDropdownPositionX('auto', '0')
-                    } else if(inputCenter < dropdownCenter){
+                    } else if (inputCenter < dropdownCenter) {
                         setDropdownPositionX('0')
                     } else {
                         setDropdownPositionX(`${inputCenter - dropdownCenter}px`)
@@ -137,16 +137,6 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
     const toggleDropdown = async () => {
         showDropdown.value = !showDropdown.value
     }
-
-    const setShowDropdown = async (value) => {
-        showDropdown.value = value
-
-        if (showDropdown.value) {
-            await nextTick()
-            updateDropdownPosition()
-        }
-    }
-
     const handleScroll = () => {
         if (showDropdown.value) {
             updateDropdownPosition()
@@ -195,7 +185,6 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         inputRef,
         dropdownStyle,
         showDropdown,
-        setShowDropdown,
         toggleDropdown,
     }
 }

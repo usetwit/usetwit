@@ -1,116 +1,60 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
+import { DateTime } from 'luxon'
 
-export function useDates(initialDate = new Date(), numberOfMonths = 1) {
+export function useDates(initialDate = DateTime.utc(), numberOfMonths = 2) {
 
-    const year = ref(initialDate.getFullYear())
-    const month = ref(initialDate.getMonth())
+    const year = ref(initialDate.year)
+    const month = ref(initialDate.month)
     const monthTexts = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    const dayTexts = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    const dayTexts = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 
-    const today = day => {
-        const today = new Date()
-        return today.getFullYear() === day.getFullYear() && today.getMonth() === day.getMonth() && today.getDate() === day.getDate()
-    }
-
-    const generateMonths = () => {
-        const monthsList = [];
-        let monthIndex = month.value;
-        let yearIndex = year.value;
+    const months = computed(() => {
+        const monthsList = []
+        let startMonth = month.value
+        let startYear = year.value
 
         for (let i = 0; i < numberOfMonths; i++) {
-            monthsList.push({ month: monthIndex, year: yearIndex });
+            monthsList.push({ month: startMonth, year: startYear, dates: makeMonth(startYear, startMonth) })
 
-            monthIndex++;
-            if (monthIndex > 11) {
-                monthIndex = 0;
-                yearIndex++;
+            startMonth++
+            if (startMonth === 13) {
+                startMonth = 1
+                startYear++
             }
         }
 
-        return monthsList;
-    };
+        return monthsList
+    })
 
-    const months = computed(() => generateMonths());
+    const makeMonth = (year, month) => {
+        const dates = [];
 
-    const monday = (date) => {
-        const day = date.getDay()
-        const diff = date.getDate() - day + (day === 0 ? -6 : 1)
-
-        return new Date(date.getFullYear(), date.getMonth(), diff)
-    }
-
-    const sunday = (date) => {
-        const day = date.getDay()
-        const diff = 7 - day
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate() + diff)
-    }
-
-    const preDates = (date) => {
-        const dates = []
-        const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
-        let startDate = monday(firstDayOfMonth)
-
-        while (startDate < firstDayOfMonth) {
-            dates.push(startDate)
-            startDate = startDate.addDays(1)
+        const firstOfMonth = DateTime.utc(year, month, 1)
+        let start = firstOfMonth.startOf('week')
+        let end = firstOfMonth.endOf('month').endOf('week')
+        const diffInDays = end.diff(start, 'days').days;
+console.log(firstOfMonth)
+        if (Math.round(diffInDays) === 35) {
+            end = end.plus({ days: 7 });
         }
 
-        return dates
-    }
-
-    const lastDayOfMonth = (year, month) => new Date(year, month + 1, 0)
-
-    const postDates = (lastDayOfMonth) => {
-        const dates = []
-        let nextDay = lastDayOfMonth.addDays(1)
-        let sundayDate = sunday(lastDayOfMonth)
-
-        while (nextDay <= sundayDate) {
-            dates.push(new Date(nextDay))
-            nextDay = nextDay.addDays(1)
+        while (start <= end) {
+            dates.push(start)
+            start = start.plus({days: 1})
         }
 
-        return dates
-    }
-
-    const makeMonth = (year, month, withPre = false, withPost = false) => {
-        const dates = []
-        const firstDay = new Date(year, month, 1)
-        const lastDay = lastDayOfMonth(year, month)
-
-        if (withPre) {
-            dates.push(...preDates(firstDay))
-        }
-
-        let currentDay = new Date(firstDay)
-
-        while (currentDay <= lastDay) {
-            dates.push(new Date(currentDay))
-            currentDay = currentDay.addDays(1)
-        }
-
-        if (withPost) {
-            dates.push(...postDates(lastDay))
-
-            if (dates.length === 35) {
-                const lastDate = dates[dates.length - 1].addDays(1)
-                dates.push(lastDate)
-                dates.push(...postDates(lastDate))
-            }
-        }
-
-        return dates
+        return dates;
     }
 
     const changeMonth = (direction) => {
         if (direction === 'increase') {
-            month.value = (month.value + 1 === 12) ? 0 : month.value + 1
-            year.value += (month.value === 0) ? 1 : 0
+            month.value = (month.value + 1 === 13) ? 1 : month.value + 1
+            year.value += (month.value === 1) ? 1 : 0
         } else if (direction === 'decrease') {
-            month.value = (month.value - 1 === -1) ? 11 : month.value - 1
-            year.value -= (month.value === 11) ? 1 : 0
+            month.value = (month.value - 1 === 0) ? 12 : month.value - 1
+            year.value -= (month.value === 12) ? 1 : 0
         }
     }
 
-    return { today, month, year, months, changeMonth, makeMonth, preDates, monthTexts, dayTexts }
+    return { month, year, changeMonth, makeMonth, months, monthTexts, dayTexts }
 }
