@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Settings\GeneralSettings;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(GeneralSettings $settings)
     {
-        return view('home');
+        $displayFormat = $settings->dateFormatForDisplay();
+        $format = $settings->date_validation_default;
+        $regex = $settings->dateRegexDefault();
+        $separator = $settings->date_validation_separator_default;
+
+        return view('home', compact('displayFormat', 'format', 'regex', 'separator'));
     }
 }

@@ -7,8 +7,6 @@ use Spatie\LaravelSettings\Settings;
 class GeneralSettings extends Settings
 {
     public array $countries;
-    public string $date_format_input;
-    public string $date_format_php;
     public string $locale;
     public array $locales;
     public string $currency;
@@ -18,6 +16,10 @@ class GeneralSettings extends Settings
     public string $default_country;
     public int $users_index_per_page;
     public array $users_index_per_page_options;
+    public array $date_validation_separators;
+    public array $date_validation_regex;
+    public string $date_validation_separator_default;
+    public string $date_validation_default;
 
     /**
      * @return string
@@ -54,5 +56,30 @@ class GeneralSettings extends Settings
        }
 
        return ['code' => $code, 'name' => $this->countries[$code]];
+    }
+
+    /**
+     * Replace hyphens with default separator
+     *
+     * @return string
+     */
+    public function dateFormatForDisplay(): string
+    {
+        $format = str_replace('-', $this->date_validation_separator_default, $this->date_validation_default);
+
+        return strtolower($format);
+    }
+
+    /**
+     * @return array
+     */
+    public function dateFormats(): array
+    {
+        return array_keys(array_change_key_case($this->date_validation_regex));
+    }
+
+    public function dateRegexDefault(): string
+    {
+        return $this->date_validation_regex[$this->date_validation_default];
     }
 }

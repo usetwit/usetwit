@@ -3,14 +3,12 @@ import AutoComplete from "./Form/AutoComplete.vue";
 import { ref } from "vue";
 import Datepicker from "./Form/Datepicker.vue";
 
-// const items = ref([
-//     {
-//         name: 'Lee', id: 1,
-//     },
-//     {
-//         name: 'Sandra', id: 2,
-//     },
-// ])
+const props = defineProps({
+    format: { type: String, required: true },
+    displayFormat: { type: String, required: true },
+    regex: { type: String, required: true },
+    separator: { type: String, required: true },
+})
 
 const groupedCities = ref([
     {
@@ -30,7 +28,11 @@ const groupedCities = ref([
             { label: 'Chicago', something: 'x', value: 'Chicago' },
             { label: 'Los Angeles', something: 'x', value: 'Los Angeles' },
             { label: 'New York', something: 'x', value: 'New York' },
-            { label: 'San Francisco', something: 'x', value: 'Sjjjwwwwewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwjjo' }
+            {
+                label: 'San Francisco',
+                something: 'x',
+                value: 'Sjjjwwwwewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwjjo'
+            }
         ]
     },
     {
@@ -53,7 +55,7 @@ const date = ref()
     <div class="text-nowrap">
         <AutoComplete v-model="value" :items="groupedCities" optionLabel="label"
                       optionGroupLabel="label"
-                      optionGroupItems="items" max-height="300" position-x="left" dropdown position-y="top"
+                      optionGroupItems="items" max-height="300" position-x="center" dropdown position-y="top"
         >
             <template #item="item">
                 {{ item.label }} - {{ item.value }}
@@ -62,7 +64,8 @@ const date = ref()
 
         &nbsp;
 
-        <Datepicker dropdown></Datepicker>
+        <Datepicker dropdown :format="props.format" :display-format="props.displayFormat" :regex="props.regex"
+                    :separator="props.separator" v-model="date"></Datepicker>
 
     </div>
 </template>

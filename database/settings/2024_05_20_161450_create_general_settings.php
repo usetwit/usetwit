@@ -262,8 +262,6 @@ class CreateGeneralSettings extends SettingsMigration
             'ax' => 'Åland Islands',
         ]);
         $this->migrator->add('general.default_country', 'gb');
-        $this->migrator->add('general.date_format_input', 'dd/mm/yy');
-        $this->migrator->add('general.date_format_php', 'd/m/Y');
         $this->migrator->add('general.locale', 'en-GB');
         $this->migrator->add('general.currency', 'GBP');
         $this->migrator->add('general.locales', [
@@ -923,11 +921,20 @@ class CreateGeneralSettings extends SettingsMigration
             'YER' => '﷼',
             'ZAR' => 'R',
             'ZMW' => 'ZK',
-            'ZWL' => '$'
+            'ZWL' => '$',
         ]);
         $this->migrator->add('general.employee_id_padding', 5);
         $this->migrator->add('general.employee_id_prefix', '');
         $this->migrator->add('general.users_index_per_page', 20);
         $this->migrator->add('general.users_index_per_page_options', [10, 20, 50, 100]);
+        $this->migrator->add('general.date_validation_regex', [
+            'dd-MM-yyyy' => '^(0[1-9]|[12][0-9]|3[01])([\-\/\.])(0[1-9]|1[0-2])\2(19|20)\d{2}$',
+            'MM-dd-yyyy' => '^(0[1-9]|1[0-2])([\-\/\.])(0[1-9]|[12][0-9]|3[01])\2(19|20)\d{2}$',
+            'yyyy-MM-dd' => '^(19|20)\d{2}([\-\/\.])(0[1-9]|1[0-2])\2(0[1-9]|[12][0-9]|3[01])$',
+        ]);
+        $this->migrator->add('general.date_validation_default', 'dd-MM-yyyy');
+        $this->migrator->add('general.date_validation_separators', ['.', '/', '-']);
+        $this->migrator->add('general.date_validation_separator_default', '/');
+
     }
 }

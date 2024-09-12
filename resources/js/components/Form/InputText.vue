@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineProps, ref, useTemplateRef } from 'vue';
+import { computed, defineProps, useTemplateRef } from 'vue'
 
 const props = defineProps({
     disabled: { type: Boolean, default: false },

@@ -1,24 +1,41 @@
 <script setup>
 import { useDropdown } from '../../composables/useDropdown'
-import { useDates } from "../../composables/useDates";
-import { onMounted, useTemplateRef } from "vue";
-import InputGroup from "./InputGroup.vue";
-import InputText from "./InputText.vue";
-import { DateTime } from "luxon";
+import { useDates } from '../../composables/useDates'
+import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import InputGroup from './InputGroup.vue'
+import InputText from './InputText.vue'
+import { DateTime } from 'luxon'
+import DatepickerHeader from './DatepickerHeader.vue'
 
 const props = defineProps({
     disabled: { type: Boolean, default: false },
     dropdown: { type: Boolean, default: false },
-    date: { type: DateTime, default: DateTime.utc() },
+    date: { type: DateTime, default: null },
     numberOfMonths: { type: Number, default: 1 },
+    format: { type: String, required: true },
+    displayFormat: { type: String, required: true },
+    regex: { type: String, required: true },
+    separator: { type: String, required: true },
 })
 
-const { month, year, makeMonth, changeMonth, monthTexts, dayTexts, months } = useDates(props.date);
-const { inputRef, dropdownStyle, showDropdown, toggleDropdown } = useDropdown('center', 'top')
+const {
+    isToday,
+    month,
+    year,
+    changeMonth,
+    monthTexts,
+    dayTexts,
+    months,
+    changeYear,
+    yearRounded
+} = useDates(props.date || DateTime.utc())
+const { inputRef, dropdownStyle, showDropdown, toggleDropdown, updateDropdownPosition } = useDropdown('center', 'top')
 
 const model = defineModel()
+const inputModel = ref(props.date instanceof DateTime ? props.date.toFormat(props.format) : null)
+const mode = ref('day')
 
-const inputTextRef = useTemplateRef('inputTextComp')
+const inputTextRef = useTemplateRef('inputTextComponent')
 
 const handleInput = (e) => {
 
@@ -29,16 +46,66 @@ onMounted(() => {
         inputRef.value = inputTextRef.value.inputElement
     }
 })
+
+const changeMode = newMode => {
+    mode.value = newMode
+    updateDropdownPosition()
+}
+
+const selectMonth = newMonth => {
+    month.value = newMonth
+    changeMode('day')
+}
+
+const selectYear = newYear => {
+    year.value = newYear
+    changeMode('month')
+}
+
+const setDate = day => {
+    const selectedDate = DateTime.utc(day.year, day.month, day.day)
+
+    inputModel.value = selectedDate.toFormat(props.format.replace(/-/g, props.separator))
+    showDropdown.value = false
+}
+
+const isSelected = day => {
+    if (!inputModel.value) {
+        return false
+    }
+
+    const parsedDate = DateTime.fromFormat(inputModel.value.replace(/[./]/g, '-'), props.format)
+
+    return parsedDate.isValid && parsedDate.hasSame(day, 'day')
+}
+
+watch(inputModel, (newValue) => {
+    const formattedValue = newValue.replace(/[./]/g, '-')
+
+    const parsedDate = DateTime.fromFormat(formattedValue, props.format.replace(/[./]/g, '-'))
+
+    if (parsedDate.isValid) {
+        model.value = parsedDate.toFormat('yyyy-MM-dd')
+        year.value = parsedDate.year
+        month.value = parsedDate.month
+    } else {
+        model.value = null
+    }
+})
 </script>
 
 <template>
     <div class="inline-block">
         <InputGroup>
-            <InputText ref="inputTextComp"
-                       v-model="model"
+            <InputText ref="inputTextComponent"
+                       v-model="inputModel"
                        :disabled="props.disabled"
+                       :placeholder="props.displayFormat"
+                       :aria-placeholder="props.displayFormat"
+                       :pattern="props.regex"
                        @input="handleInput"
-                       @focus="showDropdown = true"/>
+                       @focus="showDropdown = true"
+            />
             <button v-if="props.dropdown"
                     class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center py-2.5 px-3 align-middle"
                     @click="toggleDropdown"
@@ -53,43 +120,83 @@ onMounted(() => {
     <Teleport to="body">
         <div v-if="showDropdown"
              ref="dropdownRef"
-             class="rounded absolute z-50 bg-white shadow border-gray-400 border flex flex-col overflow-y-auto p-3"
+             class="rounded absolute z-50 bg-white shadow border-gray-400 border flex flex-col overflow-y-auto p-3 w-max"
              :style="dropdownStyle"
         >
-            <div class="flex month-wrapper w-max">
+            <div v-if="mode === 'year'">
+                <DatepickerHeader @change="direction => changeYear(direction, 10)">
+                    <span class="mx-4 p-1">{{ yearRounded }} - {{ yearRounded + 9 }}</span>
+                </DatepickerHeader>
+
+                <div class="grid grid-cols-2 w-full gap-1">
+                    <button v-for="i in 10"
+                            :key="i"
+                            class="px-1.5 py-0.5 text-sm rounded hover:bg-gray-100 text-gray-800"
+                            @click.stop="selectYear(yearRounded + i - 1)"
+                    >
+                        {{ yearRounded + i - 1 }}
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="mode === 'month'">
+                <DatepickerHeader @change="direction => changeYear(direction)">
+                    <button type="button" class="p-1 hover:bg-gray-100 rounded" @click.stop="changeMode('year')">
+                        {{ year }}
+                    </button>
+                </DatepickerHeader>
+
+                <div class="grid grid-cols-3 w-full gap-2">
+                    <button v-for="i in 12"
+                            :key="i"
+                            class="px-1.5 py-0.5 text-sm rounded hover:bg-gray-100 text-gray-800"
+                            @click.stop="selectMonth(i)"
+                    >
+                        {{ monthTexts[i - 1] }}
+                    </button>
+                </div>
+            </div>
+
+            <div v-else-if="mode === 'day'" class="flex month-wrapper">
                 <div v-for="(month, monthIndex) in months" :key="monthIndex">
 
-                    <div v-if="monthIndex === 0" class="flex items-center justify-between text-sm border-b border-gray-200 p-1.5 mb-3 text-slate-700">
-                        <button type="button" @click="changeMonth('decrease')"
-                                class="mr-2 align-middle inline-flex">
-                            <i class="pi pi-angle-left"></i>
-                        </button>
-                        <div class="flex justify-between items-center">
-                            <button type="button">{{ monthTexts[month.month - 1] }}</button>
-                            <button type="button">{{ year }}</button>
+                    <DatepickerHeader v-if="monthIndex === 0" @change="direction => changeMonth(direction)">
+                        <div>
+                            <button type="button" class="mr-2 p-1 rounded hover:bg-gray-100"
+                                    @click.stop="changeMode('month')">
+                                {{ monthTexts[month.month - 1] }}
+                            </button>
+                            <button type="button" class="p-1 rounded hover:bg-gray-100"
+                                    @click.stop="changeMode('year')">
+                                {{ year }}
+                            </button>
                         </div>
-                        <button type="button" @click="changeMonth('increase')" class="ml-2 align-middle inline-flex">
-                            <i class="pi pi-angle-right"></i>
-                        </button>
-                    </div>
+                    </DatepickerHeader>
 
-                    <div v-else class="flex items-center justify-center text-sm border-b border-gray-200 p-1.5 mb-3 text-slate-700">
-                        {{ monthTexts[month.month - 1] }} {{ month.year }}
-                    </div>
-
+                    <DatepickerHeader v-else :buttons="false">
+                        <span class="mr-2 p-1">
+                            {{ monthTexts[month.month - 1] }}
+                        </span>
+                        <span class="p-1">
+                            {{ month.year }}
+                        </span>
+                    </DatepickerHeader>
 
                     <div class="grid grid-cols-7 w-full gap-2">
-                    <span v-for="day in dayTexts" class="font-bold text-xs text-center text-gray-600">
-                        {{ day }}
-                    </span>
+                        <span v-for="day in dayTexts" class="font-bold text-xs text-center text-gray-600">
+                            {{ day }}
+                        </span>
                         <template v-for="day in month.dates" :key="day">
                             <button v-if="day.month === month.month"
-                                    class="text-gray-800 p-1.5 text-xs flex items-center justify-center rounded-full hover:bg-gray-100">
+                                    class="text-gray-800 p-1.5 text-xs flex items-center justify-center rounded-full hover:bg-gray-100"
+                                    :class="{'bg-gray-200': isToday(day), 'bg-blue-200': isSelected(day)}"
+                                    @click.stop="setDate(day)"
+                            >
                                 {{ day.day }}
                             </button>
                             <span v-else class="text-gray-300 p-1.5 text-xs flex items-center justify-center">
-                            {{ day.day }}
-                        </span>
+                                {{ day.day }}
+                            </span>
                         </template>
                     </div>
                 </div>
@@ -99,7 +206,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.month-wrapper > *:not(:first-child) {
+.month-wrapper > :not(:first-child) {
     @apply ml-3 pl-3 border-l border-gray-200;
 }
 </style>

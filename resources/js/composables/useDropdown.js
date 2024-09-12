@@ -1,7 +1,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidth = null, maxHeight = 0, gap = 2) {
-    const inputRef = ref(null)
+    const inputRef = ref()
     const dropdownRef = useTemplateRef('dropdownRef')
     const buttonRef = useTemplateRef('buttonRef')
     const showDropdown = ref(false)
@@ -186,5 +186,6 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         dropdownStyle,
         showDropdown,
         toggleDropdown,
+        updateDropdownPosition,
     }
 }

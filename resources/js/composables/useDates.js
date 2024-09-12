@@ -1,4 +1,4 @@
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref } from 'vue'
 import { DateTime } from 'luxon'
 
 export function useDates(initialDate = DateTime.utc(), numberOfMonths = 2) {
@@ -27,24 +27,26 @@ export function useDates(initialDate = DateTime.utc(), numberOfMonths = 2) {
     })
 
     const makeMonth = (year, month) => {
-        const dates = [];
+        const dates = []
 
         const firstOfMonth = DateTime.utc(year, month, 1)
         let start = firstOfMonth.startOf('week')
         let end = firstOfMonth.endOf('month').endOf('week')
-        const diffInDays = end.diff(start, 'days').days;
-console.log(firstOfMonth)
-        if (Math.round(diffInDays) === 35) {
-            end = end.plus({ days: 7 });
+        const diffInDays = Math.round(end.diff(start, 'days').days)
+
+        if (diffInDays < 42) {
+            end = end.plus({ days: (42 - diffInDays) })
         }
 
         while (start <= end) {
             dates.push(start)
-            start = start.plus({days: 1})
+            start = start.plus({ days: 1 })
         }
 
-        return dates;
+        return dates
     }
+
+    const isToday = (day) => DateTime.now().hasSame(day, 'day')
 
     const changeMonth = (direction) => {
         if (direction === 'increase') {
@@ -56,5 +58,15 @@ console.log(firstOfMonth)
         }
     }
 
-    return { month, year, changeMonth, makeMonth, months, monthTexts, dayTexts }
+    const changeYear = (direction, step = 1) => {
+        if (direction === 'increase' && year.value <= 2100 - step) {
+            year.value += step
+        } else if (direction === 'decrease' && year.value >= 1900 + step) {
+            year.value -= step
+        }
+    }
+
+    const yearRounded = computed(() => Math.floor(year.value / 10) * 10)
+
+    return { isToday, month, year, changeMonth, changeYear, yearRounded, months, monthTexts, dayTexts }
 }

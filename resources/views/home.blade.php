@@ -15,7 +15,11 @@
 @endsection
 
 @section('content')
-    <div id="home">
-        <home></home>
+    <div id="app">
+        <home :display-format="{{ Js::from($displayFormat) }}"
+              :format="{{ Js::from($format) }}"
+              :regex="{{ Js::from($regex) }}"
+              :separator="{{ Js::from($separator) }}"
+        ></home>
     </div>
 @endsection
