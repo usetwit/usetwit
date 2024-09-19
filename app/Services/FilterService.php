@@ -10,12 +10,21 @@ use Illuminate\Contracts\Database\Query\Builder;
 
 class FilterService
 {
-    protected array $validStringIntMatchModes = [
+    protected array $validStringMatchModes = [
         'contains',
-        'startsWith',
-        'endsWith',
+        'starts_with',
+        'ends_with',
         'equals',
-        'notEquals',
+        'not_equals',
+        'gt',
+        'gte',
+        'lt',
+        'lte',
+    ];
+
+    protected array $validNumberMatchModes = [
+        'equals',
+        'not_equals',
         'gt',
         'gte',
         'lt',
@@ -23,17 +32,17 @@ class FilterService
     ];
 
     protected array $validDateMatchModes = [
-        'dateIs',
-        'dateIsNot',
-        'dateBefore',
-        'dateAfter',
+        'date_equals',
+        'date_not_equals',
+        'date_before',
+        'date_after',
     ];
 
     protected array $validBooleanMatchModes = [
         'equals',
     ];
 
-    protected array $validTypes = ['StringInt', 'Date', 'Boolean'];
+    protected array $validTypes = ['string', 'number', 'date', 'boolean'];
 
     /**
      * @throws FilterServiceGetTypeInvalidException
@@ -61,17 +70,37 @@ class FilterService
         return $fieldsRules;
     }
 
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
     private function makeValidationRulesForField(array $fields, string $type): array
     {
+        $this->validateType($type);
+        $ucType = ucwords(strtolower($type));
+        $validMatchModeProperty = "valid{$ucType}MatchModes";
+
+        switch (strtolower($type)) {
+            case 'boolean':
+                $valueType = 'boolean';
+                break;
+            case 'string':
+                $valueType = 'string';
+                break;
+            case 'number':
+                $valueType = 'number';
+                break;
+            case 'date':
+                $valueType = 'date_format:Y-m-d';
+                break;
+        }
+
         $rules = [];
-        $validMatchModeProperty = "valid{$type}MatchModes";
-        $valueType = $type === 'Boolean' ? 'boolean' : 'string';
 
         foreach ($fields as $field) {
             $rules += [
                 "filters.{$field}" => 'nullable|array',
                 "filters.{$field}.constraints" => 'nullable|array',
-                "filters.{$field}.constraints.*.matchMode" => [
+                "filters.{$field}.constraints.*.mode" => [
                     'nullable',
                     'string',
                     Rule::in($this->$validMatchModeProperty),
@@ -79,7 +108,7 @@ class FilterService
                 ],
                 "filters.{$field}.constraints.*.value" => [
                     'nullable',
-                    "present_with:filters.{$field}.constraints.*.matchMode",
+                    "present_with:filters.{$field}.constraints.*.mode",
                     $valueType,
                 ],
                 "filters.{$field}.operator" => [
@@ -104,7 +133,7 @@ class FilterService
      */
     public function getValidDateMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
     {
-        return $this->getArrayOrStringMatchModes('Date', $asString, $lowerCase, $separator);
+        return $this->getMatchModes('date', $asString, $lowerCase, $separator);
     }
 
     /**
@@ -115,9 +144,22 @@ class FilterService
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function getValidStringIntMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    public function getValidStringMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
     {
-        return $this->getArrayOrStringMatchModes('StringInt', $asString, $lowerCase, $separator);
+        return $this->getMatchModes('string', $asString, $lowerCase, $separator);
+    }
+
+    /**
+     * @param bool   $asString
+     * @param string $separator
+     * @param bool   $lowerCase
+     *
+     * @return array|string
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function getValidNumberMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    {
+        return $this->getMatchModes('number', $asString, $lowerCase, $separator);
     }
 
     /**
@@ -130,7 +172,7 @@ class FilterService
      */
     public function getValidBooleanMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
     {
-        return $this->getArrayOrStringMatchModes('Boolean', $asString, $lowerCase, $separator);
+        return $this->getMatchModes('boolean', $asString, $lowerCase, $separator);
     }
 
     /**
@@ -152,10 +194,11 @@ class FilterService
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    private function getArrayOrStringMatchModes(string $type, bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    private function getMatchModes(string $type, bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
     {
         $this->validateType($type);
 
+        $type = ucwords(strtolower($type));
         $type = "valid{$type}MatchModes";
 
         if (!$asString) {
@@ -178,7 +221,7 @@ class FilterService
      */
     public function queryFilter(Builder $query, string $field, string|int $value, int $index, string $matchMode, string $operator): void
     {
-        if (in_array(strtolower($matchMode), $this->getArrayOrStringMatchModes('Date', false, true))) {
+        if (in_array(strtolower($matchMode), $this->getMatchModes('date', false, true))) {
             $whereMethod = $operator === 'or' && $index > 0 ? 'orWhereDate' : 'whereDate';
             $value = Carbon::parse($value)->format('Y-m-d');
         } else {
@@ -189,29 +232,28 @@ class FilterService
             case 'contains':
                 $query->$whereMethod($field, 'LIKE', "%$value%");
                 break;
-            case 'startswith':
+            case 'starts_with':
                 $query->$whereMethod($field, 'LIKE', "$value%");
                 break;
-            case 'endswith':
+            case 'ends_with':
                 $query->$whereMethod($field, 'LIKE', "%$value");
                 break;
-            case 'dateis':
+            case 'date_equals':
             case 'equals':
-//                dd($whereMethod);
                 $query->$whereMethod($field, '=', $value);
                 break;
-            case 'dateisnot':
-            case 'notequals':
+            case 'date_not_equals':
+            case 'not_equals':
                 $query->$whereMethod($field, '!=', $value);
                 break;
-            case 'dateafter':
+            case 'date_gt':
             case 'gt':
                 $query->$whereMethod($field, '>', $value);
                 break;
             case 'gte':
                 $query->$whereMethod($field, '>=', $value);
                 break;
-            case 'datebefore':
+            case 'date_lt':
             case 'lt':
                 $query->$whereMethod($field, '<', $value);
                 break;

@@ -11,11 +11,11 @@
 @section('javascript')
     @parent
 
-    @vite(['resources/js/users-index.js'])
+    @vite(['resources/js/app/users-index.js'])
 @endsection
 
 @section('content')
-    <div id="users-index">
+    <div id="app">
         <users-index :default-per-page="{{ $defaultPerPage }}"
                      :per-page-options="{{ Js::from($perPageOptions) }}"
                      route-get-users="{{ $routeGetUsers }}"

@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/app/navbar.js',
                 'resources/js/app/sidebar.js',
                 'resources/js/app/calendar-shifts-edit.js',
+                'resources/js/app/users-index.js',
             ],
             refresh: true,
         }),

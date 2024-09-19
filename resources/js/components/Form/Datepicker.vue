@@ -9,6 +9,7 @@ import DatepickerHeader from './DatepickerHeader.vue'
 
 const props = defineProps({
     disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
     dropdown: { type: Boolean, default: false },
     date: { type: DateTime, default: null },
     numberOfMonths: { type: Number, default: 1 },
@@ -27,7 +28,9 @@ const {
     dayTexts,
     months,
     changeYear,
-    yearRounded
+    yearRounded,
+    minYear,
+    maxYear,
 } = useDates(props.date || DateTime.utc())
 const { inputRef, dropdownStyle, showDropdown, toggleDropdown, updateDropdownPosition } = useDropdown('center', 'top')
 
@@ -36,10 +39,6 @@ const inputModel = ref(props.date instanceof DateTime ? props.date.toFormat(prop
 const mode = ref('day')
 
 const inputTextRef = useTemplateRef('inputTextComponent')
-
-const handleInput = (e) => {
-
-}
 
 onMounted(() => {
     if (inputTextRef.value?.inputElement instanceof HTMLElement) {
@@ -88,8 +87,13 @@ watch(inputModel, (newValue) => {
         model.value = parsedDate.toFormat('yyyy-MM-dd')
         year.value = parsedDate.year
         month.value = parsedDate.month
+        inputRef.value.setCustomValidity('')
     } else {
         model.value = null
+
+        if(newValue) {
+            inputRef.value.setCustomValidity('Please specify a valid date')
+        }
     }
 })
 </script>
@@ -100,10 +104,12 @@ watch(inputModel, (newValue) => {
             <InputText ref="inputTextComponent"
                        v-model="inputModel"
                        :disabled="props.disabled"
+                       :aria-disabled="props.disabled"
+                       :required="props.required"
+                       :aria-required="props.required"
                        :placeholder="props.displayFormat"
                        :aria-placeholder="props.displayFormat"
                        :pattern="props.regex"
-                       @input="handleInput"
                        @focus="showDropdown = true"
             />
             <button v-if="props.dropdown"
@@ -146,7 +152,7 @@ watch(inputModel, (newValue) => {
                     </button>
                 </DatepickerHeader>
 
-                <div class="grid grid-cols-3 w-full gap-2">
+                <div class="grid grid-cols-3 w-full gap-1">
                     <button v-for="i in 12"
                             :key="i"
                             class="px-1.5 py-0.5 text-sm rounded hover:bg-gray-100 text-gray-800"
@@ -182,14 +188,14 @@ watch(inputModel, (newValue) => {
                         </span>
                     </DatepickerHeader>
 
-                    <div class="grid grid-cols-7 w-full gap-2">
+                    <div class="grid grid-cols-7 w-full gap-1">
                         <span v-for="day in dayTexts" class="font-bold text-xs text-center text-gray-600">
                             {{ day }}
                         </span>
                         <template v-for="day in month.dates" :key="day">
-                            <button v-if="day.month === month.month"
+                            <button v-if="day.month === month.month && day.year >= minYear && day.year <= maxYear"
                                     class="text-gray-800 p-1.5 text-xs flex items-center justify-center rounded-full hover:bg-gray-100"
-                                    :class="{'bg-gray-200': isToday(day), 'bg-blue-200': isSelected(day)}"
+                                    :class="{'bg-gray-200': isToday(day) && !isSelected(day), 'bg-blue-200': isSelected(day)}"
                                     @click.stop="setDate(day)"
                             >
                                 {{ day.day }}

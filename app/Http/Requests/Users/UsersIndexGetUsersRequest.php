@@ -26,7 +26,7 @@ class UsersIndexGetUsersRequest extends FormRequest
     public function rules(FilterService $service): array
     {
         $filters = $service->makeValidationFilterRules([
-            'StringInt' => [
+            'String' => [
                 'email',
                 'first_name',
                 'middle_names',

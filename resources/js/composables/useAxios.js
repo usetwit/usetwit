@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ref } from 'vue'
+import { toast } from 'vue3-toastify'
 
 export function useAxios(url, params = {}, method = 'post') {
     const data = ref(null)
@@ -36,6 +37,10 @@ export function useAxios(url, params = {}, method = 'post') {
             errors.value.raw = error
             errors.value.status = error.response.status
             errors.value.message = error.message
+
+            toast.error(`<b>${errors.value.message}</b>\n${errors.value.list}`, {
+                dangerouslyHTMLString: true,
+            })
         }
     }
 

@@ -25,7 +25,7 @@ defineExpose({
 
 <template>
     <input type="text"
-           class="ring-0 outline-offset-0 focus:outline focus:invalid:outline-red-600/50 hover:invalid:border-red-500 invalid:border-red-600 focus:invalid:border-red-600 leading-5 border align-middle py-2 px-2 text-gray-800 dark:text-gray-300 transition-colors duration-200 ease-in-out"
+           class="ring-0 outline-offset-0 focus:outline focus:invalid:outline-red-600/50 hover:invalid:border-red-500 invalid:border-red-600 focus:invalid:border-red-600 leading-5 border align-middle py-2 px-2 text-gray-800 dark:text-gray-300"
            :class="setClasses"
            :disabled="disabled"
            v-model="model"
