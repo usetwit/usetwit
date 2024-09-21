@@ -3,6 +3,8 @@ import { useAxios } from "../composables/useAxios.js";
 import { ref } from "vue";
 import { toast } from "vue3-toastify";
 import { useStorage } from "../composables/useStorage.js";
+import { useDebounce } from "../composables/useDebounce.js";
+import Chips from "./Form/Chips.vue";
 
 const props = defineProps({
     defaultPerPage: { type: Number, required: true },
@@ -60,18 +62,17 @@ const defaultData = {
         },
     },
     columns: [
-        { field: 'username', header: 'Username', default: true },
-        { field: 'full_name', header: 'Full Name', default: true },
-        { field: 'first_name', header: 'First Name', default: false },
-        { field: 'middle_names', header: 'Middle Name(s)', default: false },
-        { field: 'last_name', header: 'Last Name', default: false },
-        { field: 'email', header: 'Company Email', default: false },
-        { field: 'employee_id', header: 'Employee ID', default: true },
-        { field: 'join_date', header: 'Join Date', default: false },
-        { field: 'role', header: 'Role', default: true },
-        { field: 'active', header: 'Active', default: true },
+        { field: 'username', label: 'Username', visible: true },
+        { field: 'full_name', label: 'Full Name', visible: true },
+        { field: 'first_name', label: 'First Name', visible: false },
+        { field: 'middle_names', label: 'Middle Name(s)', visible: false },
+        { field: 'last_name', label: 'Last Name', visible: false },
+        { field: 'email', label: 'Company Email', visible: false },
+        { field: 'employee_id', label: 'Employee ID', visible: true },
+        { field: 'join_date', label: 'Join Date', visible: false },
+        { field: 'role', label: 'Role', visible: true },
+        { field: 'active', label: 'Active', visible: true },
     ],
-    selected_columns: [],
     sort: [{ field: 'username', order: 1 }],
     pagination: {
         first: 0,
@@ -80,6 +81,8 @@ const defaultData = {
         total: 0,
     }
 }
+
+defaultData.selected_columns = defaultData.columns.filter(col => col.default === true)
 
 const { activeData, saveToStorage } = useStorage('users-index', defaultData)
 
@@ -106,10 +109,20 @@ const fetchUsers = async () => {
     isLoading.value = false
 }
 fetchUsers()
+
+const save = (doFetchUsers = true) => {
+    saveToStorage()
+
+    if (doFetchUsers) {
+        fetchUsers()
+    }
+}
+
+const debouncedSave = useDebounce(save)
 </script>
 
 <template>
-
+    <Chips v-model="activeData.columns"/>
 </template>
 
 <style scoped>

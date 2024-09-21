@@ -5,7 +5,7 @@ export function useStorage(key, defaultValue) {
     const activeData = ref(storedData || defaultValue)
 
     const saveToStorage = () => {
-        localStorage.setItem(key, JSON.stringify(activeData.value))
+        // localStorage.setItem(key, JSON.stringify(activeData.value))
     }
 
     return { activeData, saveToStorage }

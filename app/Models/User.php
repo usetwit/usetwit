@@ -66,6 +66,9 @@ class User extends Authenticatable implements Authorizable
         ];
     }
 
+    /**
+     * @return MorphMany
+     */
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');

@@ -21,7 +21,7 @@ const {
     inputRef,
     dropdownStyle,
     showDropdown,
-    toggleDropdown
+    toggleDropdown,
 } = useDropdown(props.positionX, props.positionY, props.minWidth, props.maxHeight)
 
 const model = defineModel()

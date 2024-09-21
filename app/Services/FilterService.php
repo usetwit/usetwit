@@ -79,20 +79,12 @@ class FilterService
         $ucType = ucwords(strtolower($type));
         $validMatchModeProperty = "valid{$ucType}MatchModes";
 
-        switch (strtolower($type)) {
-            case 'boolean':
-                $valueType = 'boolean';
-                break;
-            case 'string':
-                $valueType = 'string';
-                break;
-            case 'number':
-                $valueType = 'number';
-                break;
-            case 'date':
-                $valueType = 'date_format:Y-m-d';
-                break;
-        }
+        $valueType = match (strtolower($type)) {
+            'boolean' => 'boolean',
+            'number' => 'number',
+            'date' => 'date_format:Y-m-d',
+            default => 'string',
+        };
 
         $rules = [];
 
@@ -194,7 +186,7 @@ class FilterService
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    private function getMatchModes(string $type, bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    public function getMatchModes(string $type, bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
     {
         $this->validateType($type);
 
@@ -287,7 +279,7 @@ class FilterService
                 $query->where(function (Builder $query) use ($field, $operator, $constraints) {
                     foreach ($constraints as $index => $props) {
                         if ($props['value'] !== null) {
-                            $this->queryFilter($query, $field, $props['value'], $index, $props['matchMode'], $operator);
+                            $this->queryFilter($query, $field, $props['value'], $index, $props['mode'], $operator);
                         }
                     }
                 });
