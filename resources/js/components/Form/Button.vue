@@ -1,5 +1,5 @@
 <script setup>
-import { computed, useSlots } from "vue"
+import { computed } from 'vue'
 
 const props = defineProps({
     loading: { type: Boolean, default: false },
@@ -51,24 +51,30 @@ const setClasses = computed(() => {
     const severity = props.severity in severityClasses.normal.normal ? props.severity : 'primary'
 
     if (props.border) {
-        return props.loading ? `${severityClasses.border.loading[severity]} cursor-not-allowed` : severityClasses.border.normal[severity]
+        return props.loading ?
+               `${severityClasses.border.loading[severity]} cursor-not-allowed` :
+               severityClasses.border.normal[severity]
     } else {
-        return props.loading ? `${severityClasses.normal.loading[severity]} cursor-not-allowed` : severityClasses.normal.normal[severity]
+        return props.loading ?
+               `${severityClasses.normal.loading[severity]} cursor-not-allowed` :
+               severityClasses.normal.normal[severity]
     }
 })
 </script>
 
 <template>
-    <button class="leading-5 border rounded py-2 px-3 inline-flex justify-center items-center align-middle transition-colors duration-300 ease-in-out"
-            :class="setClasses"
-            :disabled="disabled || loading"
-            :aria-disabled="disabled || loading"
+    <button
+        class="leading-5 border rounded-lg py-2 px-3 inline-flex justify-center items-center align-middle"
+        :class="setClasses"
+        :disabled="disabled || loading"
+        :aria-disabled="disabled || loading"
     >
         <i v-if="loading" class="pi pi-spin pi-spinner-dotted mr-2"></i>
         <i v-if="props.icon && !loading" :class="props.icon" class="mr-2"></i>
-        <span v-if="label || slots.default">{{ label }}<slot></slot></span>
+        <span v-if="label || $slots.default">{{ label }}<slot/></span>
         <span v-if="props.badge"
-              class="ml-2 flex items-center justify-center h-4 p-1 min-w-4 bg-slate-500 text-white text-xs rounded-full">
+              class="ml-2 flex items-center justify-center h-4 p-1 min-w-4 bg-slate-500 text-white text-xs rounded-full"
+        >
             {{ props.badge }}
         </span>
     </button>
