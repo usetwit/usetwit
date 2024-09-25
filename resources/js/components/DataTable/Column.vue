@@ -5,6 +5,14 @@ const props = defineProps({
     column: { type: Object },
     sortable: { type: Boolean, default: false },
     sticky: { type: Boolean, default: false },
+    label: { type: String, default: null },
+})
+
+defineOptions({
+    inheritAttrs: false,
+    render() {
+        return null
+    },
 })
 
 const registerColumn = inject('registerColumn')
@@ -13,11 +21,14 @@ const deregisterColumn = inject('deregisterColumn')
 const instance = getCurrentInstance()
 const column = {
     field: props.column?.field,
-    label: props.column?.label,
+    order: props.column?.order,
+    label: props.column?.label || props.label,
     sticky: props.sticky,
     sortable: props.sortable,
     body: instance.vnode.children?.body,
     filter: instance.vnode.children?.filter,
+    attributes: instance.attrs,
+    props: instance.props,
 }
 
 onMounted(() => {
@@ -28,7 +39,3 @@ onBeforeUnmount(() => {
     deregisterColumn(column)
 })
 </script>
-
-<template>
-
-</template>

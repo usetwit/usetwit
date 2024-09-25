@@ -53,20 +53,21 @@ const headerCtrlClick = column => {
 <template>
     <th class="border-b border-t border-gray-200 p-0 select-none"
         :class="{
-            'bg-white sticky left-0': column.sticky,
-            'bg-white text-gray-800 hover:bg-gray-100': !sortObj && column.sortable,
+            'sticky left-0': column.sticky,
+            'bg-white text-gray-800': !sortObj,
+            'hover:bg-gray-100': !sortObj && column.sortable,
             'bg-slate-800 text-white hover:bg-slate-700': sortObj,
             'cursor-pointer': column.sortable,
         }"
     >
-        <div v-if="column.field"
+        <div v-if="column.label"
              class="px-4 py-3 flex justify-between items-center"
-             @click.exact="headerSingleClick(column)"
-             @click.ctrl="headerCtrlClick(column)"
+             @click.exact="column.sortable ? headerSingleClick(column) : null"
+             @click.ctrl="column.sortable ? headerCtrlClick(column) : null"
         >
             <div class="inline-flex items-center">
-                <span v-if="column.label" class="p-2">{{ column.label }}</span>
-                <span v-if="sortObj" class="text-white inline-flex">
+                <span v-if="column.label" class="py-2">{{ column.label }}</span>
+                <span v-if="sortObj" class="text-white inline-flex ml-2">
                     <i v-if="sortObj.order === 'asc'" class="pi pi-sort-amount-up-alt"></i>
                     <i v-if="sortObj.order === 'desc'" class="pi pi-sort-amount-down-alt"></i>
                     <span
@@ -75,7 +76,7 @@ const headerCtrlClick = column => {
                         {{ sortObj.position }}
                     </span>
                 </span>
-                <span v-else-if="column.sortable" class="text-gray-500">
+                <span v-else-if="column.sortable" class="text-gray-500 ml-2">
                     <i class="pi pi-sort-alt"></i>
                 </span>
             </div>

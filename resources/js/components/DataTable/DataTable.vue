@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide } from 'vue'
+import { ref, provide, computed } from 'vue'
 import HeaderCell from './HeaderCell.vue'
 
 const props = defineProps({
@@ -18,6 +18,23 @@ provide('registerColumn', column => {
 provide('deregisterColumn', column => {
     columns.value.delete(column)
 })
+
+const orderedColumns = computed(() => {
+    const columnsArray = Array.from(columns.value)
+
+    columnsArray.sort((a, b) => {
+        if (a.order === undefined && b.order !== undefined) {
+            return -1
+        }
+        if (a.order !== undefined && b.order === undefined) {
+            return 1
+        }
+
+        return a.order - b.order
+    })
+
+    return columnsArray
+})
 </script>
 
 <template>
@@ -26,15 +43,16 @@ provide('deregisterColumn', column => {
         <table class="min-w-full">
             <thead>
             <tr>
-                <HeaderCell v-for="col in columns" v-model="activeData" :column="col" @sort="$emit('sort')"/>
+                <HeaderCell v-for="col in orderedColumns" v-model="activeData" :column="col" @sort="$emit('sort')"/>
             </tr>
             </thead>
             <tbody>
             <tr v-for="row in rows" :key="row.id">
-                <td v-for="col in columns"
+                <td v-for="col in orderedColumns"
                     :key="col.field + '_' + row.id.toString()"
                     class="px-4 py-3 border-b border-gray-200 bg-white"
                     :class="{'sticky left-0': col.sticky}"
+                    v-bind="col.attributes"
                 >
                     <component v-if="col.body" :is="col.body" :row="row"/>
                     <template v-else>{{ row[col.field] }}</template>
@@ -43,7 +61,7 @@ provide('deregisterColumn', column => {
             </tbody>
         </table>
         <div v-if="isLoading"
-             class="bg-opacity-50 bg-gray-100 z-[150] w-full h-full left-0 top-0 absolute text-[2rem] text-gray-700 flex items-center justify-center"
+             class="bg-opacity-50 bg-slate-100 z-[150] w-full h-full left-0 top-0 absolute text-[2rem] text-slate-700 flex items-center justify-center"
         >
             <i class="pi pi-spinner pi-spin"></i>
         </div>

@@ -6,7 +6,7 @@ import { useDebounce } from '../composables/useDebounce.js'
 import ColumnSelect from './DataTable/ColumnSelect.vue'
 import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
-import { useTable } from "../composables/useTable.js";
+import { useTable } from '../composables/useTable.js'
 
 const props = defineProps({
     defaultPerPage: { type: Number, required: true },
@@ -32,10 +32,10 @@ const defaultData = {
         active: { operator: 'or', constraints: [{ value: true, mode: 'equals' }] },
     },
     columns: [
-        { field: 'username', label: 'Username', visible: true },
-        { field: 'full_name', label: 'Full Name', visible: true },
-        { field: 'first_name', label: 'First Name', visible: true },
-        { field: 'last_name', label: 'Last Name', visible: true },
+        { field: 'username', label: 'Username', visible: true, order: 1 },
+        { field: 'full_name', label: 'Full Name', visible: true, order: 2 },
+        { field: 'first_name', label: 'First Name', visible: true, order: 3 },
+        { field: 'last_name', label: 'Last Name', visible: true, order: 4 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
     pagination: {
@@ -89,7 +89,7 @@ const { getColumn } = useTable(activeData)
     <ColumnSelect v-model="activeData.columns"/>
 
     <DataTable :rows="users" v-model="activeData" @sort="save" :is-loading="isLoading">
-        <Column sticky>
+        <Column sticky class="text-center w-16" label="Edit">
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
                    class="bg-amber-500 p-1.5 rounded text-white inline-flex"
