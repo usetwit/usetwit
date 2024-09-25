@@ -72,15 +72,15 @@ const fetchUsers = async () => {
 }
 fetchUsers()
 
+const debouncedFetchUsers = useDebounce(fetchUsers)
+
 const save = (doFetchUsers = true) => {
     saveToStorage()
 
     if (doFetchUsers) {
-        fetchUsers()
+        debouncedFetchUsers()
     }
 }
-
-const debouncedSave = useDebounce(save)
 
 const { getColumn } = useTable(activeData)
 </script>
@@ -88,7 +88,7 @@ const { getColumn } = useTable(activeData)
 <template>
     <ColumnSelect v-model="activeData.columns"/>
 
-    <DataTable :rows="users" v-model="activeData">
+    <DataTable :rows="users" v-model="activeData" @sort="save" :is-loading="isLoading">
         <Column sticky>
             <template #body="{ row }">
                 <a :href="row.edit_user_route"

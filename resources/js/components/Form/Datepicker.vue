@@ -211,7 +211,7 @@ watch(inputModel, (newValue) => {
     </Teleport>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .month-wrapper > :not(:first-child) {
     @apply ml-3 pl-3 border-l border-gray-200;
 }

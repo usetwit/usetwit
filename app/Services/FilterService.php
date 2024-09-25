@@ -304,7 +304,7 @@ class FilterService
 
             $sort['field'] = $substitutes[$sort['field']] ?? $sort['field'];
 
-            $query->orderBy($sort['field'], $sort['order'] === 1 ? 'asc' : 'desc');
+            $query->orderBy($sort['field'], $sort['order'] === 'asc' ? 'asc' : 'desc');
         }
     }
 }

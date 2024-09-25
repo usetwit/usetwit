@@ -127,7 +127,7 @@ window.addEventListener('resize', checkScreenSize)
 
 <template>
     <div v-if="store.isMenuVisible && !store.isLargeScreen"
-         class="overlay bg-opacity-50 bg-gray-900 z-[150] w-full h-full left-0 top-0 fixed"
+         class="bg-opacity-50 bg-gray-900 z-[150] w-full h-full left-0 top-0 fixed"
          @click="closeMenu"
     ></div>
 
