@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
-import Column from "./Form/Column.vue";
-import DataTable from "./Form/DataTable.vue";
+import Column from "./DataTable/Column.vue";
+import DataTable from "./DataTable/DataTable.vue";
 
 const props = defineProps({
     format: { type: String, required: true },
