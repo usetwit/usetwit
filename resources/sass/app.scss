@@ -22,33 +22,9 @@
     }
 }
 
-.table-input {
-    tr {
-        &:not(:last-child) > td {
-            border-bottom: 1px solid #e5e5e5;
-            padding: 0.5rem 0.25rem;
-            text-align: center;
-            vertical-align: top;
-        }
-
-        &:nth-child(even) {
-            background-color: #f5f5f5;
-        }
-
-        &:last-child > td {
-            background-color: #ffffff;
-        }
-    }
-}
-
 label,
 input[type="checkbox"] {
     cursor: pointer;
-}
-
-html,
-body {
-    height: 100%;
 }
 
 .breadcrumbs {

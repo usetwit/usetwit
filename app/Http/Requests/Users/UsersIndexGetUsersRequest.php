@@ -27,6 +27,7 @@ class UsersIndexGetUsersRequest extends FormRequest
     {
         $filters = $service->makeValidationFilterRules([
             'string' => [
+                'username',
                 'email',
                 'first_name',
                 'middle_names',
@@ -42,6 +43,17 @@ class UsersIndexGetUsersRequest extends FormRequest
             ],
         ]);
 
-        return array_merge($filters, []);
+        $sort = $service->makeValidationSortRules([
+            'username',
+            'email',
+            'first_name',
+            'middle_names',
+            'last_name',
+            'full_name',
+            'employee_id',
+            'join_date',
+        ]);
+
+        return array_merge($filters, $sort);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -24,11 +23,11 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'sales-orders.edit']);
         Permission::create(['name' => 'sales-orders.delete']);
 
-        $role['system'] = Role::create(['name' => 'system']);
-
-        //        $role['admin'] = Role::create(['name' => 'admin'])
-        //                    ->givePermissionTo(['publish articles', 'unpublish articles']);
-
-        $role['admin'] = Role::create(['name' => 'admin'])->givePermissionTo(Permission::all());
+        Role::create(['name' => 'system'])->givePermissionTo(Permission::all());
+        Role::create(['name' => 'admin'])->givePermissionTo(Permission::all());
+        Role::create(['name' => 'design']);
+        Role::create(['name' => 'sales']);
+        Role::create(['name' => 'purchasing']);
+        Role::create(['name' => 'finance']);
     }
 }

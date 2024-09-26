@@ -1,6 +1,6 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 
-export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidth = null, maxHeight = 0, gap = 2) {
+export function useDropdown(positionX = 'left', positionY = 'bottom', minWidthParent = false, gap = 2) {
     const inputRef = ref()
     const dropdownRef = useTemplateRef('dropdownRef')
     const buttonRef = useTemplateRef('buttonRef')
@@ -10,8 +10,6 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         right: 'auto',
         top: 'auto',
         bottom: 'auto',
-        minWidth: 'auto',
-        maxHeight: maxHeight > 0 ? `${maxHeight}px` : 'auto',
     })
 
     const updateDropdownPosition = () => {
@@ -31,21 +29,15 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
                 const spaceBelow = viewportHeight - inputRect.bottom
                 const spaceAbove = inputRect.top
 
-                if (setMinWidth === true) {
-                    dropdownStyle.value.minWidth = `${inputRect.width}px`
-                } else if (typeof setMinWidth === 'number' && setMinWidth > 0) {
-                    dropdownStyle.value.minWidth = `${setMinWidth}px`
-                } else if (typeof setMinWidth === 'string') {
-                    dropdownStyle.value.minWidth = `${setMinWidth}`
-                } else {
-                    dropdownStyle.value.minWidth = 'auto'
-                }
-
                 const exceedsViewport = dropdownRect.width > viewportWidth
                 const fitsFromRight = inputRect.right >= dropdownRect.width
                 const fitsFromLeft = viewportWidth - inputRect.left >= dropdownRect.width
                 const offViewportToLeft = inputRect.left < 0
                 const offViewportToRight = inputRect.right > viewportWidth
+
+                if(minWidthParent) {
+                    dropdownStyle.value.minWidth = `${inputRect.width}px`
+                }
 
                 if (positionX === 'right') {
                     if (exceedsViewport) {
@@ -129,14 +121,14 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
 
     watch(showDropdown, async () => {
         if (showDropdown.value) {
-            await nextTick()
-            updateDropdownPosition()
+            await nextTick(() => updateDropdownPosition())
         }
     })
 
-    const toggleDropdown = async () => {
+    const toggleDropdown = () => {
         showDropdown.value = !showDropdown.value
     }
+
     const handleScroll = () => {
         if (showDropdown.value) {
             updateDropdownPosition()
@@ -147,7 +139,7 @@ export function useDropdown(positionX = 'left', positionY = 'bottom', setMinWidt
         showDropdown.value = false
     }
 
-    const handleClickOutside = (event) => {
+    const handleClickOutside = event => {
         if (
             !dropdownRef.value?.contains(event.target) &&
             !inputRef.value?.contains(event.target) &&

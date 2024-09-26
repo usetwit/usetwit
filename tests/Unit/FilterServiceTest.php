@@ -36,8 +36,8 @@ class FilterServiceTest extends TestCase
         $this->builder->shouldReceive('orderBy')->with('age', 'desc')->times(2);
 
         $sort = [
-            ['field' => 'name', 'order' => 1],
-            ['field' => 'age', 'order' => -1],
+            ['field' => 'name', 'order' => 'asc'],
+            ['field' => 'age', 'order' => 'desc'],
             ['field' => 'age', 'order' => 'test'],
         ];
 
@@ -48,7 +48,7 @@ class FilterServiceTest extends TestCase
     {
         $this->builder->shouldNotReceive('orderBy');
 
-        $sort = [['field' => 'name', 'order' => 1]];
+        $sort = [['field' => 'name', 'order' => 'asc']];
         $exceptions = ['name'];
 
         $this->filter->sort($this->builder, $sort, $exceptions);
@@ -58,7 +58,7 @@ class FilterServiceTest extends TestCase
     {
         $this->builder->shouldReceive('orderBy')->with('name.test', 'asc')->once();
 
-        $sort = [['field' => 'name', 'order' => 1]];
+        $sort = [['field' => 'name', 'order' => 'asc']];
         $substitutes = ['name' => 'name.test'];
 
         $this->filter->sort($this->builder, $sort, [], $substitutes);
@@ -71,6 +71,16 @@ class FilterServiceTest extends TestCase
         $this->filter->makeValidationFilterRules('invalid_type', ['name']);
     }
 
+    public function test_get_match_modes_throws_exception_for_invalid_type(): void
+    {
+        $this->expectException(FilterServiceGetTypeInvalidException::class);
+
+        $this->filter->getMatchModes('invalid_type');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
     public function test_get_valid_date_match_modes_returns_correct_modes(): void
     {
         $expected = ['date_equals', 'date_not_equals', 'date_before', 'date_after'];
@@ -80,6 +90,9 @@ class FilterServiceTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
     public function test_get_valid_string_match_modes_as_string(): void
     {
         $expected = 'contains,starts_with,ends_with,equals,not_equals,gt,gte,lt,lte';
@@ -89,6 +102,9 @@ class FilterServiceTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
     public function test_get_valid_number_match_modes_lowercase_array(): void
     {
         $expected = ['equals', 'not_equals', 'gt', 'gte', 'lt', 'lte'];
@@ -96,12 +112,5 @@ class FilterServiceTest extends TestCase
         $result = $this->filter->getValidNumberMatchModes(false, true);
 
         $this->assertEquals($expected, $result);
-    }
-
-    public function test_get_match_modes_throws_exception_for_invalid_type(): void
-    {
-        $this->expectException(FilterServiceGetTypeInvalidException::class);
-
-        $this->filter->getMatchModes('invalid_type');
     }
 }

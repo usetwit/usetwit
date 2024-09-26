@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, useTemplateRef } from 'vue'
+import Filter from './Filter.vue'
 
 const props = defineProps({
     column: { type: Object, required: true },
@@ -19,7 +20,13 @@ let sortObj = computed(() => {
     return null
 })
 
-const updateSort = (column, removeOtherSorts = false) => {
+const filter = useTemplateRef('filterRef')
+
+const updateSort = (event, column, removeOtherSorts = false) => {
+    if (Array.from(filter.value.inputRef.childNodes).includes(event.target) || event.target === filter.value.inputRef) {
+        return
+    }
+
     const sortFieldIndex = activeData.value.sort.findIndex(col => col.field === column.field)
 
     if (sortFieldIndex !== -1) {
@@ -41,12 +48,12 @@ const updateSort = (column, removeOtherSorts = false) => {
     emit('sort')
 }
 
-const headerSingleClick = column => {
-    updateSort(column, true)
+const singleClick = (event, column) => {
+    updateSort(event, column, true)
 }
 
-const headerCtrlClick = column => {
-    updateSort(column)
+const ctrlClick = (event, column) => {
+    updateSort(event, column)
 }
 </script>
 
@@ -62,8 +69,8 @@ const headerCtrlClick = column => {
     >
         <div v-if="column.label"
              class="px-4 py-3 flex justify-between items-center"
-             @click.exact="column.sortable ? headerSingleClick(column) : null"
-             @click.ctrl="column.sortable ? headerCtrlClick(column) : null"
+             @click.exact="singleClick($event, column)"
+             @click.ctrl="ctrlClick($event, column)"
         >
             <div class="inline-flex items-center">
                 <span v-if="column.label" class="py-2">{{ column.label }}</span>
@@ -71,7 +78,7 @@ const headerCtrlClick = column => {
                     <i v-if="sortObj.order === 'asc'" class="pi pi-sort-amount-up-alt"></i>
                     <i v-if="sortObj.order === 'desc'" class="pi pi-sort-amount-down-alt"></i>
                     <span
-                        class="ml-2 flex items-center justify-center h-4 p-1 min-w-4 bg-slate-500 text-white text-xs rounded-full"
+                        class="ml-2 flex items-center justify-center h-5 p-1.5 min-w-5 bg-slate-500 text-white text-xs rounded-full"
                     >
                         {{ sortObj.position }}
                     </span>
@@ -80,14 +87,7 @@ const headerCtrlClick = column => {
                     <i class="pi pi-sort-alt"></i>
                 </span>
             </div>
-            <button v-if="column.filter"
-                    type="button"
-                    class="inline-flex items-center p-2 rounded-full ml-2"
-                    :class="{'text-gray-600 hover:bg-gray-200': !sortObj, 'text-gray-100 hover:bg-slate-600': sortObj}"
-                    @click.stop=""
-            >
-                <i class="pi pi-filter"></i>
-            </button>
+            <Filter v-if="column.filter" :column="column" :sort-obj="sortObj" ref="filterRef"/>
         </div>
     </th>
 </template>

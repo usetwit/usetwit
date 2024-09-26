@@ -307,4 +307,21 @@ class FilterService
             $query->orderBy($sort['field'], $sort['order'] === 'asc' ? 'asc' : 'desc');
         }
     }
+
+    /**
+     * @param array $fields
+     *
+     * @return array
+     */
+    public function makeValidationSortRules(array $fields): array
+    {
+        return [
+            'sort' => 'nullable|array',
+            'sort.*.field' => [
+                'required_with:sort.*.order',
+                Rule::in($fields),
+            ],
+            'sort.*.order' => 'required_with:sort.*.field|in:asc,desc',
+        ];
+    }
 }

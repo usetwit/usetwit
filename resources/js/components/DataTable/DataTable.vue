@@ -1,6 +1,7 @@
 <script setup>
 import { ref, provide, computed } from 'vue'
 import HeaderCell from './HeaderCell.vue'
+import ColumnSelect from './ColumnSelect.vue'
 
 const props = defineProps({
     rows: { type: Array, required: true },
@@ -25,8 +26,7 @@ const orderedColumns = computed(() => {
     columnsArray.sort((a, b) => {
         if (a.order === undefined && b.order !== undefined) {
             return -1
-        }
-        if (a.order !== undefined && b.order === undefined) {
+        } else if (a.order !== undefined && b.order === undefined) {
             return 1
         }
 
@@ -39,6 +39,8 @@ const orderedColumns = computed(() => {
 
 <template>
     <slot/>
+    <ColumnSelect v-model="activeData.columns"/>
+
     <div class="mt-8 overflow-x-auto relative">
         <table class="min-w-full">
             <thead>

@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useAxios } from '../composables/useAxios.js'
 import { useStorage } from '../composables/useStorage.js'
 import { useDebounce } from '../composables/useDebounce.js'
-import ColumnSelect from './DataTable/ColumnSelect.vue'
 import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
 import { useTable } from '../composables/useTable.js'
@@ -86,10 +85,8 @@ const { getColumn } = useTable(activeData)
 </script>
 
 <template>
-    <ColumnSelect v-model="activeData.columns"/>
-
     <DataTable :rows="users" v-model="activeData" @sort="save" :is-loading="isLoading">
-        <Column sticky class="text-center w-16" label="Edit">
+        <Column sticky class="w-16" label="Edit">
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
                    class="bg-amber-500 p-1.5 rounded text-white inline-flex"
@@ -112,10 +109,16 @@ const { getColumn } = useTable(activeData)
             <template #body="{ row }">
                 {{ row.last_name }}
             </template>
+            <template #filter="{ row }">
+                Filter
+            </template>
         </Column>
         <Column :column="getColumn('full_name')" v-if="getColumn('full_name').visible" sortable>
             <template #body="{ row }">
                 {{ row.full_name }}
+            </template>
+            <template #filter="{ row }">
+                Filter
             </template>
         </Column>
     </DataTable>
