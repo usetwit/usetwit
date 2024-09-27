@@ -39,6 +39,10 @@ class FilterService
         'date_not_equals',
         'date_before',
         'date_after',
+        'date_gt',
+        'date_gte',
+        'date_lt',
+        'date_lte',
     ];
 
     protected array $validBooleanMatchModes = [

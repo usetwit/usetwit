@@ -9,7 +9,7 @@ const props = defineProps({
 })
 
 const columns = ref(new Set())
-const emit = defineEmits(['sort'])
+defineEmits(['sort', 'filter'])
 const activeData = defineModel()
 
 provide('registerColumn', column => {
@@ -45,7 +45,7 @@ const orderedColumns = computed(() => {
         <table class="min-w-full">
             <thead>
             <tr>
-                <HeaderCell v-for="col in orderedColumns" v-model="activeData" :column="col" @sort="$emit('sort')"/>
+                <HeaderCell v-for="col in orderedColumns" v-model="activeData" :column="col" @sort="$emit('sort')" @filter="$emit('filter')"/>
             </tr>
             </thead>
             <tbody>

@@ -6,7 +6,7 @@ const props = defineProps({
     column: { type: Object, required: true },
 })
 
-const emit = defineEmits(['sort'])
+const emit = defineEmits(['sort', 'filter'])
 const activeData = defineModel()
 
 const sortObj = computed(() => {
@@ -56,13 +56,14 @@ const ctrlClick = (event, column) => {
 </script>
 
 <template>
-    <th class="border-b border-t border-gray-200 p-0 select-none"
+    <th class="border-b border-gray-200 p-0 select-none"
         :class="{
             'sticky left-0': column.sticky,
             'bg-white text-gray-800': !sortObj,
             'hover:bg-gray-100': !sortObj && column.sortable,
             'bg-slate-800 text-white hover:bg-slate-700': sortObj,
             'cursor-pointer': column.sortable,
+            'border-t': column.label
         }"
     >
         <div v-if="column.label"
@@ -71,7 +72,7 @@ const ctrlClick = (event, column) => {
              @click.ctrl="ctrlClick($event, column)"
         >
             <div class="inline-flex items-center">
-                <span v-if="column.label" class="py-2">{{ column.label }}</span>
+                <span class="py-2">{{ column.label }}</span>
                 <span v-if="sortObj" class="text-white inline-flex ml-2">
                     <i v-if="sortObj.order === 'asc'" class="pi pi-sort-amount-up-alt"></i>
                     <i v-if="sortObj.order === 'desc'" class="pi pi-sort-amount-down-alt"></i>
@@ -85,7 +86,13 @@ const ctrlClick = (event, column) => {
                     <i class="pi pi-sort-alt"></i>
                 </span>
             </div>
-            <Filter v-if="column.type" v-model="activeData.filters" :column="column" :sort-obj="sortObj" ref="filterRef"/>
+            <Filter v-if="column.type"
+                    v-model="activeData.filters"
+                    :filtered="activeData.filtered"
+                    :column="column"
+                    :sort-obj="sortObj"
+                    ref="filterRef"
+                    @filter="$emit('filter')"/>
         </div>
     </th>
 </template>

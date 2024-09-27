@@ -20,16 +20,17 @@ const defaultData = {
     filters: {
         global: { constraints: [{ value: null, mode: 'contains' }] },
         username: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        first_name: { operator: 'and', constraints: [{ value: null, mode: 'starts_with' }] },
-        last_name: { operator: 'and', constraints: [{ value: null, mode: 'starts_with' }] },
-        middle_names: { operator: 'and', constraints: [{ value: null, mode: 'starts_with' }] },
+        first_name: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
+        last_name: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
+        middle_names: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         full_name: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         employee_id: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         email: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         join_date: { operator: 'and', constraints: [{ value: null, mode: 'date_equals' }] },
         role: { operator: 'or', constraints: [{ value: null, mode: 'equals' }] },
-        active: { constraints: [{ value: null, mode: 'equals' }] },
+        active: { constraints: [{ value: true, mode: 'equals' }] },
     },
+    filtered: [],
     columns: [
         { field: 'username', label: 'Username', visible: true, order: 1 },
         { field: 'full_name', label: 'Full Name', visible: true, order: 2 },
@@ -82,11 +83,19 @@ const save = (doFetchUsers = true) => {
     }
 }
 
-const { getColumn } = useTable(activeData)
+const { getColumn, getFilteredFields } = useTable(activeData)
+
+const filter = (doFetchUsers = true) => {
+    activeData.value.filtered = getFilteredFields(activeData.value.filters)
+    save(doFetchUsers)
+}
+
+filter(false)
 </script>
 
 <template>
-    <DataTable :rows="users" v-model="activeData" @sort="save" :is-loading="isLoading">
+    {{ activeData.filtered }}
+    <DataTable :rows="users" v-model="activeData" @sort="save" @filter="filter" :is-loading="isLoading">
         <Column sticky class="w-16">
             <template #body="{ row }">
                 <a :href="row.edit_user_route"

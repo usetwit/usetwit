@@ -1,18 +1,16 @@
 <script setup>
+import { useTable } from '../../composables/useTable.js'
+
 const props = defineProps({
-    type: { type: String },
+    type: { type: String, required: true },
 })
-const model = defineModel()
+
+const constraints = defineModel()
+const { getModeFromMap } = useTable()
 
 const addConstraint = () => {
-    const modeMapping = {
-        number: 'equals',
-        date: 'date_equals',
-    }
-
-    const mode = modeMapping[props.type] || 'contains'
-
-    model.value.push({ value: null, mode })
+    const mode = getModeFromMap(props.type)
+    constraints.value.push({ value: null, mode })
 }
 </script>
 
@@ -24,7 +22,3 @@ const addConstraint = () => {
         <i class="pi pi-plus mr-2"></i> Add Constraint
     </button>
 </template>
-
-<style scoped>
-
-</style>
