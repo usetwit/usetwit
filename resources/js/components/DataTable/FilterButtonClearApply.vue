@@ -29,7 +29,7 @@ const apply = () => {
             Clear
         </button>
         <button @click="apply"
-                class="text-sm rounded-md bg-green-500 hover:bg-green-400 text-gray-100 px-2 py-1 border border-green-500"
+                class="text-sm rounded-md bg-green-500 text-gray-100 px-2 py-1 border border-green-500 hover:bg-green-400 hover:border-green-400"
         >
             Apply
         </button>

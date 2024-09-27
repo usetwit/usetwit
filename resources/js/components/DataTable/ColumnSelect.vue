@@ -13,10 +13,6 @@ const sorted = computed(() => {
     return columns.value.sort((a, b) => a.label.localeCompare(b.label))
 })
 
-const removeCol = column => {
-    column.visible = false
-}
-
 const {
     inputRef,
     dropdownStyle,
@@ -59,11 +55,11 @@ const {
                   :key="col.field"
                   class="pl-2.5 pr-2 py-0.5 mx-0.5 text-sm inline-flex items-center bg-gray-200 text-gray-800 rounded-full text-nowrap"
             >
-            {{ col.label }}
-            <button type="button"
-                    @click="removeCol(col)"
-                    class="inline-flex align-middle ml-0.5 p-1 text-sm hover:bg-gray-100 rounded-full"
-            >
+                {{ col.label }}
+                <button type="button"
+                        @click="col.visible = false"
+                        class="inline-flex align-middle ml-0.5 p-1 text-sm hover:bg-gray-100 rounded-full"
+                >
                 <i class="pi pi-times-circle"></i>
             </button>
         </span>
