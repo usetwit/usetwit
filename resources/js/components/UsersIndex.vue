@@ -94,7 +94,6 @@ filter(false)
 </script>
 
 <template>
-    {{ activeData.filtered }}
     <DataTable :rows="users" v-model="activeData" @sort="save" @filter="filter" :is-loading="isLoading">
         <Column sticky class="w-16">
             <template #body="{ row }">
@@ -131,15 +130,12 @@ filter(false)
                 Filter
             </template>
         </Column>
-        <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable>
+        <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable type="boolean">
             <template #body="{ row }">
                 <span :class="{'text-green-500': row.active, 'text-red-500': !row.active}">
                     <i v-if="row.active" class="pi pi-check-circle" title="Active" aria-label="Active"></i>
                     <i v-else class="pi pi-times-circle" title="Inactive" aria-label="Inactive"></i>
                 </span>
-            </template>
-            <template #filter="{ row }">
-                Filter
             </template>
         </Column>
     </DataTable>

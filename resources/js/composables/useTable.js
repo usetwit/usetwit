@@ -24,8 +24,6 @@ export function useTable(activeData = null) {
 
     const getModifiedFields = (filters, filtered) => {
         filters = getFilteredFields(filters)
-        console.log('filters', filters, 'filtered', filtered)
-
         return difference(filters, filtered)
     }
 

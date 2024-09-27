@@ -52,6 +52,7 @@ class UsersIndexGetUsersRequest extends FormRequest
             'full_name',
             'employee_id',
             'join_date',
+            'active',
         ]);
 
         return array_merge($filters, $sort);

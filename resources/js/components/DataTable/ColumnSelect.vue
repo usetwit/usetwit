@@ -23,13 +23,14 @@ const {
 
 <template>
     <div class="pb-4 overflow-x-auto">
-        <fieldset class="flex border border-gray-200 text-gray-700 rounded-lg p-1"
+        <fieldset class="flex border border-gray-200 text-gray-700 rounded-lg p-0.5 hover:cursor-pointer"
                   ref="inputRef"
+                  @click.self="toggleDropdown"
         >
             <button type="button"
                     ref="buttonRef"
-                    class="pl-2.5 pr-2 py-1.5 mx-0.5 text-sm inline-flex items-center bg-slate-800 text-white rounded-full text-nowrap hover:bg-slate-700"
-                    @click="toggleDropdown"
+                    class="pl-2.5 pr-2 py-1.5 mx-0.5 text-sm inline-flex items-center bg-slate-800 text-white rounded-lg text-nowrap hover:bg-slate-700"
+                    @click.self="toggleDropdown"
             >
                 <i class="pi pi-bars mr-2"></i>Columns
             </button>
@@ -53,7 +54,8 @@ const {
 
             <span v-for="col in visible"
                   :key="col.field"
-                  class="pl-2.5 pr-2 py-0.5 mx-0.5 text-sm inline-flex items-center bg-gray-200 text-gray-800 rounded-full text-nowrap"
+                  class="hover:cursor-auto select-none pl-2.5 pr-2 py-0.5 mx-0.5 text-sm inline-flex items-center bg-gray-200 text-gray-800 rounded-lg text-nowrap"
+                  @click="showDropdown = false"
             >
                 {{ col.label }}
                 <button type="button"

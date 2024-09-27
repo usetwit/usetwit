@@ -92,7 +92,7 @@ const setClasses = computed(() => {
     <Teleport to="body">
         <div v-if="showDropdown"
              ref="dropdownRef"
-             class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1"
+             class="rounded absolute z-[350] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1"
              :class="dropdownClasses"
              :style="dropdownStyle"
         >

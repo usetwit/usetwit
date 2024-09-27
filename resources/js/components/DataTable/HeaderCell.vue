@@ -94,5 +94,8 @@ const ctrlClick = (event, column) => {
                     ref="filterRef"
                     @filter="$emit('filter')"/>
         </div>
+        <div v-else class="px-4 py-3 flex justify-between items-center">
+            &nbsp;
+        </div>
     </th>
 </template>
