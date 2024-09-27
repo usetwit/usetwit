@@ -1,8 +1,8 @@
-import { difference } from 'lodash'
+import { cloneDeep, difference } from 'lodash'
 
-export function useTable(activeData = null) {
+export function useTable(activeData = null, defaultData = null, saveFn = null) {
     const getColumn = field => {
-        return activeData.value.columns.find(col => col.field === field)
+        return activeData?.value.columns.find(col => col.field === field)
     }
 
     const getModeFromMap = fieldType => {
@@ -27,5 +27,9 @@ export function useTable(activeData = null) {
         return difference(filters, filtered)
     }
 
-    return { getColumn, getModeFromMap, getFilteredFields, getModifiedFields }
+    const resetFilters = () => {
+        activeData.value.filters = cloneDeep(defaultData.filters)
+    }
+
+    return { getColumn, getModeFromMap, getFilteredFields, getModifiedFields, resetFilters }
 }
