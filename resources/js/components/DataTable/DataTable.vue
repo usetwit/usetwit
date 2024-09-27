@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide, computed } from 'vue'
+import { ref, provide, computed, inject } from 'vue'
 import HeaderCell from './HeaderCell.vue'
 import ColumnSelect from './ColumnSelect.vue'
 
@@ -35,6 +35,8 @@ const orderedColumns = computed(() => {
 
     return columnsArray
 })
+
+const { save, filter } = inject('tableInstance')
 </script>
 
 <template>
@@ -45,7 +47,7 @@ const orderedColumns = computed(() => {
         <table class="min-w-full">
             <thead>
             <tr>
-                <HeaderCell v-for="col in orderedColumns" v-model="activeData" :column="col" @sort="$emit('sort')" @filter="$emit('filter')"/>
+                <HeaderCell v-for="col in orderedColumns" v-model="activeData" :column="col" @sort="$emit('sort');save()" @filter="$emit('filter');filter()"/>
             </tr>
             </thead>
             <tbody>

@@ -1,5 +1,5 @@
 <script setup>
-import { useTable } from '../../composables/useTable.js'
+import { inject } from 'vue'
 
 const props = defineProps({
     type: { type: String },
@@ -8,7 +8,7 @@ const props = defineProps({
 const constraints = defineModel()
 const emit = defineEmits(['clear', 'apply'])
 
-const { getModeFromMap } = useTable()
+const { getModeFromMap } = inject('tableInstance')
 
 const clear = () => {
     const mode = getModeFromMap(props.type)

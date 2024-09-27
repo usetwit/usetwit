@@ -1,9 +1,19 @@
 import { cloneDeep, difference } from 'lodash'
+import { useDebounce } from './useDebounce.js'
+import { useStorage } from './useStorage.js'
+import { watch } from 'vue'
 
-export function useTable(activeData = null, defaultData = null, saveFn = null) {
+export function useTable(storageKey = null, defaultData = null, fetchFn = null) {
+
+    const { activeData, saveToStorage } = useStorage(storageKey, defaultData)
+
     const getColumn = field => {
-        return activeData?.value.columns.find(col => col.field === field)
+        return activeData.value.columns.find(col => col.field === field)
     }
+
+    watch(activeData, () => {
+        save(false)
+    }, { deep: true })
 
     const getModeFromMap = fieldType => {
         const modeMapping = {
@@ -31,5 +41,32 @@ export function useTable(activeData = null, defaultData = null, saveFn = null) {
         activeData.value.filters = cloneDeep(defaultData.filters)
     }
 
-    return { getColumn, getModeFromMap, getFilteredFields, getModifiedFields, resetFilters }
+    const debouncedFetchFn = useDebounce(fetchFn)
+
+    const save = (doFetchUsers = true) => {
+        saveToStorage()
+
+        if (doFetchUsers) {
+            debouncedFetchFn()
+        }
+    }
+
+    const filter = (doFetchUsers = true) => {
+        activeData.value.filtered = getFilteredFields(activeData.value.filters)
+        save(doFetchUsers)
+    }
+
+    filter()
+
+    return {
+        getColumn,
+        getModeFromMap,
+        getFilteredFields,
+        getModifiedFields,
+        resetFilters,
+        save,
+        filter,
+        activeData,
+        defaultData,
+    }
 }

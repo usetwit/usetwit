@@ -1,8 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { provide, ref } from 'vue'
 import { useAxios } from '../composables/useAxios.js'
-import { useStorage } from '../composables/useStorage.js'
-import { useDebounce } from '../composables/useDebounce.js'
 import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
 import { useTable } from '../composables/useTable.js'
@@ -47,7 +45,6 @@ const defaultData = {
     }
 }
 
-const { activeData, saveToStorage } = useStorage('users-index', defaultData)
 
 const fetchUsers = async () => {
     isLoading.value = true
@@ -71,30 +68,22 @@ const fetchUsers = async () => {
 
     isLoading.value = false
 }
-fetchUsers()
 
-const debouncedFetchUsers = useDebounce(fetchUsers)
+const {
+    getColumn,
+    activeData,
+    save,
+    filter,
+    getFilteredFields,
+    getModifiedFields,
+    getModeFromMap,
+} = useTable('users-index', defaultData, fetchUsers)
 
-const save = (doFetchUsers = true) => {
-    saveToStorage()
-
-    if (doFetchUsers) {
-        debouncedFetchUsers()
-    }
-}
-
-const { getColumn, getFilteredFields } = useTable(activeData)
-
-const filter = (doFetchUsers = true) => {
-    activeData.value.filtered = getFilteredFields(activeData.value.filters)
-    save(doFetchUsers)
-}
-
-filter(false)
+provide('tableInstance', { getColumn, activeData, save, filter, getFilteredFields, getModifiedFields, getModeFromMap })
 </script>
 
 <template>
-    <DataTable :rows="users" v-model="activeData" @sort="save" @filter="filter" :is-loading="isLoading">
+    <DataTable :rows="users" v-model="activeData" :is-loading="isLoading">
         <Column sticky class="w-16">
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
@@ -113,7 +102,8 @@ filter(false)
                 Filter
             </template>
         </Column>
-        <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable type="string"></Column>
+        <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable
+                type="string"></Column>
         <Column :column="getColumn('last_name')" v-if="getColumn('last_name').visible" sortable>
             <template #body="{ row }">
                 {{ row.last_name }}

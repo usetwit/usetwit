@@ -1,10 +1,9 @@
 <script setup>
 import { useDropdown } from '../../composables/useDropdown.js'
 import InputText from '../Form/InputText.vue'
-import { computed } from 'vue'
-import { useTable } from '../../composables/useTable.js'
+import { computed, inject } from 'vue'
 import FilterDropdown from './FilterDropdown.vue'
-import Checkbox from "../Form/Checkbox.vue";
+import Checkbox from '../Form/Checkbox.vue'
 
 const props = defineProps({
     column: { type: Object, required: true },
@@ -30,7 +29,7 @@ const apply = () => {
     emit('filter')
 }
 
-const { getModifiedFields } = useTable()
+const { getModifiedFields } = inject('tableInstance')
 
 const filtered = computed(() => props.filtered.includes(props.column.field))
 const modified = computed(() => getModifiedFields(filters.value, props.filtered)?.includes(props.column.field))
