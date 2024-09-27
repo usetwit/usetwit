@@ -9,7 +9,7 @@ const props = defineProps({
 const emit = defineEmits(['sort'])
 const activeData = defineModel()
 
-let sortObj = computed(() => {
+const sortObj = computed(() => {
     const index = activeData.value.sort.findIndex(obj => obj.field === props.column.field)
 
     if (index !== -1) {
@@ -85,7 +85,7 @@ const ctrlClick = (event, column) => {
                     <i class="pi pi-sort-alt"></i>
                 </span>
             </div>
-            <Filter v-if="column.type" v-model="activeData" :column="column" :sort-obj="sortObj" ref="filterRef"/>
+            <Filter v-if="column.type" v-model="activeData.filters" :column="column" :sort-obj="sortObj" ref="filterRef"/>
         </div>
     </th>
 </template>

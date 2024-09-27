@@ -107,7 +107,7 @@ class FilterServiceTest extends TestCase
      */
     public function test_get_valid_number_match_modes_lowercase_array(): void
     {
-        $expected = ['equals', 'not_equals', 'gt', 'gte', 'lt', 'lte'];
+        $expected = ['contains', 'starts_with', 'ends_with', 'equals', 'not_equals', 'gt', 'gte', 'lt', 'lte'];
 
         $result = $this->filter->getValidNumberMatchModes(false, true);
 

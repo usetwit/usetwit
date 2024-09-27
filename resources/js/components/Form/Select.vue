@@ -21,20 +21,23 @@ defineOptions({
     inheritAttrs: false,
 })
 
-const text = ref(props.placeholder)
-if (typeof props.optionValue === 'string' && typeof model.value === 'string') {
-    const initialValue = props.options.find(option => option[props.optionValue] === model.value)
+const text = computed(() => {
+    if (typeof props.optionValue === 'string' && typeof model.value === 'string') {
+        const initialValue = props.options.find(option => option[props.optionValue] === model.value)
 
-    if (initialValue) {
-        text.value = initialValue[props.optionLabel]
-    }
-} else if (model.value !== null && typeof model.value === 'object') {
-    props.options.forEach(option => {
-        if (isEqual(option, model.value)) {
-            text.value = option[props.optionLabel]
+        if (initialValue) {
+            return initialValue[props.optionLabel]
         }
-    })
-}
+    } else if (model.value !== null && typeof model.value === 'object') {
+        props.options.forEach(option => {
+            if (isEqual(option, model.value)) {
+                return option[props.optionLabel]
+            }
+        })
+    }
+
+    return props.placeholder
+})
 
 const {
     inputRef,
@@ -49,14 +52,12 @@ const optionSelected = option => {
         model.value = option
     }
 
-    text.value = option[props.optionLabel]
     showDropdown.value = false
     emit('selected', option)
 }
 
 const clear = () => {
     showDropdown.value = false
-    text.value = props.placeholder
     model.value = null
 }
 
@@ -91,7 +92,7 @@ const setClasses = computed(() => {
     <Teleport to="body">
         <div v-if="showDropdown"
              ref="dropdownRef"
-             class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1 max-h-48"
+             class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1"
              :class="dropdownClasses"
              :style="dropdownStyle"
         >
