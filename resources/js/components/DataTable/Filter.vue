@@ -36,16 +36,21 @@ const apply = () => {
 const { getModifiedFields } = useTable()
 
 const filtered = computed(() => props.filtered.includes(props.column.field))
-const modified = computed(() => getModifiedFields(filters.value, props.filtered))
+const modified = computed(() => getModifiedFields(filters.value, props.filtered).includes(props.column.field))
 </script>
 
 <template>
-    {{ modified }}
     <button v-if="column.type"
             ref="inputRef"
             type="button"
             class="inline-flex items-center p-2 rounded-full ml-2"
-            :class="{'text-gray-600 hover:bg-gray-200': !sortObj && !filtered, 'hover:bg-slate-600': sortObj, 'text-yellow-500': filtered, 'text-white': !filtered}"
+            :class="{
+                    'hover:bg-gray-200': !sortObj,
+                    'hover:bg-slate-600': sortObj,
+                    'text-yellow-500': filtered || modified,
+                    'text-white': !filtered && !modified && sortObj,
+                    'text-gray-500': !filtered && !modified && !sortObj,
+                }"
             @click="toggleDropdown"
     >
         <i v-if="!filtered" class="pi pi-filter"></i>
