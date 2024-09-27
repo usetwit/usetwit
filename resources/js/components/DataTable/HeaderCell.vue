@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import Filter from './Filter.vue'
 
 const props = defineProps({
@@ -23,17 +23,15 @@ let sortObj = computed(() => {
 const filter = useTemplateRef('filterRef')
 
 const updateSort = (event, column, removeOtherSorts = false) => {
-    if (Array.from(filter.value.inputRef.childNodes).includes(event.target) || event.target === filter.value.inputRef) {
+    if (filter.value?.inputRef.childNodes && Array.from(filter.value?.inputRef.childNodes).includes(event.target) || event.target === filter.value?.inputRef) {
         return
     }
 
-    const sortFieldIndex = activeData.value.sort.findIndex(col => col.field === column.field)
+    const sortField = activeData.value.sort.find(col => col.field === column.field)
 
-    if (sortFieldIndex !== -1) {
-        const sortField = activeData.value.sort[sortFieldIndex]
-
+    if (sortField) {
         if (sortField.order === 'desc') {
-            activeData.value.sort.splice(sortFieldIndex, 1)
+            activeData.value.sort = activeData.value.sort.filter(col => col.field !== column.field)
         } else {
             sortField.order = 'desc'
         }
@@ -87,7 +85,7 @@ const ctrlClick = (event, column) => {
                     <i class="pi pi-sort-alt"></i>
                 </span>
             </div>
-            <Filter v-if="column.filter" :column="column" :sort-obj="sortObj" ref="filterRef"/>
+            <Filter v-if="column.type" v-model="activeData" :column="column" :sort-obj="sortObj" ref="filterRef"/>
         </div>
     </th>
 </template>

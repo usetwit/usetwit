@@ -23,6 +23,9 @@ class FilterService
     ];
 
     protected array $validNumberMatchModes = [
+        'contains',
+        'starts_with',
+        'ends_with',
         'equals',
         'not_equals',
         'gt',

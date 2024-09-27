@@ -28,13 +28,14 @@ const defaultData = {
         email: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         join_date: { operator: 'and', constraints: [{ value: null, mode: 'date_equals' }] },
         role: { operator: 'or', constraints: [{ value: null, mode: 'equals' }] },
-        active: { operator: 'or', constraints: [{ value: true, mode: 'equals' }] },
+        active: { constraints: [{ value: null, mode: 'equals' }] },
     },
     columns: [
         { field: 'username', label: 'Username', visible: true, order: 1 },
         { field: 'full_name', label: 'Full Name', visible: true, order: 2 },
         { field: 'first_name', label: 'First Name', visible: true, order: 3 },
         { field: 'last_name', label: 'Last Name', visible: true, order: 4 },
+        { field: 'active', label: 'Active', visible: true, order: 5 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
     pagination: {
@@ -86,7 +87,7 @@ const { getColumn } = useTable(activeData)
 
 <template>
     <DataTable :rows="users" v-model="activeData" @sort="save" :is-loading="isLoading">
-        <Column sticky class="w-16" label="Edit">
+        <Column sticky class="w-16">
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
                    class="bg-amber-500 p-1.5 rounded text-white inline-flex"
@@ -96,7 +97,7 @@ const { getColumn } = useTable(activeData)
                 </a>
             </template>
         </Column>
-        <Column :column="getColumn('username')" v-if="getColumn('username').visible" sortable>
+        <Column :column="getColumn('username')" v-if="getColumn('username').visible" sortable type="string">
             <template #body="{ row }">
                 {{ row.username }}
             </template>
@@ -104,7 +105,7 @@ const { getColumn } = useTable(activeData)
                 Filter
             </template>
         </Column>
-        <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable></Column>
+        <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable type="string"></Column>
         <Column :column="getColumn('last_name')" v-if="getColumn('last_name').visible" sortable>
             <template #body="{ row }">
                 {{ row.last_name }}
@@ -116,6 +117,17 @@ const { getColumn } = useTable(activeData)
         <Column :column="getColumn('full_name')" v-if="getColumn('full_name').visible" sortable>
             <template #body="{ row }">
                 {{ row.full_name }}
+            </template>
+            <template #filter="{ row }">
+                Filter
+            </template>
+        </Column>
+        <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable>
+            <template #body="{ row }">
+                <span :class="{'text-green-500': row.active, 'text-red-500': !row.active}">
+                    <i v-if="row.active" class="pi pi-check-circle" title="Active" aria-label="Active"></i>
+                    <i v-else class="pi pi-times-circle" title="Inactive" aria-label="Inactive"></i>
+                </span>
             </template>
             <template #filter="{ row }">
                 Filter

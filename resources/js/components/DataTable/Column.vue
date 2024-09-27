@@ -6,6 +6,7 @@ const props = defineProps({
     sortable: { type: Boolean, default: false },
     sticky: { type: Boolean, default: false },
     label: { type: String, default: null },
+    type: { type: String, default: null },
 })
 
 defineOptions({
@@ -27,6 +28,7 @@ const column = {
     sortable: props.sortable,
     body: instance.vnode.children?.body,
     filter: instance.vnode.children?.filter,
+    type: props.type,
     attributes: instance.attrs,
     props: instance.props,
 }

@@ -4,15 +4,15 @@ import { computed, defineProps, useTemplateRef } from 'vue'
 const props = defineProps({
     disabled: { type: Boolean, default: false },
     invalid: { type: Boolean, default: false },
-});
+})
 
 const setClasses = computed(() => {
     const disabled = 'bg-gray-100 dark:bg-gray-600 border-gray-400 cursor-not-allowed'
     const invalid = 'bg-white dark:bg-gray-900 border-red-600 focus:outline-red-600/50 hover:border-red-500'
-    const normal = 'bg-white dark:bg-gray-900 border-gray-400 hover:border-gray-500 dark:hover:border-gray-300 focus:outline-slate-400/50'
+    const normal = 'bg-white dark:bg-gray-900 border-gray-300 hover:border-gray-400 focus:outline-slate-400/50'
 
     return props.disabled ? disabled : props.invalid ? invalid : normal
-});
+})
 
 const model = defineModel()
 
