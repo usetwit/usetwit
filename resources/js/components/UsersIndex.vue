@@ -77,9 +77,19 @@ const {
     getFilteredFields,
     getModifiedFields,
     getModeFromMap,
+    reset,
 } = useTable('users-index', defaultData, fetchUsers)
 
-provide('tableInstance', { getColumn, activeData, save, filter, getFilteredFields, getModifiedFields, getModeFromMap })
+provide('tableInstance', {
+    getColumn,
+    activeData,
+    save,
+    filter,
+    getFilteredFields,
+    getModifiedFields,
+    getModeFromMap,
+    reset,
+})
 </script>
 
 <template>
@@ -96,31 +106,26 @@ provide('tableInstance', { getColumn, activeData, save, filter, getFilteredField
         </Column>
         <Column :column="getColumn('username')" v-if="getColumn('username').visible" sortable type="string">
             <template #body="{ row }">
-                {{ row.username }}
-            </template>
-            <template #filter="{ row }">
-                Filter
+                <a :href="row.edit_user_route" title="Edit">{{ row.username }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable
-                type="string"></Column>
-        <Column :column="getColumn('last_name')" v-if="getColumn('last_name').visible" sortable>
+        <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable type="string">
             <template #body="{ row }">
-                {{ row.last_name }}
-            </template>
-            <template #filter="{ row }">
-                Filter
+                <a :href="row.edit_user_route" title="Edit">{{ row.first_name }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('full_name')" v-if="getColumn('full_name').visible" sortable>
+        <Column :column="getColumn('last_name')" v-if="getColumn('last_name').visible" sortable type="string">
             <template #body="{ row }">
-                {{ row.full_name }}
-            </template>
-            <template #filter="{ row }">
-                Filter
+                <a :href="row.edit_user_route" title="Edit">{{ row.last_name }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable type="boolean">
+        <Column :column="getColumn('full_name')" v-if="getColumn('full_name').visible" sortable type="string">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route" title="Edit">{{ row.full_name }}</a>
+            </template>
+        </Column>
+        <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable type="boolean"
+                class="text-center">
             <template #body="{ row }">
                 <span :class="{'text-green-500': row.active, 'text-red-500': !row.active}">
                     <i v-if="row.active" class="pi pi-check-circle" title="Active" aria-label="Active"></i>

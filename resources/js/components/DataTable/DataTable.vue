@@ -2,6 +2,7 @@
 import { ref, provide, computed, inject } from 'vue'
 import HeaderCell from './HeaderCell.vue'
 import ColumnSelect from './ColumnSelect.vue'
+import Button from '../Form/Button.vue'
 
 const props = defineProps({
     rows: { type: Array, required: true },
@@ -36,12 +37,14 @@ const orderedColumns = computed(() => {
     return columnsArray
 })
 
-const { save, filter } = inject('tableInstance')
+const { save, filter,getFilteredFields, reset } = inject('tableInstance')
 </script>
 
 <template>
     <slot/>
     <ColumnSelect v-model="activeData.columns"/>
+
+    <Button :badge="getFilteredFields().length" @click="reset" icon="pi pi-refresh" label="Reset Filters"/>
 
     <div class="mt-8 overflow-x-auto relative">
         <table class="min-w-full">
@@ -51,7 +54,7 @@ const { save, filter } = inject('tableInstance')
             </tr>
             </thead>
             <tbody>
-            <tr v-for="row in rows" :key="row.id">
+            <tr v-if="rows.length" v-for="row in rows" :key="row.id">
                 <td v-for="col in orderedColumns"
                     :key="col.field + '_' + row.id.toString()"
                     class="px-4 py-3 border-b border-gray-200 bg-white"
@@ -60,6 +63,11 @@ const { save, filter } = inject('tableInstance')
                 >
                     <component v-if="col.body" :is="col.body" :row="row"/>
                     <template v-else>{{ row[col.field] }}</template>
+                </td>
+            </tr>
+            <tr v-else>
+                <td class="text-center px-4 py-3 border-b border-gray-200 bg-white italic" :colspan="columns.size">
+                    No Results
                 </td>
             </tr>
             </tbody>

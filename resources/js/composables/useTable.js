@@ -26,9 +26,12 @@ export function useTable(storageKey = null, defaultData = null, fetchFn = null) 
         return modeMapping[fieldType] || 'contains'
     }
 
-    const getFilteredFields = filters => {
+    const getFilteredFields = () => {
+        const { filters } = activeData.value
+
         return Object.keys(filters).filter(key => {
-            return filters[key].constraints.some(constraint => constraint.value !== null && constraint.value !== '')
+            const { constraints } = filters[key]
+            return constraints.some(({ value }) => value !== null && value !== '')
         })
     }
 
@@ -37,8 +40,9 @@ export function useTable(storageKey = null, defaultData = null, fetchFn = null) 
         return difference(filters, filtered)
     }
 
-    const resetFilters = () => {
+    const reset = () => {
         activeData.value.filters = cloneDeep(defaultData.filters)
+        filter()
     }
 
     const debouncedFetchFn = useDebounce(fetchFn)
@@ -63,7 +67,7 @@ export function useTable(storageKey = null, defaultData = null, fetchFn = null) 
         getModeFromMap,
         getFilteredFields,
         getModifiedFields,
-        resetFilters,
+        reset,
         save,
         filter,
         activeData,

@@ -6,12 +6,12 @@ const props = defineProps({
     disabled: { type: Boolean, default: false },
     icon: { type: String, default: null },
     label: { type: String, default: null },
-    severity: { type: String, default: 'primary' },
+    variant: { type: String, default: 'primary' },
     border: { type: Boolean, default: false },
     badge: { type: [String, Number], default: null },
 })
 
-const severityClasses = {
+const variantClasses = {
     normal: {
         normal: {
             primary: 'text-white bg-slate-800 border-slate-800 hover:bg-slate-700 hover:border-slate-700 dark:hover:bg-slate-100 dark:hover:border-slate-100 dark:bg-slate-200 dark:border-slate-200 dark:text-slate-900',
@@ -48,16 +48,16 @@ const severityClasses = {
 }
 
 const setClasses = computed(() => {
-    const severity = props.severity in severityClasses.normal.normal ? props.severity : 'primary'
+    const variant = props.variant in variantClasses.normal.normal ? props.variant : 'primary'
 
     if (props.border) {
         return props.loading ?
-               `${severityClasses.border.loading[severity]} cursor-not-allowed` :
-               severityClasses.border.normal[severity]
+               `${variantClasses.border.loading[variant]} cursor-not-allowed` :
+               variantClasses.border.normal[variant]
     } else {
         return props.loading ?
-               `${severityClasses.normal.loading[severity]} cursor-not-allowed` :
-               severityClasses.normal.normal[severity]
+               `${variantClasses.normal.loading[variant]} cursor-not-allowed` :
+               variantClasses.normal.normal[variant]
     }
 })
 </script>
@@ -70,12 +70,12 @@ const setClasses = computed(() => {
         :aria-disabled="disabled || loading"
     >
         <i v-if="loading" class="pi pi-spin pi-spinner-dotted mr-2"></i>
-        <i v-if="props.icon && !loading" :class="props.icon" class="mr-2"></i>
+        <i v-if="icon && !loading" :class="icon" class="mr-2"></i>
         <span v-if="label || $slots.default">{{ label }}<slot/></span>
-        <span v-if="props.badge"
+        <span v-if="badge"
               class="ml-2 flex items-center justify-center h-4 p-1 min-w-4 bg-slate-500 text-white text-xs rounded-full"
         >
-            {{ props.badge }}
+            {{ badge }}
         </span>
     </button>
 </template>

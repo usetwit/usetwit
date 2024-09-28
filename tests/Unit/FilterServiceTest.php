@@ -83,7 +83,16 @@ class FilterServiceTest extends TestCase
      */
     public function test_get_valid_date_match_modes_returns_correct_modes(): void
     {
-        $expected = ['date_equals', 'date_not_equals', 'date_before', 'date_after'];
+        $expected = [
+            'date_equals',
+            'date_not_equals',
+            'date_before',
+            'date_after',
+            'date_gt',
+            'date_gte',
+            'date_lt',
+            'date_lte',
+        ];
 
         $result = $this->filter->getValidDateMatchModes();
 
