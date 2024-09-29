@@ -47,6 +47,8 @@ export function useTable(defaultData, fetchFn, storageInstance) {
     }
 
     const setConstraints = (col, value) => {
+        activeData.value.pagination.page = 1
+
         const modeMapping = {
             number: 'equals',
             date: 'date_equals',

@@ -55,7 +55,7 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
     <Button :badge="getFilteredFields().length" @click="clearFilters" variant="secondary" border
             icon="pi pi-filter-slash" label="Clear Filters" class="ml-2" :loading="isLoading"/>
 
-    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @change="save" class="mt-8"/>
+    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="save" class="mt-8"/>
 
     <div class="my-3 overflow-x-auto relative">
         <table class="min-w-full">
@@ -94,7 +94,7 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
         </div>
     </div>
 
-    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @change="save"/>
+    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="save"/>
 </template>
 
 <style scoped lang="postcss">

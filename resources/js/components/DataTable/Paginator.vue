@@ -1,12 +1,13 @@
 <script setup>
 import { computed, nextTick, ref, watch } from 'vue'
 import Select from '../Form/Select.vue'
+import { range } from "lodash";
 
 const props = defineProps({
     settings: { type: Object, required: true },
 })
 
-const emit = defineEmits(['change'])
+const emit = defineEmits(['changed'])
 
 const model = defineModel()
 const options = props.settings.options.map(num => ({ value: num }))
@@ -15,27 +16,22 @@ const from = computed(() => model.value.total === 0 ? 0 : model.value.per_page *
 const totalPages = computed(() => model.value.total > 0 ? Math.ceil(model.value.total / model.value.per_page) : 1)
 
 const perSide = 2
-const startPage = computed(() => Math.max(1, model.value.page - perSide))
-const endPage = computed(() => Math.min(totalPages.value, model.value.page + perSide))
+const start = computed(() => Math.max(1, model.value.page - perSide))
+const end = computed(() => Math.min(totalPages.value, model.value.page + perSide))
 const pages = computed(() => {
-    let items = []
-    for (let i = startPage.value; i <= endPage.value; i++) {
-        items.push({ number: i, current: i === model.value.page })
-    }
-
-    return items
+    return range(start.value, end.value + 1).map(num => ({ number: num, current: num === model.value.page }))
 })
 
 const changePerPage = () => {
-    if (startPage.value > endPage.value) {
-        model.value.page = endPage.value
+    if (start.value > end.value) {
+        model.value.page = end.value
     }
-    emit('change')
+    emit('changed')
 }
 
 const selectPage = number => {
     model.value.page = number
-    emit('change')
+    emit('changed')
 }
 </script>
 
