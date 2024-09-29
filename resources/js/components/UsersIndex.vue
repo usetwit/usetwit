@@ -34,9 +34,10 @@ const defaultData = {
         { field: 'username', label: 'Username', visible: true, order: 1 },
         { field: 'full_name', label: 'Full Name', visible: true, order: 2 },
         { field: 'first_name', label: 'First Name', visible: true, order: 3 },
-        { field: 'last_name', label: 'Last Name', visible: true, order: 4 },
-        { field: 'joined_at', label: 'Join Date', visible: true, order: 5 },
-        { field: 'active', label: 'Active', visible: true, order: 6 },
+        { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 4 },
+        { field: 'last_name', label: 'Last Name', visible: true, order: 5 },
+        { field: 'joined_at', label: 'Join Date', visible: true, order: 6 },
+        { field: 'active', label: 'Active', visible: true, order: 7 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
     pagination: {
@@ -101,6 +102,11 @@ provide('tableInstance', tableInstance)
         <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit">{{ row.first_name }}</a>
+            </template>
+        </Column>
+        <Column :column="getColumn('middle_names')" v-if="getColumn('middle_names').visible" sortable type="string">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route" title="Edit">{{ row.middle_names }}</a>
             </template>
         </Column>
         <Column :column="getColumn('last_name')" v-if="getColumn('last_name').visible" sortable type="string">

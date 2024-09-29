@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, watchEffect } from 'vue'
+import { ref, watch } from 'vue'
 import Select from '../Form/Select.vue'
 
 const props = defineProps({
@@ -11,21 +11,24 @@ const emit = defineEmits(['change'])
 const model = defineModel()
 const options = props.settings.options.map(num => ({ value: num }))
 
-const pages = ref([])
+const pages = ref([{number: 1, current: true}])
 const totalPages = ref(1)
 const from = ref(0)
 const perSide = 2
 
 watch(model.value, () => {
-    totalPages.value = model.value.total > 0 ? Math.ceil(model.value.total / model.value.per_page) : 1
-    const startPage = Math.max(1, model.value.page - perSide)
-    const endPage = Math.min(totalPages.value, model.value.page + perSide)
+    const { total, per_page, page } = model.value
 
-    if(model.value.page > totalPages.value) {
+    totalPages.value = total > 0 ? Math.ceil(total / per_page) : 1
+
+    if (page > totalPages.value) {
         selectPage(totalPages.value)
     }
 
-    from.value = model.value.total === 0 ? 0 : model.value.per_page * model.value.page - model.value.per_page + 1
+    from.value = total === 0 ? 0 : per_page * (page - 1) + 1
+
+    const startPage = Math.max(1, page - perSide)
+    const endPage = Math.min(totalPages.value, page + perSide)
 
     pages.value = []
     for (let i = startPage; i <= endPage; i++) {

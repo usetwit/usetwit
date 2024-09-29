@@ -73,7 +73,7 @@ export function useTable(storageKey, defaultData, fetchFn) {
     }
 
     const getModifiedFields = (filters, filtered) => {
-        filters = getFilteredFields(filters)
+        filters = getFilteredFields()
         return difference(filters, filtered)
     }
 
