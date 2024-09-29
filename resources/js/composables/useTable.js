@@ -46,6 +46,20 @@ export function useTable(defaultData, fetchFn, storageInstance) {
         return modeMapping[fieldType] || 'contains'
     }
 
+    const setConstraints = (col, value) => {
+        const modeMapping = {
+            number: 'equals',
+            date: 'date_equals',
+            boolean: 'equals',
+            string: 'equals',
+        }
+
+        const mode = modeMapping[col.type] || 'equals'
+
+        activeData.value.filters[col.field].constraints = [{ value, mode }]
+        filter()
+    }
+
     const getFilteredFields = () => {
         const { filters } = activeData.value
 
@@ -67,7 +81,10 @@ export function useTable(defaultData, fetchFn, storageInstance) {
 
     const clearFilter = (field) => {
         activeData.value.pagination.page = 1
-        activeData.value.filters[field].constraints = [{ value: null, mode: activeData.value.filters[field].constraints[0].mode }]
+        activeData.value.filters[field].constraints = [{
+            value: null,
+            mode: activeData.value.filters[field].constraints[0].mode
+        }]
     }
 
     const clearSort = (field) => {
@@ -115,6 +132,7 @@ export function useTable(defaultData, fetchFn, storageInstance) {
         getFilteredFields,
         getModifiedFields,
         getSortedFields,
+        setConstraints,
         reset,
         save,
         filter,

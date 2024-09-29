@@ -4,11 +4,20 @@ import { computed } from 'vue'
 const props = defineProps({
     loading: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
-    icon: { type: String, default: null },
-    label: { type: String, default: null },
-    variant: { type: String, default: 'primary' },
+    icon: { type: String },
+    label: { type: String },
+    variant: {
+        type: String, default: 'primary', validator(value, props) {
+            return ['primary', 'secondary', 'success', 'warning', 'danger'].includes(value)
+        }
+    },
     border: { type: Boolean, default: false },
-    badge: { type: [String, Number], default: null },
+    badge: { type: [String, Number] },
+    size: {
+        type: String, default: 'md', validator(value) {
+            return ['sm', 'md'].includes(value)
+        }
+    },
 })
 
 const variantClasses = {
@@ -48,24 +57,26 @@ const variantClasses = {
 }
 
 const setClasses = computed(() => {
-    const variant = props.variant in variantClasses.normal.normal ? props.variant : 'primary'
-
     if (props.border) {
         return props.loading ?
-               `${variantClasses.border.loading[variant]} cursor-not-allowed` :
-               variantClasses.border.normal[variant]
+               `${variantClasses.border.loading[props.variant]} cursor-not-allowed` :
+               variantClasses.border.normal[props.variant]
     } else {
         return props.loading ?
-               `${variantClasses.normal.loading[variant]} cursor-not-allowed` :
-               variantClasses.normal.normal[variant]
+               `${variantClasses.normal.loading[props.variant]} cursor-not-allowed` :
+               variantClasses.normal.normal[props.variant]
     }
+})
+
+const setSizeClasses = computed(() => {
+    return props.size === 'sm' ? 'text-sm px-2 py-1' : 'px-3 py-2'
 })
 </script>
 
 <template>
     <button
-        class="leading-5 border rounded-lg py-2 px-3 inline-flex justify-center items-center align-middle"
-        :class="setClasses"
+        class="leading-5 border rounded-lg inline-flex justify-center items-center align-middle"
+        :class="[setClasses, setSizeClasses]"
         :disabled="disabled || loading"
         :aria-disabled="disabled || loading"
     >

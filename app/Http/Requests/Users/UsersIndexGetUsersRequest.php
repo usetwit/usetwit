@@ -36,6 +36,7 @@ class UsersIndexGetUsersRequest extends FormRequest
                 'last_name',
                 'full_name',
                 'employee_id',
+                'role_name',
             ],
             'date' => [
                 'joined_at',
@@ -55,6 +56,7 @@ class UsersIndexGetUsersRequest extends FormRequest
             'employee_id',
             'joined_at',
             'active',
+            'role_name',
         ]);
 
         $perPage = [

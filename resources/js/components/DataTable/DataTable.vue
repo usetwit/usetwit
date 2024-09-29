@@ -1,6 +1,7 @@
 <script setup>
 import { ref, provide, computed, inject } from 'vue'
 import HeaderCell from './HeaderCell.vue'
+import Cell from './Cell.vue'
 import ColumnSelect from './ColumnSelect.vue'
 import Button from '../Form/Button.vue'
 import Paginator from './Paginator.vue'
@@ -42,7 +43,7 @@ const orderedColumns = computed(() => {
     return columnsArray
 })
 
-const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
+const { save, filter, getFilteredFields, reset, clearFilters, setConstraints } = inject('tableInstance')
 </script>
 
 <template>
@@ -71,15 +72,13 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
                 class="hover:bg-gray-100 body-row"
                 :class="{'even': i % 2 === 1, 'odd': i % 2 === 0}"
             >
-                <td v-for="col in orderedColumns"
-                    :key="col.field + '_' + row.id.toString()"
-                    class="px-4 py-3 border-b border-gray-200"
-                    :class="{'sticky left-0': col.sticky}"
-                    v-bind="col.attributes"
-                >
-                    <component v-if="col.body" :is="col.body" :row="row"/>
-                    <template v-else>{{ row[col.field] }}</template>
-                </td>
+                <Cell v-for="col in orderedColumns"
+                      :key="col.field + '_' + row.id.toString()"
+                      :class="{'sticky left-0': col.sticky}"
+                      v-bind="col.attrs"
+                      :col="col"
+                      :row="row"
+                />
             </tr>
             <tr v-else>
                 <td class="text-center px-4 py-3 border-b border-gray-200 bg-white italic" :colspan="columns.size">

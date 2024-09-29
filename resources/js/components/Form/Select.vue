@@ -28,7 +28,7 @@ defineOptions({
 const text = computed(() => {
     let foundOption
 
-    if (model.value && typeof model.value === 'object') {
+    if (typeof model.value === 'object') {
         foundOption = props.options.find(option => isEqual(option, toRaw(model.value)))
     } else if (['string', 'number'].includes(typeof model.value)) {
         foundOption = props.options.find(option => option[props.optionValue] === model.value)

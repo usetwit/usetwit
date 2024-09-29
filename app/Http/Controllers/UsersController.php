@@ -39,23 +39,19 @@ class UsersController extends Controller
             $join->on('model_has_roles.model_id', 'users.id')->where('model_has_roles.model_type', User::class);
         })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id');
 
-        $service->filter($query, $filters, ['global'], ['role' => 'roles.name']);
-        $service->sort($query, $sort, ['global'], ['role' => 'roles.name']);
+        $service->filter($query, $filters, ['global'], ['role_name' => 'roles.name']);
+        $service->sort($query, $sort, ['global'], ['role_name' => 'roles.name']);
 
         $query = $query->paginate($perPage);
         $total = $query->total();
 
         $users = $query->map(function ($user) {
-
             return array_merge($user->toArray(), [
                 'edit_user_route' => route('users.edit', $user),
-                //                'joined_at' => optional($user->joined_at)->format('Y-m-d'),
             ]);
         });
 
-        $roles = Role::all(['name'])->pluck('name')->reject(fn($role) => $role === 'system');
-
-        return compact('users', 'roles', 'total');
+        return compact('users', 'total');
     }
 
 

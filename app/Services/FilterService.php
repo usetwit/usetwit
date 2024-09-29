@@ -98,7 +98,7 @@ class FilterService
         foreach ($fields as $field) {
             $rules += [
                 "filters.{$field}" => 'nullable|array',
-                "filters.{$field}.constraints" => 'nullable|array',
+                "filters.{$field}.constraints" => 'nullable|array|max:5',
                 "filters.{$field}.constraints.*.mode" => [
                     'nullable',
                     'string',

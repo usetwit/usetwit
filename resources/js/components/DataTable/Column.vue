@@ -29,7 +29,7 @@ const column = {
     body: instance.vnode.children?.body,
     filter: instance.vnode.children?.filter,
     type: props.type,
-    attributes: instance.attrs,
+    attrs: instance.attrs,
     props: instance.props,
 }
 

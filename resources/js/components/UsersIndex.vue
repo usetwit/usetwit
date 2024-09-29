@@ -3,6 +3,7 @@ import { provide, ref } from 'vue'
 import { useAxios } from '../composables/useAxios.js'
 import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
+import Button from './Form/Button.vue'
 import { useTable } from '../composables/useTable.js'
 import { formatDate } from '../app/helpers.js'
 import { useStorage } from '../composables/useStorage.js'
@@ -15,20 +16,19 @@ const props = defineProps({
 })
 
 const users = ref([])
-const roles = ref([])
 const isLoading = ref(false)
 const defaultData = {
     filters: {
         global: { constraints: [{ value: null, mode: 'contains' }] },
-        username: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        first_name: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        last_name: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        middle_names: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        full_name: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        employee_id: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        email: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        joined_at: { operator: 'and', constraints: [{ value: null, mode: 'date_equals' }] },
-        role_name: { operator: 'or', constraints: [{ value: null, mode: 'equals' }] },
+        username: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        first_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        last_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        middle_names: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        full_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        employee_id: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        email: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        role_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
+        joined_at: { operator: 'or', constraints: [{ value: null, mode: 'date_equals' }] },
         active: { constraints: [{ value: true, mode: 'equals' }] },
     },
     filtered: [],
@@ -67,7 +67,6 @@ const fetchUsers = async () => {
 
     if (!errors.value.raw) {
         users.value = data.value.users
-        roles.value = data.value.roles
         activeData.value.pagination.total = data.value.total
     } else {
         users.value = []
@@ -127,8 +126,8 @@ provide('tableInstance', tableInstance)
         </Column>
         <Column :column="getColumn('role_name')" v-if="getColumn('role_name').visible" sortable type="string"
                 class="text-center">
-            <template #body="{ row }">
-                <span class="bg-slate-800 text-sm text-white rounded-lg p-2">{{ startCase(row.role_name) }}</span>
+            <template #body="{ row, setConstraintsCb }">
+                <Button size="sm" @click="setConstraintsCb(row.role_name)">{{ startCase(row.role_name) }}</Button>
             </template>
         </Column>
         <Column :column="getColumn('joined_at')" v-if="getColumn('joined_at').visible" sortable type="date">
@@ -142,11 +141,13 @@ provide('tableInstance', tableInstance)
         </Column>
         <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable type="boolean"
                 class="text-center">
-            <template #body="{ row }">
-                <span :class="{'text-green-500': row.active, 'text-red-500': !row.active}">
+            <template #body="{ row, setConstraintsCb }">
+                <button :class="{'text-green-500': row.active, 'text-red-500': !row.active}"
+                        @click="setConstraintsCb(row.active)"
+                >
                     <i v-if="row.active" class="pi pi-check-circle" title="Active"></i>
                     <i v-else class="pi pi-times-circle" title="Inactive"></i>
-                </span>
+                </button>
             </template>
         </Column>
     </DataTable>

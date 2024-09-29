@@ -84,7 +84,8 @@ const ctrlClick = (event, column) => {
                     :column="column"
                     :sort-obj="sortObj"
                     ref="filterRef"
-                    @filter="$emit('filter')"/>
+                    @filter="$emit('filter')"
+            />
         </div>
         <div v-else class="px-4 py-3 flex justify-between items-center">
             &nbsp;

@@ -30,7 +30,10 @@ const filter = defineModel()
                             :index="i"
         />
     </template>
-    <FilterButtonAdd v-if="column.type !== 'boolean'" v-model="filter.constraints" :type="column.type"/>
+    <FilterButtonAdd v-if="column.type !== 'boolean' && filter.constraints.length <= 5"
+                     v-model="filter.constraints"
+                     :type="column.type"
+    />
     <FilterButtonClearApply v-model="filter.constraints" :type="column.type"
                             @clear="$emit('filter')" @apply="$emit('apply')"/>
 </template>
