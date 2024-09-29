@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { useDropdown } from '../../composables/useDropdown.js'
 import Checkbox from '../Form/Checkbox.vue'
 
@@ -13,6 +13,15 @@ const sorted = computed(() => {
     return columns.value.sort((a, b) => a.label.localeCompare(b.label))
 })
 
+const { clearFilter, clearSort, filter } = inject('tableInstance')
+
+const updateColumn = (col) => {
+    col.visible = false
+    clearSort(col.field)
+    clearFilter(col.field)
+    filter()
+}
+
 const {
     inputRef,
     dropdownStyle,
@@ -22,7 +31,7 @@ const {
 </script>
 
 <template>
-    <div class="pb-4 overflow-x-auto">
+    <div class="overflow-x-auto pb-4 mb-4">
         <fieldset class="flex border border-gray-200 text-gray-700 rounded-lg p-0.5 hover:cursor-pointer"
                   ref="inputRef"
                   @click.self="toggleDropdown"
@@ -59,7 +68,7 @@ const {
             >
                 {{ col.label }}
                 <button type="button"
-                        @click="col.visible = false"
+                        @click="updateColumn(col)"
                         class="inline-flex align-middle ml-0.5 p-1 text-sm hover:bg-gray-100 rounded-full"
                 >
                 <i class="pi pi-times-circle"></i>

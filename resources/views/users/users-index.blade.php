@@ -16,8 +16,8 @@
 
 @section('content')
     <div id="app">
-        <users-index :default-per-page="{{ $defaultPerPage }}"
-                     :per-page-options="{{ Js::from($perPageOptions) }}"
+        <users-index :pagination-settings="{{ Js::from($paginationSettings) }}"
+                     :date-settings="{{ Js::from($dateSettings) }}"
                      route-get-users="{{ $routeGetUsers }}"
         ></users-index>
     </div>

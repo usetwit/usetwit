@@ -36,7 +36,7 @@ class UsersIndexGetUsersRequest extends FormRequest
                 'employee_id',
             ],
             'date' => [
-                'join_date',
+                'joined_at',
             ],
             'boolean' => [
                 'active',
@@ -51,7 +51,7 @@ class UsersIndexGetUsersRequest extends FormRequest
             'last_name',
             'full_name',
             'employee_id',
-            'join_date',
+            'joined_at',
             'active',
         ]);
 

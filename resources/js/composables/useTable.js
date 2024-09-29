@@ -3,7 +3,7 @@ import { useDebounce } from './useDebounce.js'
 import { useStorage } from './useStorage.js'
 import { watch } from 'vue'
 
-export function useTable(storageKey = null, defaultData = null, fetchFn = null) {
+export function useTable(storageKey, defaultData, fetchFn, dateSettings = null) {
 
     const { activeData, saveToStorage } = useStorage(storageKey, defaultData)
 
@@ -14,6 +14,24 @@ export function useTable(storageKey = null, defaultData = null, fetchFn = null) 
     watch(activeData, () => {
         save(false)
     }, { deep: true })
+
+    const sort = (column, removeOtherSorts = false) => {
+        const sortField = activeData.value.sort.find(col => col.field === column.field)
+
+        if (sortField) {
+            if (sortField.order === 'desc') {
+                activeData.value.sort = activeData.value.sort.filter(col => col.field !== column.field)
+            } else {
+                sortField.order = 'desc'
+            }
+        } else {
+            activeData.value.sort.push({ field: column.field, order: 'asc' })
+        }
+
+        if (removeOtherSorts) {
+            activeData.value.sort = activeData.value.sort.filter(col => col.field === column.field)
+        }
+    }
 
     const getModeFromMap = fieldType => {
         const modeMapping = {
@@ -30,9 +48,26 @@ export function useTable(storageKey = null, defaultData = null, fetchFn = null) 
         const { filters } = activeData.value
 
         return Object.keys(filters).filter(key => {
-            const { constraints } = filters[key]
-            return constraints.some(({ value }) => value !== null && value !== '')
+            return filters[key].constraints.some(({ value }) => value !== null && value !== '')
         })
+    }
+
+    const clearFilters = () => {
+        const { filters } = activeData.value
+
+        Object.keys(filters).forEach(key => {
+            filters[key].constraints = [{ value: null, mode: filters[key].constraints[0].mode }]
+        })
+
+        filter()
+    }
+
+    const clearFilter = (field) => {
+        activeData.value.filters[field].constraints = [{ value: null, mode: activeData.value.filters[field].constraints[0].mode }]
+    }
+
+    const clearSort = (field) => {
+        activeData.value.sort = activeData.value.sort.filter(item => item.field !== field)
     }
 
     const getModifiedFields = (filters, filtered) => {
@@ -56,6 +91,7 @@ export function useTable(storageKey = null, defaultData = null, fetchFn = null) 
     }
 
     const filter = (doFetchUsers = true) => {
+        activeData.value.pagination.page = 1
         activeData.value.filtered = getFilteredFields(activeData.value.filters)
         save(doFetchUsers)
     }
@@ -70,6 +106,10 @@ export function useTable(storageKey = null, defaultData = null, fetchFn = null) 
         reset,
         save,
         filter,
+        clearFilters,
+        clearFilter,
+        clearSort,
+        sort,
         activeData,
         defaultData,
     }

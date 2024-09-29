@@ -2,7 +2,7 @@
 import { getCurrentInstance, inject, onBeforeUnmount, onMounted } from 'vue'
 
 const props = defineProps({
-    column: { type: Object },
+    column: { type: Object, default: null },
     sortable: { type: Boolean, default: false },
     sticky: { type: Boolean, default: false },
     label: { type: String, default: null },

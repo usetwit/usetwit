@@ -925,8 +925,8 @@ class CreateGeneralSettings extends SettingsMigration
         ]);
         $this->migrator->add('general.employee_id_padding', 5);
         $this->migrator->add('general.employee_id_prefix', '');
-        $this->migrator->add('general.users_index_per_page', 20);
-        $this->migrator->add('general.users_index_per_page_options', [10, 20, 50, 100]);
+        $this->migrator->add('general.per_page_default', 20);
+        $this->migrator->add('general.per_page_options', [10, 20, 50, 100]);
         $this->migrator->add('general.date_validation_regex', [
             'dd-MM-yyyy' => '^(0[1-9]|[12][0-9]|3[01])([\-\/\.])(0[1-9]|1[0-2])\2(19|20)\d{2}$',
             'MM-dd-yyyy' => '^(0[1-9]|1[0-2])([\-\/\.])(0[1-9]|[12][0-9]|3[01])\2(19|20)\d{2}$',

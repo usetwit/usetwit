@@ -11,13 +11,37 @@ const props = defineProps({
     disabled: { type: Boolean, default: false },
     required: { type: Boolean, default: false },
     dropdown: { type: Boolean, default: false },
-    date: { type: DateTime, default: null },
     numberOfMonths: { type: Number, default: 1 },
     format: { type: String, required: true },
     displayFormat: { type: String, required: true },
     regex: { type: String, required: true },
     separator: { type: String, required: true },
+    containerClass: { type: [String, Object] },
+    positionY: { type: String, default: 'top' },
+    positionX: { type: String, default: 'center' },
 })
+
+defineOptions({
+    inheritAttrs: false,
+})
+
+
+const model = defineModel()
+
+let initialTextValue = ''
+let initialDate = DateTime.utc()
+
+if (model.value) {
+    const test = DateTime.fromFormat(model.value, 'yyyy-MM-dd')
+
+    if (test.isValid) {
+        initialDate = test
+        initialTextValue = initialDate.toFormat(props.format.replace(/-/g, props.separator))
+    }
+}
+
+const inputModel = ref(initialTextValue)
+const mode = ref('day')
 
 const {
     isToday,
@@ -31,12 +55,15 @@ const {
     yearRounded,
     minYear,
     maxYear,
-} = useDates(props.date || DateTime.utc())
-const { inputRef, dropdownStyle, showDropdown, toggleDropdown, updateDropdownPosition } = useDropdown('center', 'top')
+} = useDates(initialDate)
 
-const model = defineModel()
-const inputModel = ref(props.date instanceof DateTime ? props.date.toFormat(props.format) : null)
-const mode = ref('day')
+const {
+    inputRef,
+    dropdownStyle,
+    showDropdown,
+    toggleDropdown,
+    updateDropdownPosition
+} = useDropdown(props.positionX, props.positionY)
 
 const inputTextRef = useTemplateRef('inputTextComponent')
 
@@ -91,7 +118,7 @@ watch(inputModel, (newValue) => {
     } else {
         model.value = null
 
-        if(newValue) {
+        if (newValue) {
             inputRef.value.setCustomValidity('Please specify a valid date')
         }
     }
@@ -99,34 +126,32 @@ watch(inputModel, (newValue) => {
 </script>
 
 <template>
-    <div class="inline-block">
-        <InputGroup>
-            <InputText ref="inputTextComponent"
-                       v-model="inputModel"
-                       :disabled="props.disabled"
-                       :aria-disabled="props.disabled"
-                       :required="props.required"
-                       :aria-required="props.required"
-                       :placeholder="props.displayFormat"
-                       :aria-placeholder="props.displayFormat"
-                       :pattern="props.regex"
-                       @focus="showDropdown = true"
-            />
-            <button v-if="props.dropdown"
-                    class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center py-2.5 px-3 align-middle"
-                    @click="toggleDropdown"
-                    type="button"
-                    ref="buttonRef"
-            >
-                <i class="pi pi-calendar"></i>
-            </button>
-        </InputGroup>
-    </div>
+    <InputGroup :class="containerClass">
+        <InputText ref="inputTextComponent"
+                   v-model="inputModel"
+                   :disabled="props.disabled"
+                   :aria-disabled="props.disabled"
+                   :required="props.required"
+                   :aria-required="props.required"
+                   :placeholder="props.displayFormat"
+                   :pattern="props.regex"
+                   @focus="showDropdown = true"
+                   v-bind="$attrs"
+        />
+        <button v-if="props.dropdown"
+                class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center align-middle px-2"
+                @click="toggleDropdown"
+                type="button"
+                ref="buttonRef"
+        >
+            <i class="pi pi-calendar"></i>
+        </button>
+    </InputGroup>
 
     <Teleport to="body">
         <div v-if="showDropdown"
              ref="dropdownRef"
-             class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-3 w-max"
+             class="rounded absolute z-[250] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-3 w-max"
              :style="dropdownStyle"
         >
             <div v-if="mode === 'year'">

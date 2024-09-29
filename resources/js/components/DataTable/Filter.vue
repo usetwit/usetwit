@@ -4,6 +4,7 @@ import InputText from '../Form/InputText.vue'
 import { computed, inject } from 'vue'
 import FilterDropdown from './FilterDropdown.vue'
 import Checkbox from '../Form/Checkbox.vue'
+import Datepicker from '../Form/Datepicker.vue'
 
 const props = defineProps({
     column: { type: Object, required: true },
@@ -28,6 +29,8 @@ const apply = () => {
     showDropdown.value = false
     emit('filter')
 }
+
+const settings = inject('dateSettings')
 
 const { getModifiedFields } = inject('tableInstance')
 
@@ -72,6 +75,30 @@ const modified = computed(() => getModifiedFields(filters.value, props.filtered)
                     />
                 </template>
             </FilterDropdown>
+
+            <FilterDropdown v-if="column.type === 'date'"
+                            :column="column"
+                            v-model="filters[column.field]"
+                            @apply="apply"
+                            @filter="$emit('filter')"
+            >
+                <template #default="{ constraint }">
+                    <div class="mt-1">
+                        <Datepicker v-model="constraint.value"
+                                    class="text-sm w-full"
+                                    :placeholder="settings.display"
+                                    :display-format="settings.display"
+                                    :format="settings.format"
+                                    :regex="settings.regex"
+                                    :separator="settings.separator"
+                                    dropdown
+                                    container-class="flex"
+                                    position-y="bottom"
+                        />
+                    </div>
+                </template>
+            </FilterDropdown>
+
             <FilterDropdown v-else-if="column.type === 'boolean'"
                             :column="column"
                             v-model="filters[column.field]"

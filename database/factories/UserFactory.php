@@ -49,7 +49,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'emergency_name' => $this->faker->optional()->firstName,
             'emergency_number' => $this->faker->phoneNumber,
-            'join_date' => $this->faker->boolean(80) ? Carbon::parse('2024-01-01')->addDays(rand(0, 7000)) : null,
+            'joined_at' => $this->faker->boolean(80) ? Carbon::parse('2024-01-01')->addDays(rand(0, 7000)) : null,
             'active' => true,
             'created_at' => now(),
             'updated_at' => now(),

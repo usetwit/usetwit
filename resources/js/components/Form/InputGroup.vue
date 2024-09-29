@@ -1,16 +1,16 @@
 <template>
-    <div class="input-group inline-flex">
+    <div class="input-group" :class="{'inline-flex': !$attrs.class.includes('flex')}">
         <slot></slot>
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .input-group > :deep(div:first-child) {
-    @apply rounded-l-md border-l border-y border-gray-400;
+    @apply rounded-l-md border-l border-y border-gray-300;
 }
 
 .input-group > :deep(button:first-child) {
-    @apply rounded-l-md border-l border-y border-gray-400;
+    @apply rounded-l-md border-l border-y border-gray-300;
 }
 
 .input-group > :deep(input:first-child) {
@@ -21,12 +21,11 @@
     @apply rounded-r-md;
 }
 
-
 .input-group > :deep(button:last-child) {
-    @apply rounded-r-md border-r border-y border-gray-400;
+    @apply rounded-r-md border-r border-y border-gray-300;
 }
 
 .input-group > :deep(div:last-child) {
-    @apply rounded-r-md border-r border-y border-gray-400;
+    @apply rounded-r-md border-r border-y border-gray-300;
 }
 </style>

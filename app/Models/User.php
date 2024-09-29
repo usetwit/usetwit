@@ -61,7 +61,7 @@ class User extends Authenticatable implements Authorizable
     {
         return [
             'password' => 'hashed',
-            'join_date' => 'timestamp',
+            'joined_at' => 'date:Y-m-d',
             'active' => 'boolean',
         ];
     }

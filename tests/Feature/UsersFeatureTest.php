@@ -30,7 +30,7 @@ class UsersFeatureTest extends TestCase
             'postcode' => $this->faker->postcode,
             'country' => strtolower($this->faker->countryCode),
             'role_id' => $role->id,
-            'join_date' => optional($user->join_date)->format('Y-m-d'),
+            'joined_at' => optional($user->joined_at)->format('Y-m-d'),
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
@@ -59,7 +59,7 @@ class UsersFeatureTest extends TestCase
             'home_email' => $payload['home_email'],
             'emergency_name' => $payload['emergency_name'],
             'emergency_number' => $payload['emergency_number'],
-            'join_date' => $payload['join_date'],
+            'joined_at' => $payload['joined_at'],
         ]);
 
         $this->assertDatabaseHas('addresses', [

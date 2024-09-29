@@ -1,6 +1,6 @@
 <script setup>
 import { useDropdown } from '../../composables/useDropdown.js'
-import { computed, ref } from 'vue'
+import { computed, ref, toRaw } from 'vue'
 import { isEqual } from 'lodash'
 
 const props = defineProps({
@@ -12,7 +12,7 @@ const props = defineProps({
     disabled: { type: Boolean, default: false },
     invalid: { type: Boolean, default: false },
     showClear: { type: Boolean, default: false },
-    dropdownClasses: { type: String },
+    dropdownClass: { type: String },
 })
 
 const model = defineModel()
@@ -22,21 +22,15 @@ defineOptions({
 })
 
 const text = computed(() => {
-    if (typeof props.optionValue === 'string' && typeof model.value === 'string') {
-        const initialValue = props.options.find(option => option[props.optionValue] === model.value)
+    let foundOption
 
-        if (initialValue) {
-            return initialValue[props.optionLabel]
-        }
-    } else if (model.value !== null && typeof model.value === 'object') {
-        props.options.forEach(option => {
-            if (isEqual(option, model.value)) {
-                return option[props.optionLabel]
-            }
-        })
+    if (model.value && typeof model.value === 'object') {
+        foundOption = props.options.find(option => isEqual(option, toRaw(model.value)))
+    } else if (['string', 'number'].includes(typeof model.value)) {
+        foundOption = props.options.find(option => option[props.optionLabel] === model.value)
     }
 
-    return props.placeholder
+    return foundOption ? foundOption[props.optionLabel] : props.placeholder
 })
 
 const {
@@ -93,7 +87,7 @@ const setClasses = computed(() => {
         <div v-if="showDropdown"
              ref="dropdownRef"
              class="rounded absolute z-[350] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1"
-             :class="dropdownClasses"
+             :class="dropdownClass"
              :style="dropdownStyle"
         >
             <ul v-if="options.length">

@@ -17,6 +17,12 @@ const modeTexts = {
     gte: 'Greater than or equal',
     lt: 'Less than',
     lte: 'Less than or equal',
+    date_equals: 'Date equals',
+    date_not_equals: 'Date does not equal',
+    date_gt: 'Date greater than',
+    date_gte: 'Date greater than or equal',
+    date_lt: 'Date less than',
+    date_lte: 'Date less than or equal',
 }
 
 const stringModes = [
@@ -31,8 +37,18 @@ const stringModes = [
     'lte',
 ]
 
+const dateModes = [
+    'date_equals',
+    'date_not_equals',
+    'date_gt',
+    'date_gte',
+    'date_lt',
+    'date_lte',
+]
+
 const modes = {
-    string: stringModes.map(mode => ({ mode: mode, label: modeTexts[mode] }))
+    string: stringModes.map(mode => ({ mode: mode, label: modeTexts[mode] })),
+    date: dateModes.map(mode => ({ mode: mode, label: modeTexts[mode] })),
 }
 </script>
 

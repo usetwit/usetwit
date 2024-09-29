@@ -16,11 +16,12 @@ class UsersController extends Controller
 {
     public function index(GeneralSettings $settings)
     {
-        $defaultPerPage = $settings->users_index_per_page;
-        $perPageOptions = $settings->users_index_per_page_options;
+        $dateSettings = $settings->dateSettings();
+        $paginationSettings = $settings->paginationSettings();
+
         $routeGetUsers = route('users.get-users');
 
-        return view('users.users-index', compact('defaultPerPage', 'perPageOptions', 'routeGetUsers'));
+        return view('users.users-index', compact('paginationSettings', 'routeGetUsers', 'dateSettings'));
     }
 
     public function getUsers(UsersIndexGetUsersRequest $request, FilterService $service)
@@ -45,8 +46,10 @@ class UsersController extends Controller
         $total = $query->total();
 
         $users = $query->map(function ($user) {
+
             return array_merge($user->toArray(), [
                 'edit_user_route' => route('users.edit', $user),
+                //                'joined_at' => optional($user->joined_at)->format('Y-m-d'),
             ]);
         });
 
@@ -108,7 +111,7 @@ class UsersController extends Controller
             'emergency_number',
             'email',
             'home_email',
-            'join_date',
+            'joined_at',
         ]);
 
         $userFields['password'] = Hash::make($userFields['password']);

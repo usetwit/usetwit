@@ -1,5 +1,5 @@
 <script setup>
-import { computed, useTemplateRef } from 'vue'
+import { computed, inject, useTemplateRef } from 'vue'
 import Filter from './Filter.vue'
 
 const props = defineProps({
@@ -20,38 +20,30 @@ const sortObj = computed(() => {
     return null
 })
 
-const filter = useTemplateRef('filterRef')
+const filterEl = useTemplateRef('filterRef')
 
-const updateSort = (event, column, removeOtherSorts = false) => {
-    if (filter.value?.inputRef.childNodes && Array.from(filter.value?.inputRef.childNodes).includes(event.target) || event.target === filter.value?.inputRef) {
+const filterClicked = (event) => {
+    return filterEl.value?.inputRef.childNodes && Array.from(filterEl.value?.inputRef.childNodes).includes(event.target) || event.target === filterEl.value?.inputRef
+}
+
+const { sort } = inject('tableInstance')
+
+const singleClick = (event, column) => {
+    if (filterClicked(event)) {
         return
     }
 
-    const sortField = activeData.value.sort.find(col => col.field === column.field)
-
-    if (sortField) {
-        if (sortField.order === 'desc') {
-            activeData.value.sort = activeData.value.sort.filter(col => col.field !== column.field)
-        } else {
-            sortField.order = 'desc'
-        }
-    } else {
-        activeData.value.sort.push({ field: column.field, order: 'asc' })
-    }
-
-    if (removeOtherSorts) {
-        activeData.value.sort = activeData.value.sort.filter(col => col.field === column.field)
-    }
-
+    sort(column, true)
     emit('sort')
 }
 
-const singleClick = (event, column) => {
-    updateSort(event, column, true)
-}
-
 const ctrlClick = (event, column) => {
-    updateSort(event, column)
+    if (filterClicked(event)) {
+        return
+    }
+
+    sort(column)
+    emit('sort')
 }
 </script>
 

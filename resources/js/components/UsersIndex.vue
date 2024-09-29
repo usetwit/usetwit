@@ -4,10 +4,11 @@ import { useAxios } from '../composables/useAxios.js'
 import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
 import { useTable } from '../composables/useTable.js'
+import { formatDate } from '../app/helpers.js'
 
 const props = defineProps({
-    defaultPerPage: { type: Number, required: true },
-    perPageOptions: { type: Array, required: true },
+    paginationSettings: { type: Object, required: true },
+    dateSettings: { type: Object },
     routeGetUsers: { type: String, required: true },
 })
 
@@ -24,7 +25,7 @@ const defaultData = {
         full_name: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         employee_id: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         email: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
-        join_date: { operator: 'and', constraints: [{ value: null, mode: 'date_equals' }] },
+        joined_at: { operator: 'and', constraints: [{ value: null, mode: 'date_equals' }] },
         role: { operator: 'or', constraints: [{ value: null, mode: 'equals' }] },
         active: { constraints: [{ value: true, mode: 'equals' }] },
     },
@@ -34,17 +35,16 @@ const defaultData = {
         { field: 'full_name', label: 'Full Name', visible: true, order: 2 },
         { field: 'first_name', label: 'First Name', visible: true, order: 3 },
         { field: 'last_name', label: 'Last Name', visible: true, order: 4 },
-        { field: 'active', label: 'Active', visible: true, order: 5 },
+        { field: 'joined_at', label: 'Join Date', visible: true, order: 5 },
+        { field: 'active', label: 'Active', visible: true, order: 6 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
     pagination: {
-        first: 0,
         page: 1,
-        per_page: props.defaultPerPage,
+        per_page: props.paginationSettings.per_page.default,
         total: 0,
     }
 }
-
 
 const fetchUsers = async () => {
     isLoading.value = true
@@ -69,31 +69,20 @@ const fetchUsers = async () => {
     isLoading.value = false
 }
 
-const {
-    getColumn,
-    activeData,
-    save,
-    filter,
-    getFilteredFields,
-    getModifiedFields,
-    getModeFromMap,
-    reset,
-} = useTable('users-index', defaultData, fetchUsers)
+const tableInstance = useTable('users-index', defaultData, fetchUsers)
 
-provide('tableInstance', {
-    getColumn,
-    activeData,
-    save,
-    filter,
-    getFilteredFields,
-    getModifiedFields,
-    getModeFromMap,
-    reset,
-})
+const { getColumn, activeData } = tableInstance
+
+provide('tableInstance', tableInstance)
 </script>
 
 <template>
-    <DataTable :rows="users" v-model="activeData" :is-loading="isLoading">
+    <DataTable :rows="users"
+               v-model="activeData"
+               :is-loading="isLoading"
+               :pagination-settings="paginationSettings"
+               :date-settings="dateSettings"
+    >
         <Column sticky class="w-16">
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
@@ -124,12 +113,21 @@ provide('tableInstance', {
                 <a :href="row.edit_user_route" title="Edit">{{ row.full_name }}</a>
             </template>
         </Column>
+        <Column :column="getColumn('joined_at')" v-if="getColumn('joined_at').visible" sortable type="date">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route"
+                   title="Edit"
+                >
+                    {{ formatDate(row.joined_at, dateSettings.format, dateSettings.separator) }}
+                </a>
+            </template>
+        </Column>
         <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable type="boolean"
                 class="text-center">
             <template #body="{ row }">
                 <span :class="{'text-green-500': row.active, 'text-red-500': !row.active}">
-                    <i v-if="row.active" class="pi pi-check-circle" title="Active" aria-label="Active"></i>
-                    <i v-else class="pi pi-times-circle" title="Inactive" aria-label="Inactive"></i>
+                    <i v-if="row.active" class="pi pi-check-circle" title="Active"></i>
+                    <i v-else class="pi pi-times-circle" title="Inactive"></i>
                 </span>
             </template>
         </Column>
