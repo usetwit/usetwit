@@ -40,7 +40,7 @@ const defaultData = {
     ],
     sort: [{ field: 'username', order: 'asc' }],
     pagination: {
-        page: 11,
+        page: 1,
         per_page: props.paginationSettings.per_page.default,
         total: 0,
     }

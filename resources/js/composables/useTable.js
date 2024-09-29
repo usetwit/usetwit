@@ -3,7 +3,7 @@ import { useDebounce } from './useDebounce.js'
 import { useStorage } from './useStorage.js'
 import { watch } from 'vue'
 
-export function useTable(storageKey, defaultData, fetchFn, dateSettings = null) {
+export function useTable(storageKey, defaultData, fetchFn) {
 
     const { activeData, saveToStorage } = useStorage(storageKey, defaultData)
 
@@ -53,6 +53,7 @@ export function useTable(storageKey, defaultData, fetchFn, dateSettings = null) 
     }
 
     const clearFilters = () => {
+        activeData.value.pagination.page = 1
         const { filters } = activeData.value
 
         Object.keys(filters).forEach(key => {
@@ -63,6 +64,7 @@ export function useTable(storageKey, defaultData, fetchFn, dateSettings = null) 
     }
 
     const clearFilter = (field) => {
+        activeData.value.pagination.page = 1
         activeData.value.filters[field].constraints = [{ value: null, mode: activeData.value.filters[field].constraints[0].mode }]
     }
 
@@ -76,16 +78,17 @@ export function useTable(storageKey, defaultData, fetchFn, dateSettings = null) 
     }
 
     const reset = () => {
+        activeData.value.pagination.page = 1
         activeData.value.filters = cloneDeep(defaultData.filters)
         filter()
     }
 
     const debouncedFetchFn = useDebounce(fetchFn)
 
-    const save = (doFetchUsers = true) => {
+    const save = (fetch = true) => {
         saveToStorage()
 
-        if (doFetchUsers) {
+        if (fetch) {
             debouncedFetchFn()
         }
     }

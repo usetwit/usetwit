@@ -22,7 +22,7 @@ watch(model.value, () => {
     const endPage = Math.min(totalPages.value, model.value.page + perSide)
 
     if(model.value.page > totalPages.value) {
-        model.value.page = totalPages.value
+        selectPage(totalPages.value)
     }
 
     from.value = model.value.total === 0 ? 0 : model.value.per_page * model.value.page - model.value.per_page + 1
