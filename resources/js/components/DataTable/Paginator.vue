@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import Select from '../Form/Select.vue'
 
 const props = defineProps({
@@ -11,30 +11,27 @@ const emit = defineEmits(['change'])
 const model = defineModel()
 const options = props.settings.options.map(num => ({ value: num }))
 
-const pages = ref([{number: 1, current: true}])
-const totalPages = ref(1)
-const from = ref(0)
+const from = computed(() => model.value.total === 0 ? 0 : model.value.per_page * (model.value.page - 1) + 1)
+const totalPages = computed(() => model.value.total > 0 ? Math.ceil(model.value.total / model.value.per_page) : 1)
+
 const perSide = 2
-
-watch(model.value, () => {
-    const { total, per_page, page } = model.value
-
-    totalPages.value = total > 0 ? Math.ceil(total / per_page) : 1
-
-    if (page > totalPages.value) {
-        selectPage(totalPages.value)
+const startPage = computed(() => Math.max(1, model.value.page - perSide))
+const endPage = computed(() => Math.min(totalPages.value, model.value.page + perSide))
+const pages = computed(() => {
+    let items = []
+    for (let i = startPage.value; i <= endPage.value; i++) {
+        items.push({ number: i, current: i === model.value.page })
     }
 
-    from.value = total === 0 ? 0 : per_page * (page - 1) + 1
-
-    const startPage = Math.max(1, page - perSide)
-    const endPage = Math.min(totalPages.value, page + perSide)
-
-    pages.value = []
-    for (let i = startPage; i <= endPage; i++) {
-        pages.value.push({ number: i, current: i === model.value.page })
-    }
+    return items
 })
+
+const changePerPage = () => {
+    if (startPage.value > endPage.value) {
+        model.value.page = endPage.value
+    }
+    emit('change')
+}
 
 const selectPage = number => {
     model.value.page = number
@@ -94,15 +91,14 @@ const selectPage = number => {
             </li>
         </ul>
         <span class="ml-2">
-            Showing {{ from }} to
-            {{ Math.min(model.per_page * model.page, model.total) }} of {{ model.total }}
+            Showing {{ from }} to {{ Math.min(model.per_page * model.page, model.total) }} of {{ model.total }}
         </span>
         <Select v-model="model.per_page"
                 :options="options"
                 option-label="value"
                 option-value="value"
                 class="ml-2 text-sm"
-                @selected="$emit('change')"
+                @selected="changePerPage"
         >
             <template #option="{ option }">
                 <span class="text-sm">{{ option.value }}</span>

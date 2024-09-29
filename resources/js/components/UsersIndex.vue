@@ -11,7 +11,7 @@ import { startCase } from 'lodash'
 
 const props = defineProps({
     paginationSettings: { type: Object, required: true },
-    dateSettings: { type: Object },
+    dateSettings: { type: Object, required: true },
     routeGetUsers: { type: String, required: true },
 })
 

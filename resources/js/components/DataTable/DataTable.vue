@@ -43,7 +43,7 @@ const orderedColumns = computed(() => {
     return columnsArray
 })
 
-const { save, filter, getFilteredFields, reset, clearFilters, setConstraints } = inject('tableInstance')
+const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
 </script>
 
 <template>

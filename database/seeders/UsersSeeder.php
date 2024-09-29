@@ -34,6 +34,7 @@ class UsersSeeder extends Seeder
             'employee_id' => 'E00002',
             'email' => 'leecjeffries@gmail.com',
             'active' => true,
+            'joined_at' => '2024-01-09',
         ])->assignRole($role['admin']);
 
         User::create([
@@ -45,11 +46,12 @@ class UsersSeeder extends Seeder
             'employee_id' => 'E00003',
             'email' => 'jade@rivauk.co.uk',
             'active' => true,
+            'joined_at' => '2024-01-09',
         ])->assignRole($role['admin']);
 
         $roleIds = Role::where('id', '!=', 1)->pluck('id')->toArray();
 
-        User::factory(50)->create()->each(function ($user) use ($roleIds) {
+        User::factory(350)->create()->each(function ($user) use ($roleIds) {
             $user->roles()->attach($roleIds[array_rand($roleIds)]);
         });
     }
