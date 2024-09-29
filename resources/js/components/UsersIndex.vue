@@ -1,12 +1,12 @@
 <script setup>
 import { provide, ref } from 'vue'
-import { useAxios } from '../composables/useAxios.js'
+import useAxios from '../composables/useAxios.js'
 import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
 import Button from './Form/Button.vue'
-import { useTable } from '../composables/useTable.js'
+import useTable from '../composables/useTable.js'
 import { formatDate } from '../app/helpers.js'
-import { useStorage } from '../composables/useStorage.js'
+import useStorage from '../composables/useStorage.js'
 import { startCase } from 'lodash'
 
 const props = defineProps({
@@ -29,6 +29,8 @@ const defaultData = {
         email: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
         role_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
         joined_at: { operator: 'or', constraints: [{ value: null, mode: 'date_equals' }] },
+        created_at: { operator: 'or', constraints: [{ value: null, mode: 'date_equals' }] },
+        updated_at: { operator: 'or', constraints: [{ value: null, mode: 'date_equals' }] },
         active: { constraints: [{ value: true, mode: 'equals' }] },
     },
     filtered: [],
@@ -40,6 +42,8 @@ const defaultData = {
         { field: 'last_name', label: 'Last Name', visible: false, order: 5 },
         { field: 'role_name', label: 'Role', visible: true, order: 6 },
         { field: 'joined_at', label: 'Join Date', visible: true, order: 7 },
+        { field: 'created_at', label: 'Created Date', visible: true, order: 7 },
+        { field: 'updated_at', label: 'Updated Date', visible: true, order: 7 },
         { field: 'active', label: 'Active', visible: true, order: 8 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
@@ -77,7 +81,7 @@ const fetchUsers = async () => {
 
 const tableInstance = useTable(defaultData, fetchUsers, storageInstance)
 
-const { getColumn } = tableInstance
+const { getColumn, isVisible } = tableInstance
 
 provide('tableInstance', tableInstance)
 </script>
@@ -99,38 +103,43 @@ provide('tableInstance', tableInstance)
                 </a>
             </template>
         </Column>
-        <Column :column="getColumn('username')" v-if="getColumn('username').visible" sortable type="string">
+        <Column :column="getColumn('username')" v-if="isVisible('username')" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit">{{ row.username }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('full_name')" v-if="getColumn('full_name').visible" sortable type="string">
+        <Column :column="getColumn('full_name')" v-if="isVisible('full_name')" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit">{{ row.full_name }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable type="string">
+        <Column :column="getColumn('first_name')" v-if="isVisible('first_name')" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit">{{ row.first_name }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('middle_names')" v-if="getColumn('middle_names').visible" sortable type="string">
+        <Column :column="getColumn('middle_names')" v-if="isVisible('middle_names')" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit">{{ row.middle_names }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('last_name')" v-if="getColumn('last_name').visible" sortable type="string">
+        <Column :column="getColumn('last_name')" v-if="isVisible('last_name')" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit">{{ row.last_name }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('role_name')" v-if="getColumn('role_name').visible" sortable type="string"
+        <Column :column="getColumn('email')" v-if="isVisible('email')" sortable type="string">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route" title="Edit">{{ row.email }}</a>
+            </template>
+        </Column>
+        <Column :column="getColumn('role_name')" v-if="isVisible('role_name')" sortable type="string"
                 class="text-center">
             <template #body="{ row, setConstraintsCb }">
                 <Button size="sm" @click="setConstraintsCb(row.role_name)">{{ startCase(row.role_name) }}</Button>
             </template>
         </Column>
-        <Column :column="getColumn('joined_at')" v-if="getColumn('joined_at').visible" sortable type="date">
+        <Column :column="getColumn('joined_at')" v-if="isVisible('joined_at')" sortable type="date">
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
                    title="Edit"
@@ -139,7 +148,25 @@ provide('tableInstance', tableInstance)
                 </a>
             </template>
         </Column>
-        <Column :column="getColumn('active')" v-if="getColumn('active').visible" sortable type="boolean"
+        <Column :column="getColumn('created_at')" v-if="isVisible('created_at')" sortable type="date">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route"
+                   title="Edit"
+                >
+                    {{ formatDate(row.created_at, dateSettings.format, dateSettings.separator) }}
+                </a>
+            </template>
+        </Column>
+        <Column :column="getColumn('updated_at')" v-if="isVisible('updated_at')" sortable type="date">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route"
+                   title="Edit"
+                >
+                    {{ formatDate(row.updated_at, dateSettings.format, dateSettings.separator) }}
+                </a>
+            </template>
+        </Column>
+        <Column :column="getColumn('active')" v-if="isVisible('active')" sortable type="boolean"
                 class="text-center">
             <template #body="{ row, setConstraintsCb }">
                 <button :class="{'text-green-500': row.active, 'text-red-500': !row.active}"

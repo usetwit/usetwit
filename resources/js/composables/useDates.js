@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { DateTime } from 'luxon'
 
-export function useDates(initialDate, numberOfMonths = 1) {
+export default function useDates(initialDate, numberOfMonths = 1) {
 
     const year = ref(initialDate.year)
     const month = ref(initialDate.month)

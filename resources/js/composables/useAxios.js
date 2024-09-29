@@ -2,7 +2,7 @@ import axios from 'axios'
 import { ref } from 'vue'
 import { toast } from 'vue3-toastify'
 
-export function useAxios(url, params = {}, method = 'post') {
+export default function useAxios(url, params = {}, method = 'post') {
     const data = ref(null)
     const errors = ref({
         fields: [],

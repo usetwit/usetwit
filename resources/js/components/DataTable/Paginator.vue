@@ -23,10 +23,13 @@ const pages = computed(() => {
 })
 
 const changePerPage = () => {
-    if (start.value > end.value) {
-        model.value.page = end.value
-    }
-    emit('changed')
+    nextTick(() => {
+        console.log('start:', start.value, 'end:', end.value, 'model.page:', model.value.page)
+        if (start.value >= end.value) {
+            model.value.page = end.value
+        }
+        emit('changed')
+    })
 }
 
 const selectPage = number => {

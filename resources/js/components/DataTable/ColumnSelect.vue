@@ -1,6 +1,6 @@
 <script setup>
 import { computed, inject } from 'vue'
-import { useDropdown } from '../../composables/useDropdown.js'
+import useDropdown from '../../composables/useDropdown.js'
 import Checkbox from '../Form/Checkbox.vue'
 
 const columns = defineModel()

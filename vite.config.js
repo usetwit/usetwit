@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/js/app/home.js',
                 'resources/js/app/navbar.js',
                 'resources/js/app/sidebar.js',
+                'resources/js/app/storage.js',
                 'resources/js/app/users-index.js',
             ],
             refresh: true,

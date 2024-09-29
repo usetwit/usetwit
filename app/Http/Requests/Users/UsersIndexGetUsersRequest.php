@@ -7,6 +7,7 @@ use App\Services\FilterService;
 use App\Settings\GeneralSettings;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 class UsersIndexGetUsersRequest extends FormRequest
@@ -27,7 +28,7 @@ class UsersIndexGetUsersRequest extends FormRequest
      */
     public function rules(FilterService $service, GeneralSettings $settings): array
     {
-        $filters = $service->makeValidationFilterRules([
+        $filterRules = [
             'string' => [
                 'username',
                 'email',
@@ -40,24 +41,17 @@ class UsersIndexGetUsersRequest extends FormRequest
             ],
             'date' => [
                 'joined_at',
+                'created_at',
+                'updated_at',
             ],
             'boolean' => [
                 'active',
             ],
-        ]);
+        ];
 
-        $sort = $service->makeValidationSortRules([
-            'username',
-            'email',
-            'first_name',
-            'middle_names',
-            'last_name',
-            'full_name',
-            'employee_id',
-            'joined_at',
-            'active',
-            'role_name',
-        ]);
+        $filters = $service->makeValidationFilterRules($filterRules);
+
+        $sort = $service->makeValidationSortRules(Arr::flatten($filterRules));
 
         $perPage = [
             'per_page' => [

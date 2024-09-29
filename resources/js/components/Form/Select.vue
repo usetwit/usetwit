@@ -1,5 +1,5 @@
 <script setup>
-import { useDropdown } from '../../composables/useDropdown.js'
+import useDropdown from '../../composables/useDropdown.js'
 import { computed, toRaw } from 'vue'
 import { isEqual } from 'lodash'
 

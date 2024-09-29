@@ -1,17 +1,23 @@
 import { cloneDeep, debounce, difference } from 'lodash'
 import { watch } from 'vue'
 
-export function useTable(defaultData, fetchFn, storageInstance) {
+export default function useTable(defaultData, fetchFn, storageInstance) {
 
-    const { activeData, saveToStorage } = storageInstance
+    const { activeData, set } = storageInstance
 
     const getColumn = field => {
-        return activeData.value.columns.find(col => col.field === field)
+        return activeData.value.columns.find(col => col.field === field) || null
     }
 
     const getSortedFields = () => {
         return activeData.value.sort.map(item => item.field)
     }
+
+    const getVisibleFields = () => {
+        return activeData.value.columns.filter(item => item.visible).map(item => item.field)
+    }
+
+    const isVisible = field => getVisibleFields().includes(field)
 
     watch(activeData, () => {
         save(false)
@@ -114,7 +120,7 @@ export function useTable(defaultData, fetchFn, storageInstance) {
     const debouncedFetchFn = debounce(fetchFn, 300, { leading: true, trailing: true })
 
     const save = (fetch = true) => {
-        saveToStorage()
+        set()
 
         if (fetch) {
             debouncedFetchFn()
@@ -135,6 +141,8 @@ export function useTable(defaultData, fetchFn, storageInstance) {
         getModifiedFields,
         getSortedFields,
         setConstraints,
+        isVisible,
+        getVisibleFields,
         reset,
         save,
         filter,

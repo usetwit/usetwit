@@ -1,5 +1,5 @@
 <script setup>
-import { useDropdown } from '../../composables/useDropdown'
+import useDropdown from '../../composables/useDropdown'
 import InputText from './InputText.vue'
 import InputGroup from './InputGroup.vue'
 import { nextTick, onMounted, useTemplateRef } from 'vue'

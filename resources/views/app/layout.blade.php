@@ -9,6 +9,7 @@
 </head>
 
 <body>
+<div id="storage"><storage :version="{{ Js::from($version) }}"></storage></div>
 
 <div id="navbar">
     @include('app._navbar')

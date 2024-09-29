@@ -1,5 +1,5 @@
 <script setup>
-import { useDropdown } from '../../composables/useDropdown.js'
+import useDropdown from '../../composables/useDropdown.js'
 import InputText from '../Form/InputText.vue'
 import { computed, inject } from 'vue'
 import FilterDropdown from './FilterDropdown.vue'

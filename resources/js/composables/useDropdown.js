@@ -1,6 +1,6 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 
-export function useDropdown(positionX = 'left', positionY = 'bottom', minWidthParent = false, gap = 2) {
+export default function useDropdown(positionX = 'left', positionY = 'bottom', minWidthParent = false, gap = 2) {
     const inputRef = ref()
     const dropdownRef = useTemplateRef('dropdownRef')
     const buttonRef = useTemplateRef('buttonRef')

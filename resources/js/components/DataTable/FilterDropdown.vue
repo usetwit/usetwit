@@ -10,7 +10,7 @@ const props = defineProps({
     column: { type: Object, required: true },
 })
 
-const emit = defineEmits(['filter', 'apply'])
+defineEmits(['filter', 'apply'])
 
 const filter = defineModel()
 </script>

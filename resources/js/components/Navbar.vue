@@ -1,6 +1,6 @@
 <script setup>
-import { useMenuStore } from "../stores/menuStore.js";
-import { useStorage } from '../composables/useStorage';
+import { useMenuStore } from '../stores/menuStore.js'
+import useStorage from '../composables/useStorage'
 
 const store = useMenuStore()
 
@@ -9,22 +9,22 @@ const makeMenuVisible = () => {
     document.body.classList.add('overflow-hidden')
 }
 
-const { activeData: darkMode, saveToStorage } = useStorage('dark-mode', false);
+const { activeData: darkMode, set } = useStorage('dark-mode', false)
 
 const toggleDarkMode = () => {
-    darkMode.value = !darkMode.value;
+    darkMode.value = !darkMode.value
 
     if (darkMode.value) {
-        document.body.classList.add('dark');
+        document.body.classList.add('dark')
     } else {
-        document.body.classList.remove('dark');
+        document.body.classList.remove('dark')
     }
 
-    saveToStorage()
-};
+    set()
+}
 
 if (darkMode.value) {
-    document.body.classList.add('dark');
+    document.body.classList.add('dark')
 }
 </script>
 

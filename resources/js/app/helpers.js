@@ -5,5 +5,17 @@ export const formatDate = (dateString, format, separator) => {
         return null
     }
 
-    return DateTime.fromFormat(dateString, 'yyyy-MM-dd').toFormat(format.replace(/-/g, separator))
+    let date = DateTime.fromFormat(dateString, 'yyyy-MM-dd')
+
+    if(date.isValid){
+        return date.toFormat(format.replace(/-/g, separator))
+    }
+
+    date = DateTime.fromISO(dateString)
+
+    if(date.isValid){
+        return date.toFormat(format.replace(/-/g, separator))
+    }
+
+    return 'Invalid DateTime'
 }

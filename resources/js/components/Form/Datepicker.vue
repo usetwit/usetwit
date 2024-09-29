@@ -1,6 +1,6 @@
 <script setup>
-import { useDropdown } from '../../composables/useDropdown'
-import { useDates } from '../../composables/useDates'
+import useDropdown from '../../composables/useDropdown'
+import useDates from '../../composables/useDates'
 import { onMounted, ref, useTemplateRef, watch } from 'vue'
 import InputGroup from './InputGroup.vue'
 import InputText from './InputText.vue'

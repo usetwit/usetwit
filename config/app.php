@@ -28,6 +28,9 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+
+    'version' => env('APP_VERSION', '0.0.1-alpha'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -97,7 +100,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'key' => env('APP_KEY'),
+    'key' => env('APP_KEY', 'base64:aomEpQavWC1miRRLsvLEs/6gyuzEfHUQmHY+77YLOv8='),
 
     'previous_keys' => [
         ...array_filter(
