@@ -13,13 +13,23 @@ const sorted = computed(() => {
     return columns.value.sort((a, b) => a.label.localeCompare(b.label))
 })
 
-const { clearFilter, clearSort, filter } = inject('tableInstance')
+const { clearFilter, clearSort, filter, getSortedFields, getFilteredFields } = inject('tableInstance')
 
-const updateColumn = (col) => {
+const clearFilterAndSort = field => {
+    const fetch = getSortedFields().includes(field) || getFilteredFields().includes(field)
+
+    clearSort(field)
+    clearFilter(field)
+    filter(fetch)
+}
+
+const clearColumn = (col) => {
     col.visible = false
-    clearSort(col.field)
-    clearFilter(col.field)
-    filter()
+    clearFilterAndSort(col.field)
+}
+
+const clearField = (field) => {
+    clearFilterAndSort(field)
 }
 
 const {
@@ -27,7 +37,7 @@ const {
     dropdownStyle,
     showDropdown,
     toggleDropdown,
-} = useDropdown('left', 'bottom')
+} = useDropdown()
 </script>
 
 <template>
@@ -54,7 +64,8 @@ const {
                             <Checkbox :label="col.label"
                                       :id="col.field"
                                       v-model="col.visible"
-                                      class="w-full px-3 py-1.5"
+                                      @update:model-value="clearField(col.field)"
+                                      class="select-none w-full px-3 py-1.5"
                             />
                         </li>
                     </ul>
@@ -68,7 +79,7 @@ const {
             >
                 {{ col.label }}
                 <button type="button"
-                        @click="updateColumn(col)"
+                        @click="clearColumn(col)"
                         class="inline-flex align-middle ml-0.5 p-1 text-sm hover:bg-gray-100 rounded-full"
                 >
                 <i class="pi pi-times-circle"></i>

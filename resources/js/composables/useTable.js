@@ -9,6 +9,10 @@ export function useTable(defaultData, fetchFn, storageInstance) {
         return activeData.value.columns.find(col => col.field === field)
     }
 
+    const getSortedFields = () => {
+        return activeData.value.sort.map(item => item.field)
+    }
+
     watch(activeData, () => {
         save(false)
     }, { deep: true })
@@ -110,6 +114,7 @@ export function useTable(defaultData, fetchFn, storageInstance) {
         getModeFromMap,
         getFilteredFields,
         getModifiedFields,
+        getSortedFields,
         reset,
         save,
         filter,
