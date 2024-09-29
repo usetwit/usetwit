@@ -8,6 +8,9 @@ use App\Http\Requests\Users\UsersStoreRequest;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
@@ -43,14 +46,21 @@ class UsersController extends Controller
             'roles.name',
         ];
 
-        $cols = Schema::getColumnListing('users');
-        $cols = array_diff($cols, ['password', 'remember_token']);
-        $cols = array_map(fn($value) => 'users.' . $value, $cols);
-        $cols = array_merge($cols, ['roles.name as role_name']);
+        $cols = Cache::remember('user_columns', 24 * 60 * 60 * 7, function () {
+            $cols = Schema::getColumnListing('users');
+            $cols = array_diff($cols, ['password', 'remember_token']);
+            $cols = array_map(fn($value) => 'users.' . $value, $cols);
+            return array_merge($cols, ['roles.name as role_name']);
+        });
 
-        $query = User::withTrashed()->select($cols)->leftJoin('model_has_roles', function ($join) {
-            $join->on('model_has_roles.model_id', 'users.id')->where('model_has_roles.model_type', User::class);
-        })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id');
+        $query = DB::table('users')
+                   ->select($cols)
+                   ->leftJoin('model_has_roles', function ($join) {
+                       $join->on('model_has_roles.model_id', 'users.id')
+                            ->where('model_has_roles.model_type', User::class);
+                   })
+                   ->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')
+                   ->where('users.id', '!=', 1);
 
         $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
                 ->filter($query, $filters, ['global'], $substitutions)
@@ -59,11 +69,15 @@ class UsersController extends Controller
         $query = $query->paginate($perPage);
         $total = $query->total();
 
-        $users = $query->map(function ($user) {
-            return array_merge($user->toArray(), [
-                'edit_user_route' => route('users.edit', $user),
-            ]);
-        });
+        $users = $query->getCollection()
+                       ->map(function ($user) {
+                           return array_merge((array) $user, [
+                               'edit_user_route' => route('users.edit', $user->id),
+                               'created_at' => Carbon::parse($user->created_at)->format('Y-m-d'),
+                               'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d'),
+                               'joined_at' => $user->joined_at === null ? null : Carbon::parse($user->joined_at)->format('Y-m-d'),
+                           ]);
+                       });
 
         return compact('users', 'total');
     }
@@ -101,7 +115,9 @@ class UsersController extends Controller
             return [];
         }
 
-        return User::withTrashed()->where('username', $username)->get(['username']);
+        return User::withTrashed()
+                   ->where('username', $username)
+                   ->get(['username']);
     }
 
     public function store(UsersStoreRequest $request)
@@ -130,7 +146,8 @@ class UsersController extends Controller
         $addressFields = $request->only(['address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'country',]);
 
         $addressFields['default_address'] = true;
-        $newUser->addresses()->create($addressFields);
+        $newUser->addresses()
+                ->create($addressFields);
 
         $role = Role::find($request->input('role_id'));
         $newUser->syncRoles($role);

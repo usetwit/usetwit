@@ -53,10 +53,21 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
 
     <div class="flex justify-between items-center sm:flex-row flex-col">
         <div>
-            <Button :badge="getFilteredFields().length" @click="reset" icon="pi pi-refresh" label="Reset Filters"
-                    :loading="isLoading"/>
-            <Button :badge="getFilteredFields().length" @click="clearFilters" variant="secondary" border
-                    icon="pi pi-filter-slash" label="Clear Filters" class="ml-2" :loading="isLoading"/>
+            <Button :badge="getFilteredFields().length"
+                    @click="reset"
+                    class="mr-2"
+                    icon="pi pi-refresh"
+                    label="Reset Filters"
+                    :loading="isLoading"
+            />
+            <Button :badge="getFilteredFields().length"
+                    @click="clearFilters"
+                    variant="secondary"
+                    border
+                    icon="pi pi-filter-slash"
+                    label="Clear Filters"
+                    :loading="isLoading"
+            />
         </div>
         <InputGroup class="sm:mt-0 mt-2">
             <InputText v-model="activeData.filters.global.constraints[0].value"

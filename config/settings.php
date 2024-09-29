@@ -63,8 +63,8 @@ return [
     'cache' => [
         'enabled' => env('SETTINGS_CACHE_ENABLED', false),
         'store' => null,
-        'prefix' => null,
-        'ttl' => null,
+        'prefix' => 'settings_',
+        'ttl' => 24 * 60 * 60 * 7,
     ],
 
     /*
@@ -74,7 +74,7 @@ return [
     'global_casts' => [
         DateTimeInterface::class => Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast::class,
         DateTimeZone::class => Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast::class,
-//        Spatie\DataTransferObject\DataTransferObject::class => Spatie\LaravelSettings\SettingsCasts\DtoCast::class,
+        //        Spatie\DataTransferObject\DataTransferObject::class => Spatie\LaravelSettings\SettingsCasts\DtoCast::class,
         Spatie\LaravelData\Data::class => Spatie\LaravelSettings\SettingsCasts\DataCast::class,
     ],
 

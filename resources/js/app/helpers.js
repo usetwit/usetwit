@@ -17,5 +17,11 @@ export const formatDate = (dateString, format, separator) => {
         return date.toFormat(format.replace(/-/g, separator))
     }
 
+    date = DateTime.fromFormat(dateString, 'yyyy-MM-dd HH:mm:ss')
+
+    if(date.isValid){
+        return date.toFormat(format.replace(/-/g, separator))
+    }
+
     return 'Invalid DateTime'
 }
