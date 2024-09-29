@@ -91,7 +91,6 @@ export function useTable(storageKey, defaultData, fetchFn, dateSettings = null) 
     }
 
     const filter = (doFetchUsers = true) => {
-        activeData.value.pagination.page = 1
         activeData.value.filtered = getFilteredFields(activeData.value.filters)
         save(doFetchUsers)
     }

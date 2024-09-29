@@ -56,7 +56,7 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
 
     <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @change="save" class="mt-8"/>
 
-    <div class="my-2 overflow-x-auto relative">
+    <div class="my-3 overflow-x-auto relative">
         <table class="min-w-full">
             <thead>
             <tr>

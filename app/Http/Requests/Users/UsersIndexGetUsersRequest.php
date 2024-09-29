@@ -4,8 +4,10 @@ namespace App\Http\Requests\Users;
 
 use App\Exceptions\FilterServiceGetTypeInvalidException;
 use App\Services\FilterService;
+use App\Settings\GeneralSettings;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UsersIndexGetUsersRequest extends FormRequest
 {
@@ -23,7 +25,7 @@ class UsersIndexGetUsersRequest extends FormRequest
      * @return array<string, ValidationRule|array|string>
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function rules(FilterService $service): array
+    public function rules(FilterService $service, GeneralSettings $settings): array
     {
         $filters = $service->makeValidationFilterRules([
             'string' => [
@@ -55,6 +57,13 @@ class UsersIndexGetUsersRequest extends FormRequest
             'active',
         ]);
 
-        return array_merge($filters, $sort);
+        $perPage = [
+            'per_page' => [
+                'integer',
+                Rule::in($settings->per_page_options),
+            ],
+        ];
+
+        return array_merge($filters, $sort, $perPage);
     }
 }

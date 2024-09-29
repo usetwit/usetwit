@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from 'vue'
+import { ref, watch, watchEffect } from 'vue'
 import Select from '../Form/Select.vue'
 
 const props = defineProps({
@@ -13,12 +13,19 @@ const options = props.settings.options.map(num => ({ value: num }))
 
 const pages = ref([])
 const totalPages = ref(1)
+const from = ref(0)
 const perSide = 2
 
-watchEffect(() => {
+watch(model.value, () => {
     totalPages.value = model.value.total > 0 ? Math.ceil(model.value.total / model.value.per_page) : 1
     const startPage = Math.max(1, model.value.page - perSide)
     const endPage = Math.min(totalPages.value, model.value.page + perSide)
+
+    if(model.value.page > totalPages.value) {
+        model.value.page = totalPages.value
+    }
+
+    from.value = model.value.total === 0 ? 0 : model.value.per_page * model.value.page - model.value.per_page + 1
 
     pages.value = []
     for (let i = startPage; i <= endPage; i++) {
@@ -61,11 +68,7 @@ const selectPage = number => {
                 >
                     {{ page.number }}
                 </button>
-                <span v-else
-                      class="base current"
-                >
-                    {{ page.number }}
-                </span>
+                <span v-else class="base current">{{ page.number }}</span>
             </li>
             <li>
                 <span v-if="model.page === totalPages" class="base disabled"><i class="pi pi-angle-right"></i></span>
@@ -88,7 +91,7 @@ const selectPage = number => {
             </li>
         </ul>
         <span class="ml-2">
-            Showing {{ model.total === 0 ? 0 : model.per_page * model.page - model.per_page + 1 }} to
+            Showing {{ from }} to
             {{ Math.min(model.per_page * model.page, model.total) }} of {{ model.total }}
         </span>
         <Select v-model="model.per_page"
