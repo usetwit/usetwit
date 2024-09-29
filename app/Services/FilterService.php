@@ -268,9 +268,9 @@ class FilterService
      * @param array   $exceptions
      * @param array   $substitutes
      *
-     * @return void
+     * @return FilterService
      */
-    public function filter(Builder $query, array $filters, array $exceptions = [], array $substitutes = []): void
+    public function filter(Builder $query, array $filters, array $exceptions = [], array $substitutes = []): FilterService
     {
         foreach ($filters as $field => $props) {
             if (in_array($field, $exceptions)) {
@@ -292,6 +292,42 @@ class FilterService
                 });
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @param Builder     $query
+     * @param string|null $value
+     * @param array       $global
+     * @param array       $visible
+     * @param array       $substitutions
+     *
+     * @return FilterService
+     */
+    public function globalFilter(Builder $query, ?string $value, array $global = [], array $visible = [], array $substitutions = []): FilterService
+    {
+        if ($value === '' || $value === null) {
+            return $this;
+        }
+
+        foreach ($visible as &$field) {
+            if (array_key_exists($field, $substitutions)) {
+                $field = $substitutions[$field];
+            }
+        }
+
+        $columns = array_intersect($visible, $global);
+
+        if(count($columns)) {
+            $query->where(function (Builder $query) use ($columns, $value) {
+                foreach ($columns as $column) {
+                    $query->orWhere($column, 'like', "%{$value}%");
+                }
+            });
+        }
+
+        return $this;
     }
 
     /**
@@ -300,9 +336,9 @@ class FilterService
      * @param array   $exceptions
      * @param array   $substitutes
      *
-     * @return void
+     * @return FilterService
      */
-    public function sort(Builder $query, array $sorts, array $exceptions = [], array $substitutes = []): void
+    public function sort(Builder $query, array $sorts, array $exceptions = [], array $substitutes = []): FilterService
     {
         foreach ($sorts as $sort) {
             if (in_array(strtolower($sort['field']), $exceptions)) {
@@ -313,6 +349,8 @@ class FilterService
 
             $query->orderBy($sort['field'], $sort['order'] === 'asc' ? 'asc' : 'desc');
         }
+
+        return $this;
     }
 
     /**

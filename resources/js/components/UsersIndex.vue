@@ -65,6 +65,7 @@ const fetchUsers = async () => {
         page: activeData.value.pagination.page,
         per_page: activeData.value.pagination.per_page,
         sort: activeData.value.sort,
+        visible: activeData.value.columns.filter(col => col.visible).map(col => col.field)
     })
 
     await getResponse()
@@ -93,7 +94,7 @@ provide('tableInstance', tableInstance)
                :pagination-settings="paginationSettings"
                :date-settings="dateSettings"
     >
-        <Column sticky class="w-16">
+        <Column sticky class="w-16" options>
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
                    class="bg-amber-500 p-1.5 rounded text-white inline-flex"

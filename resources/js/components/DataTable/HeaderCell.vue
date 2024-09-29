@@ -1,6 +1,7 @@
 <script setup>
 import { computed, inject, useTemplateRef } from 'vue'
 import Filter from './Filter.vue'
+import ColumnSelect from "./ColumnSelect.vue";
 
 const props = defineProps({
     column: { type: Object, required: true },
@@ -48,17 +49,21 @@ const ctrlClick = (event, column) => {
 </script>
 
 <template>
-    <th class="border-b border-gray-200 p-0 select-none"
+    <th class="border-y p-0 select-none"
         :class="{
             'sticky left-0': column.sticky,
             'bg-white text-gray-800': !sortObj,
             'hover:bg-gray-100': !sortObj && column.sortable,
             'bg-slate-800 text-white hover:bg-slate-700': sortObj,
             'cursor-pointer': column.sortable,
-            'border-t': column.label
+            'border-t-white border-b-gray-200': column.options,
+            'border-gray-200': !column.options,
         }"
     >
-        <div v-if="column.label"
+        <div v-if="column.options" class="px-4 py-4 flex items-center">
+            <ColumnSelect v-model="activeData.columns"/>
+        </div>
+        <div v-else-if="column.label"
              class="px-4 py-2 flex justify-between items-center"
              @click.exact="singleClick($event, column)"
              @click.ctrl="ctrlClick($event, column)"

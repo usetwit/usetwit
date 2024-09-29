@@ -2,9 +2,11 @@
 import { ref, provide, computed, inject } from 'vue'
 import HeaderCell from './HeaderCell.vue'
 import Cell from './Cell.vue'
-import ColumnSelect from './ColumnSelect.vue'
 import Button from '../Form/Button.vue'
 import Paginator from './Paginator.vue'
+import InputText from '../Form/InputText.vue'
+import InputGroup from "../Form/InputGroup.vue";
+import InputGroupAddon from "../Form/InputGroupAddon.vue";
 
 const props = defineProps({
     rows: { type: Array, required: true },
@@ -48,12 +50,24 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
 
 <template>
     <slot/>
-    <ColumnSelect v-model="activeData.columns"/>
 
-    <Button :badge="getFilteredFields().length" @click="reset" icon="pi pi-refresh" label="Reset Filters"
-            :loading="isLoading"/>
-    <Button :badge="getFilteredFields().length" @click="clearFilters" variant="secondary" border
-            icon="pi pi-filter-slash" label="Clear Filters" class="ml-2" :loading="isLoading"/>
+    <div class="flex justify-between items-center sm:flex-row flex-col">
+        <div>
+            <Button :badge="getFilteredFields().length" @click="reset" icon="pi pi-refresh" label="Reset Filters"
+                    :loading="isLoading"/>
+            <Button :badge="getFilteredFields().length" @click="clearFilters" variant="secondary" border
+                    icon="pi pi-filter-slash" label="Clear Filters" class="ml-2" :loading="isLoading"/>
+        </div>
+        <InputGroup class="sm:mt-0 mt-2">
+            <InputText v-model="activeData.filters.global.constraints[0].value"
+                       placeholder="Search..."
+                       @input="save"
+            />
+            <InputGroupAddon>
+                <i class="pi pi-search"></i>
+            </InputGroupAddon>
+        </InputGroup>
+    </div>
 
     <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="save" class="mt-8"/>
 
@@ -61,8 +75,12 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
         <table class="min-w-full">
             <thead>
             <tr>
-                <HeaderCell v-for="col in orderedColumns" v-model="activeData" :column="col"
-                            @sort="$emit('sort');save()" @filter="$emit('filter');filter()"/>
+                <HeaderCell v-for="col in orderedColumns"
+                            v-model="activeData"
+                            :column="col"
+                            @sort="$emit('sort');save()"
+                            @filter="$emit('filter');filter()"
+                />
             </tr>
             </thead>
             <tbody>

@@ -23,13 +23,12 @@ const pages = computed(() => {
 })
 
 const changePerPage = () => {
-    nextTick(() => {
-        console.log('start:', start.value, 'end:', end.value, 'model.page:', model.value.page)
+    // nextTick(() => {
         if (start.value >= end.value) {
             model.value.page = end.value
         }
         emit('changed')
-    })
+    // })
 }
 
 const selectPage = number => {
@@ -89,7 +88,7 @@ const selectPage = number => {
                 </button>
             </li>
         </ul>
-        <span class="ml-2">
+        <span class="ml-2 hidden sm:inline">
             Showing {{ from }} to {{ Math.min(model.per_page * model.page, model.total) }} of {{ model.total }}
         </span>
         <Select v-model="model.per_page"

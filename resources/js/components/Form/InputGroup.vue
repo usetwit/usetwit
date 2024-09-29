@@ -1,5 +1,5 @@
 <template>
-    <div class="input-group" :class="{'inline-flex': !$attrs.class.includes('flex')}">
+    <div class="input-group" :class="{'inline-flex': !$attrs.class?.includes('flex')}">
         <slot></slot>
     </div>
 </template>

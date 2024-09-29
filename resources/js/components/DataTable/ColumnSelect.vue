@@ -5,10 +5,6 @@ import Checkbox from '../Form/Checkbox.vue'
 
 const columns = defineModel()
 
-const visible = computed(() => {
-    return columns.value.filter(col => col.visible === true).sort((a, b) => a.label.localeCompare(b.label))
-})
-
 const sorted = computed(() => {
     return columns.value.sort((a, b) => a.label.localeCompare(b.label))
 })
@@ -23,11 +19,6 @@ const clearFilterAndSort = field => {
     filter(fetch)
 }
 
-const clearColumn = (col) => {
-    col.visible = false
-    clearFilterAndSort(col.field)
-}
-
 const {
     inputRef,
     dropdownStyle,
@@ -37,50 +28,30 @@ const {
 </script>
 
 <template>
-    <div class="overflow-x-auto pb-4 mb-4">
-        <fieldset class="flex border border-gray-200 text-gray-700 rounded-lg p-0.5 hover:cursor-pointer"
-                  ref="inputRef"
-                  @click.self="toggleDropdown"
+    <button type="button"
+            ref="inputRef"
+            class="p-1.5 rounded inline-flex items-center bg-slate-800 text-white hover:bg-slate-700"
+            @click="toggleDropdown"
+            title="Select Columns"
+    >
+        <i class="pi pi-bars"></i>
+    </button>
+    <Teleport to="body">
+        <div v-if="showDropdown"
+             ref="dropdownRef"
+             class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1 min-w-64 max-h-80"
+             :style="dropdownStyle"
         >
-            <button type="button"
-                    ref="buttonRef"
-                    class="pl-2.5 pr-2 py-1.5 mx-0.5 text-sm inline-flex items-center bg-slate-800 text-white rounded-lg text-nowrap hover:bg-slate-700"
-                    @click.self="toggleDropdown"
-            >
-                <i class="pi pi-bars mr-2"></i>Columns
-            </button>
-            <Teleport to="body">
-                <div v-if="showDropdown"
-                     ref="dropdownRef"
-                     class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1 min-w-64"
-                     :style="dropdownStyle"
-                >
-                    <ul>
-                        <li v-for="col in sorted" :key="col.field" class="text-sm">
-                            <Checkbox :label="col.label"
-                                      :id="col.field"
-                                      v-model="col.visible"
-                                      @update:model-value="clearFilterAndSort(col.field)"
-                                      class="select-none w-full px-3 py-1.5"
-                            />
-                        </li>
-                    </ul>
-                </div>
-            </Teleport>
-
-            <span v-for="col in visible"
-                  :key="col.field"
-                  class="hover:cursor-auto select-none pl-2.5 pr-2 py-0.5 mx-0.5 text-sm inline-flex items-center bg-gray-200 text-gray-800 rounded-lg text-nowrap"
-                  @click="showDropdown = false"
-            >
-                {{ col.label }}
-                <button type="button"
-                        @click="clearColumn(col)"
-                        class="inline-flex align-middle ml-0.5 p-1 text-sm hover:bg-gray-100 rounded-full"
-                >
-                <i class="pi pi-times-circle"></i>
-            </button>
-        </span>
-        </fieldset>
-    </div>
+            <ul>
+                <li v-for="col in sorted" :key="col.field" class="text-sm">
+                    <Checkbox :label="col.label"
+                              :id="col.field"
+                              v-model="col.visible"
+                              @update:model-value="clearFilterAndSort(col.field)"
+                              class="select-none w-full px-3 py-1.5"
+                    />
+                </li>
+            </ul>
+        </div>
+    </Teleport>
 </template>

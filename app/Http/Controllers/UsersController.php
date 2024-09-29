@@ -29,6 +29,19 @@ class UsersController extends Controller
         $perPage = $request->input('per_page');
         $filters = $request->input('filters');
         $sort = $request->input('sort');
+        $visible = $request->input('visible');
+
+        $substitutions = ['role_name' => 'roles.name'];
+        $global = [
+            'username',
+            'email',
+            'first_name',
+            'middle_names',
+            'last_name',
+            'full_name',
+            'employee_id',
+            'roles.name',
+        ];
 
         $cols = Schema::getColumnListing('users');
         $cols = array_diff($cols, ['password', 'remember_token']);
@@ -39,8 +52,9 @@ class UsersController extends Controller
             $join->on('model_has_roles.model_id', 'users.id')->where('model_has_roles.model_type', User::class);
         })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id');
 
-        $service->filter($query, $filters, ['global'], ['role_name' => 'roles.name']);
-        $service->sort($query, $sort, ['global'], ['role_name' => 'roles.name']);
+        $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
+                ->filter($query, $filters, ['global'], $substitutions)
+                ->sort($query, $sort, ['global'], $substitutions);
 
         $query = $query->paginate($perPage);
         $total = $query->total();

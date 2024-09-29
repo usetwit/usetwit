@@ -38,6 +38,7 @@ class UsersIndexGetUsersRequest extends FormRequest
                 'full_name',
                 'employee_id',
                 'role_name',
+                'global',
             ],
             'date' => [
                 'joined_at',
@@ -51,7 +52,7 @@ class UsersIndexGetUsersRequest extends FormRequest
 
         $filters = $service->makeValidationFilterRules($filterRules);
 
-        $sort = $service->makeValidationSortRules(Arr::flatten($filterRules));
+        $sort = $service->makeValidationSortRules(array_diff(Arr::flatten($filterRules), ['global']));
 
         $perPage = [
             'per_page' => [
@@ -60,6 +61,11 @@ class UsersIndexGetUsersRequest extends FormRequest
             ],
         ];
 
-        return array_merge($filters, $sort, $perPage);
+        $visible = [
+            'visible' => 'array',
+            'visible.*' => 'string',
+        ];
+
+        return array_merge($filters, $sort, $perPage, $visible);
     }
 }

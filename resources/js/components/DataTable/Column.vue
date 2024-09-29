@@ -7,6 +7,7 @@ const props = defineProps({
     sticky: { type: Boolean, default: false },
     label: { type: String, default: null },
     type: { type: String, default: null },
+    options: { type: Boolean, default: false },
 })
 
 defineOptions({
@@ -31,6 +32,7 @@ const column = {
     type: props.type,
     attrs: instance.attrs,
     props: instance.props,
+    options: props.options,
 }
 
 onMounted(() => {
