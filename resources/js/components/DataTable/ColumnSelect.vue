@@ -28,10 +28,6 @@ const clearColumn = (col) => {
     clearFilterAndSort(col.field)
 }
 
-const clearField = (field) => {
-    clearFilterAndSort(field)
-}
-
 const {
     inputRef,
     dropdownStyle,
@@ -64,7 +60,7 @@ const {
                             <Checkbox :label="col.label"
                                       :id="col.field"
                                       v-model="col.visible"
-                                      @update:model-value="clearField(col.field)"
+                                      @update:model-value="clearFilterAndSort(col.field)"
                                       class="select-none w-full px-3 py-1.5"
                             />
                         </li>

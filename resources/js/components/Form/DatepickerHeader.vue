@@ -5,7 +5,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="flex items-center text-sm border-b border-gray-200 p-1.5 mb-3 text-slate-700"
+    <div class="flex items-center text-sm border-b border-gray-200 p-2 mb-3 text-slate-700"
             :class="{'justify-between': buttons, 'justify-center': !buttons}"
     >
         <button v-if="buttons"

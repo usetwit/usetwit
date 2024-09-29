@@ -5,7 +5,8 @@ import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
 import { useTable } from '../composables/useTable.js'
 import { formatDate } from '../app/helpers.js'
-import { useStorage } from "../composables/useStorage.js";
+import { useStorage } from '../composables/useStorage.js'
+import { startCase } from 'lodash'
 
 const props = defineProps({
     paginationSettings: { type: Object, required: true },
@@ -27,7 +28,7 @@ const defaultData = {
         employee_id: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         email: { operator: 'and', constraints: [{ value: null, mode: 'contains' }] },
         joined_at: { operator: 'and', constraints: [{ value: null, mode: 'date_equals' }] },
-        role: { operator: 'or', constraints: [{ value: null, mode: 'equals' }] },
+        role_name: { operator: 'or', constraints: [{ value: null, mode: 'equals' }] },
         active: { constraints: [{ value: true, mode: 'equals' }] },
     },
     filtered: [],
@@ -37,8 +38,9 @@ const defaultData = {
         { field: 'first_name', label: 'First Name', visible: false, order: 3 },
         { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 4 },
         { field: 'last_name', label: 'Last Name', visible: false, order: 5 },
-        { field: 'joined_at', label: 'Join Date', visible: true, order: 6 },
-        { field: 'active', label: 'Active', visible: true, order: 7 },
+        { field: 'role_name', label: 'Role', visible: true, order: 6 },
+        { field: 'joined_at', label: 'Join Date', visible: true, order: 7 },
+        { field: 'active', label: 'Active', visible: true, order: 8 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
     pagination: {
@@ -103,6 +105,11 @@ provide('tableInstance', tableInstance)
                 <a :href="row.edit_user_route" title="Edit">{{ row.username }}</a>
             </template>
         </Column>
+        <Column :column="getColumn('full_name')" v-if="getColumn('full_name').visible" sortable type="string">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route" title="Edit">{{ row.full_name }}</a>
+            </template>
+        </Column>
         <Column :column="getColumn('first_name')" v-if="getColumn('first_name').visible" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit">{{ row.first_name }}</a>
@@ -118,9 +125,10 @@ provide('tableInstance', tableInstance)
                 <a :href="row.edit_user_route" title="Edit">{{ row.last_name }}</a>
             </template>
         </Column>
-        <Column :column="getColumn('full_name')" v-if="getColumn('full_name').visible" sortable type="string">
+        <Column :column="getColumn('role_name')" v-if="getColumn('role_name').visible" sortable type="string"
+                class="text-center">
             <template #body="{ row }">
-                <a :href="row.edit_user_route" title="Edit">{{ row.full_name }}</a>
+                <span class="bg-slate-800 text-sm text-white rounded-lg p-2">{{ startCase(row.role_name) }}</span>
             </template>
         </Column>
         <Column :column="getColumn('joined_at')" v-if="getColumn('joined_at').visible" sortable type="date">

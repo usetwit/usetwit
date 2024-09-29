@@ -7,7 +7,11 @@ const props = defineProps({
     placeholder: { type: String, default: 'Select an option' },
     options: { type: Array, required: true },
     optionLabel: { type: String, required: true },
-    optionValue: { type: String, default: null },
+    optionValue: {
+        type: String, default: null, validator(value, props) {
+            return typeof props.modelValue === 'string' || typeof props.modelValue === 'number'
+        }
+    },
     isLoading: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     invalid: { type: Boolean, default: false },
@@ -27,7 +31,7 @@ const text = computed(() => {
     if (model.value && typeof model.value === 'object') {
         foundOption = props.options.find(option => isEqual(option, toRaw(model.value)))
     } else if (['string', 'number'].includes(typeof model.value)) {
-        foundOption = props.options.find(option => option[props.optionLabel] === model.value)
+        foundOption = props.options.find(option => option[props.optionValue] === model.value)
     }
 
     return foundOption ? foundOption[props.optionLabel] : props.placeholder
