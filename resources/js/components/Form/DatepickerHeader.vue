@@ -6,9 +6,9 @@ const props = defineProps({
 
 <template>
     <div class="flex items-center text-sm border-b border-gray-200 p-1.5 mb-3 text-slate-700"
-            :class="{'justify-between': props.buttons, 'justify-center': !props.buttons}"
+            :class="{'justify-between': buttons, 'justify-center': !buttons}"
     >
-        <button v-if="props.buttons"
+        <button v-if="buttons"
                 type="button"
                 @click.stop="$emit('change', 'decrease')"
                 class="mr-2 align-middle inline-flex"
@@ -16,7 +16,7 @@ const props = defineProps({
             <i class="pi pi-angle-left"></i>
         </button>
         <slot></slot>
-        <button v-if="props.buttons"
+        <button v-if="buttons"
                 type="button"
                 @click.stop="$emit('change', 'increase')"
                 class="ml-2 align-middle inline-flex"

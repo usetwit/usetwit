@@ -1,11 +1,9 @@
-import { cloneDeep, difference } from 'lodash'
-import { useDebounce } from './useDebounce.js'
-import { useStorage } from './useStorage.js'
+import { cloneDeep, debounce, difference } from 'lodash'
 import { watch } from 'vue'
 
-export function useTable(storageKey, defaultData, fetchFn) {
+export function useTable(defaultData, fetchFn, storageInstance) {
 
-    const { activeData, saveToStorage } = useStorage(storageKey, defaultData)
+    const { activeData, saveToStorage } = storageInstance
 
     const getColumn = field => {
         return activeData.value.columns.find(col => col.field === field)
@@ -80,10 +78,17 @@ export function useTable(storageKey, defaultData, fetchFn) {
     const reset = () => {
         activeData.value.pagination.page = 1
         activeData.value.filters = cloneDeep(defaultData.filters)
+
+        const filteredFields = getFilteredFields()
+
+        activeData.value.columns.forEach(column => {
+            column.visible = column.visible ? true : filteredFields.includes(column.field)
+        })
+
         filter()
     }
 
-    const debouncedFetchFn = useDebounce(fetchFn)
+    const debouncedFetchFn = debounce(fetchFn, 300, { leading: true, trailing: true })
 
     const save = (fetch = true) => {
         saveToStorage()
@@ -93,9 +98,9 @@ export function useTable(storageKey, defaultData, fetchFn) {
         }
     }
 
-    const filter = (doFetchUsers = true) => {
+    const filter = (doFetch = true) => {
         activeData.value.filtered = getFilteredFields(activeData.value.filters)
-        save(doFetchUsers)
+        save(doFetch)
     }
 
     filter()
@@ -112,7 +117,5 @@ export function useTable(storageKey, defaultData, fetchFn) {
         clearFilter,
         clearSort,
         sort,
-        activeData,
-        defaultData,
     }
 }

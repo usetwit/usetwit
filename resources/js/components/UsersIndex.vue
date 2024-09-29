@@ -5,6 +5,7 @@ import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
 import { useTable } from '../composables/useTable.js'
 import { formatDate } from '../app/helpers.js'
+import { useStorage } from "../composables/useStorage.js";
 
 const props = defineProps({
     paginationSettings: { type: Object, required: true },
@@ -33,9 +34,9 @@ const defaultData = {
     columns: [
         { field: 'username', label: 'Username', visible: true, order: 1 },
         { field: 'full_name', label: 'Full Name', visible: true, order: 2 },
-        { field: 'first_name', label: 'First Name', visible: true, order: 3 },
+        { field: 'first_name', label: 'First Name', visible: false, order: 3 },
         { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 4 },
-        { field: 'last_name', label: 'Last Name', visible: true, order: 5 },
+        { field: 'last_name', label: 'Last Name', visible: false, order: 5 },
         { field: 'joined_at', label: 'Join Date', visible: true, order: 6 },
         { field: 'active', label: 'Active', visible: true, order: 7 },
     ],
@@ -46,6 +47,9 @@ const defaultData = {
         total: 0,
     }
 }
+
+const storageInstance = useStorage('users-index', defaultData)
+const { activeData } = storageInstance
 
 const fetchUsers = async () => {
     isLoading.value = true
@@ -70,9 +74,9 @@ const fetchUsers = async () => {
     isLoading.value = false
 }
 
-const tableInstance = useTable('users-index', defaultData, fetchUsers)
+const tableInstance = useTable(defaultData, fetchUsers, storageInstance)
 
-const { getColumn, activeData } = tableInstance
+const { getColumn } = tableInstance
 
 provide('tableInstance', tableInstance)
 </script>

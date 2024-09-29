@@ -1,6 +1,6 @@
 <script setup>
 import { useDropdown } from '../../composables/useDropdown.js'
-import { computed, ref, toRaw } from 'vue'
+import { computed, toRaw } from 'vue'
 import { isEqual } from 'lodash'
 
 const props = defineProps({
@@ -75,7 +75,7 @@ const setClasses = computed(() => {
          ref="inputRef"
          v-bind="$attrs"
     >
-        <span class="px-2 py-1.5 flex-1">{{ text }}</span>
+        <span class="px-2 py-1.5 flex-1 select-none">{{ text }}</span>
         <span v-if="showClear && model && !isLoading" @click.stop="clear" class="inline-flex items-center p-2">
             <i class="pi pi-times"></i>
         </span>
@@ -93,7 +93,7 @@ const setClasses = computed(() => {
             <ul v-if="options.length">
                 <li v-for="option in options"
                     @click.stop="optionSelected(option)"
-                    class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded text-nowrap"
+                    class="select-none flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded text-nowrap"
                 >
                     <slot name="option" :option="option">
                         {{ option[optionLabel] }}

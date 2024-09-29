@@ -59,7 +59,7 @@ const ctrlClick = (event, column) => {
         }"
     >
         <div v-if="column.label"
-             class="px-4 py-3 flex justify-between items-center"
+             class="px-4 py-2 flex justify-between items-center"
              @click.exact="singleClick($event, column)"
              @click.ctrl="ctrlClick($event, column)"
         >
