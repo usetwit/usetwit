@@ -211,20 +211,19 @@ class FilterService
      * @param Builder    $query
      * @param string     $field
      * @param string|int $value
-     * @param int        $index
      * @param string     $matchMode
      * @param string     $operator
      *
      * @return void
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function queryFilter(Builder $query, string $field, string|int $value, int $index, string $matchMode, string $operator): void
+    public function queryFilter(Builder $query, string $field, string|int $value, string $matchMode, string $operator): void
     {
         if (in_array(strtolower($matchMode), $this->getMatchModes('date', false, true))) {
-            $whereMethod = $operator === 'or' && $index > 0 ? 'orWhereDate' : 'whereDate';
+            $whereMethod = $operator === 'or' ? 'orWhereDate' : 'whereDate';
             $value = Carbon::parse($value)->format('Y-m-d');
         } else {
-            $whereMethod = $operator === 'or' && $index > 0 ? 'orWhere' : 'where';
+            $whereMethod = $operator === 'or' ? 'orWhere' : 'where';
         }
 
         switch (strtolower($matchMode)) {
@@ -284,9 +283,9 @@ class FilterService
 
             if ($constraints !== null) {
                 $query->where(function (Builder $query) use ($field, $operator, $constraints) {
-                    foreach ($constraints as $index => $props) {
-                        if ($props['value'] !== null) {
-                            $this->queryFilter($query, $field, $props['value'], $index, $props['mode'], $operator);
+                    foreach ($constraints as $constraint) {
+                        if ($constraint['value'] !== null) {
+                            $this->queryFilter($query, $field, $constraint['value'], $constraint['mode'], $operator);
                         }
                     }
                 });
@@ -312,9 +311,9 @@ class FilterService
         }
 
         foreach ($visible as &$field) {
-            if (array_key_exists($field, $substitutions)) {
-                $field = $substitutions[$field];
-            }
+//            if (array_key_exists($field, $substitutions)) {
+                $field = $substitutions[$field] ?? $field;
+//            }
         }
 
         $columns = array_intersect($visible, $global);

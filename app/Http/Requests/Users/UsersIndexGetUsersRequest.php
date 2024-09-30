@@ -17,7 +17,8 @@ class UsersIndexGetUsersRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() && $this->user()->can('users.edit');
+        return $this->user() && $this->user()
+                                     ->can('users.edit');
     }
 
     /**
@@ -63,7 +64,10 @@ class UsersIndexGetUsersRequest extends FormRequest
 
         $visible = [
             'visible' => 'array',
-            'visible.*' => 'string',
+            'visible.*' => [
+                'string',
+                Rule::in(array_diff($filterRules['string'], ['global'])),
+            ],
         ];
 
         return array_merge($filters, $sort, $perPage, $visible);

@@ -16,6 +16,10 @@
     font-family: 'Inter', sans-serif;
 }
 
+.regex-result {
+    @apply font-bold text-orange-500;
+}
+
 @layer components {
     h3 {
         @apply text-xl border-t border-slate-200 text-slate-700 p-4 bg-slate-200 uppercase;

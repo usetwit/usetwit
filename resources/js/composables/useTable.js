@@ -9,6 +9,14 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
         return activeData.value.columns.find(col => col.field === field) || null
     }
 
+    const getSearchGlobalValue = () => {
+        return activeData.value.filters?.global?.constraints[0]?.value || null
+    }
+
+    const getSearchValues = field => {
+        return activeData.value.filters?.[field]?.constraints?.map(value => value.value) || []
+    }
+
     const getSortedFields = () => {
         return activeData.value.sort.map(item => item.field)
     }
@@ -141,6 +149,8 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
         getModifiedFields,
         getSortedFields,
         setConstraints,
+        getSearchGlobalValue,
+        getSearchValues,
         isVisible,
         getVisibleFields,
         reset,

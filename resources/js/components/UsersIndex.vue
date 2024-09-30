@@ -5,7 +5,7 @@ import DataTable from './DataTable/DataTable.vue'
 import Column from './DataTable/Column.vue'
 import Button from './Form/Button.vue'
 import useTable from '../composables/useTable.js'
-import { formatDate } from '../app/helpers.js'
+import { formatDate, applyFilterRegex } from '../app/helpers.js'
 import useStorage from '../composables/useStorage.js'
 import { startCase } from 'lodash'
 
@@ -35,12 +35,12 @@ const defaultData = {
     },
     filtered: [],
     columns: [
-        { field: 'username', label: 'Username', visible: true, order: 1 },
-        { field: 'full_name', label: 'Full Name', visible: true, order: 2 },
-        { field: 'first_name', label: 'First Name', visible: false, order: 3 },
-        { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 4 },
-        { field: 'last_name', label: 'Last Name', visible: false, order: 5 },
-        { field: 'role_name', label: 'Role', visible: true, order: 6 },
+        { field: 'username', label: 'Username', visible: true, order: 1, global: true },
+        { field: 'full_name', label: 'Full Name', visible: true, order: 2, global: true },
+        { field: 'first_name', label: 'First Name', visible: false, order: 3, global: true },
+        { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 4, global: true },
+        { field: 'last_name', label: 'Last Name', visible: false, order: 5, global: true },
+        { field: 'role_name', label: 'Role', visible: true, order: 6, global: true },
         { field: 'joined_at', label: 'Join Date', visible: true, order: 7 },
         { field: 'created_at', label: 'Created Date', visible: true, order: 7 },
         { field: 'updated_at', label: 'Updated Date', visible: true, order: 7 },
@@ -65,7 +65,7 @@ const fetchUsers = async () => {
         page: activeData.value.pagination.page,
         per_page: activeData.value.pagination.per_page,
         sort: activeData.value.sort,
-        visible: activeData.value.columns.filter(col => col.visible).map(col => col.field)
+        visible: activeData.value.columns.filter(col => col.visible && col.global).map(col => col.field)
     })
 
     await getResponse()
@@ -82,7 +82,9 @@ const fetchUsers = async () => {
 
 const tableInstance = useTable(defaultData, fetchUsers, storageInstance)
 
-const { getColumn, isVisible } = tableInstance
+const { getColumn, isVisible, getSearchGlobalValue, getSearchValues } = tableInstance
+
+const r = (field, string) => applyFilterRegex(string, getSearchGlobalValue(), getSearchValues(field))
 
 provide('tableInstance', tableInstance)
 </script>
@@ -106,38 +108,38 @@ provide('tableInstance', tableInstance)
         </Column>
         <Column :column="getColumn('username')" v-if="isVisible('username')" sortable type="string">
             <template #body="{ row }">
-                <a :href="row.edit_user_route" title="Edit">{{ row.username }}</a>
+                <a :href="row.edit_user_route" title="Edit" v-html="r('username', row.username)"></a>
             </template>
         </Column>
         <Column :column="getColumn('full_name')" v-if="isVisible('full_name')" sortable type="string">
             <template #body="{ row }">
-                <a :href="row.edit_user_route" title="Edit">{{ row.full_name }}</a>
+                <a :href="row.edit_user_route" title="Edit" v-html="r('full_name', row.full_name)"></a>
             </template>
         </Column>
         <Column :column="getColumn('first_name')" v-if="isVisible('first_name')" sortable type="string">
             <template #body="{ row }">
-                <a :href="row.edit_user_route" title="Edit">{{ row.first_name }}</a>
+                <a :href="row.edit_user_route" title="Edit" v-html="r('first_name', row.first_name)"></a>
             </template>
         </Column>
         <Column :column="getColumn('middle_names')" v-if="isVisible('middle_names')" sortable type="string">
             <template #body="{ row }">
-                <a :href="row.edit_user_route" title="Edit">{{ row.middle_names }}</a>
+                <a :href="row.edit_user_route" title="Edit" v-html="r('middle_names', row.middle_names)"></a>
             </template>
         </Column>
         <Column :column="getColumn('last_name')" v-if="isVisible('last_name')" sortable type="string">
             <template #body="{ row }">
-                <a :href="row.edit_user_route" title="Edit">{{ row.last_name }}</a>
+                <a :href="row.edit_user_route" title="Edit" v-html="r('last_name', row.last_name)"></a>
             </template>
         </Column>
         <Column :column="getColumn('email')" v-if="isVisible('email')" sortable type="string">
             <template #body="{ row }">
-                <a :href="row.edit_user_route" title="Edit">{{ row.email }}</a>
+                <a :href="row.edit_user_route" title="Edit" v-html="r('email', row.email)"></a>
             </template>
         </Column>
         <Column :column="getColumn('role_name')" v-if="isVisible('role_name')" sortable type="string"
                 class="text-center">
             <template #body="{ row, setConstraintsCb }">
-                <Button size="sm" @click="setConstraintsCb(row.role_name)">{{ startCase(row.role_name) }}</Button>
+                <Button size="sm" @click="setConstraintsCb(row.role_name)" v-html="r('role_name', startCase(row.role_name))"/>
             </template>
         </Column>
         <Column :column="getColumn('joined_at')" v-if="isVisible('joined_at')" sortable type="date">
