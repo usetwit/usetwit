@@ -43,7 +43,7 @@ export const applyFilterRegex = (string, global, self = []) => {
     }
 
     if (Array.isArray(global) || typeof global === 'object' || typeof global === 'boolean') {
-        global = null
+        global = ''
     }
 
     self = Array.from(self)
@@ -51,23 +51,24 @@ export const applyFilterRegex = (string, global, self = []) => {
     global = String(global)
     const regexParts = []
 
-    if (global) {
-        const escapedGlobal = escapeRegex(global)
-        if (escapedGlobal) {
-            regexParts.push(escapedGlobal)
-        }
+    if (!regexParts.length && global === '') {
+        return string
+    }
+
+    if (global !== '') {
+        regexParts.push(escapeRegex(global))
     }
 
     self.forEach(value => {
-        const escapedValue = escapeRegex(value)
-        if (escapedValue) {
-            regexParts.push(escapedValue)
+        if (Array.isArray(value) || typeof value === 'object' || typeof value === 'boolean') {
+            return
+        }
+
+        value = String(value)
+        if (value !== '') {
+            regexParts.push(value)
         }
     })
-
-    if (!regexParts.length) {
-        return string
-    }
 
     return string.replace(new RegExp(regexParts.join('|'), 'gi'), `<span class="regex-result">$&</span>`)
 }
