@@ -52,6 +52,7 @@ const ctrlClick = (event, column) => {
     <th class="border-y p-0 select-none"
         :class="{
             'sticky left-0': column.sticky,
+            'relative': !column.sticky,
             'bg-white text-gray-800': !sortObj,
             'hover:bg-gray-100': !sortObj && column.sortable,
             'bg-slate-800 text-white hover:bg-slate-700': sortObj,
@@ -60,17 +61,18 @@ const ctrlClick = (event, column) => {
             'border-gray-200': !column.options,
         }"
     >
-        <div v-if="column.options" class="px-4 py-4 flex items-center">
+        <div v-if="column.options" class="px-4 py-3.5 flex items-center">
             <ColumnSelect v-model="activeData.columns"/>
         </div>
-        <div v-else-if="column.label"
-             class="px-4 py-2 flex justify-between items-center"
-             @click.exact="singleClick($event, column)"
-             @click.ctrl="ctrlClick($event, column)"
-        >
-            <div class="inline-flex items-center">
-                <span class="py-2">{{ column.label }}</span>
-                <span v-if="sortObj" class="text-white inline-flex ml-2">
+
+        <div v-else-if="column.label" class="bg-sky-200">
+            <div class="px-4 py-2 flex justify-between items-center bg-yellow-200"
+                 @click.exact="singleClick($event, column)"
+                 @click.ctrl="ctrlClick($event, column)"
+            >
+                <div class="inline-flex items-center">
+                    <span class="py-2 whitespace-nowrap">{{ column.label }}</span>
+                    <span v-if="sortObj" class="text-white inline-flex ml-2">
                     <i v-if="sortObj.order === 'asc'" class="pi pi-sort-amount-up-alt"></i>
                     <i v-if="sortObj.order === 'desc'" class="pi pi-sort-amount-down-alt"></i>
                     <span
@@ -79,18 +81,20 @@ const ctrlClick = (event, column) => {
                         {{ sortObj.position }}
                     </span>
                 </span>
-                <span v-else-if="column.sortable" class="text-gray-500 ml-2">
+                    <span v-else-if="column.sortable" class="text-gray-500 ml-2">
                     <i class="pi pi-sort-alt"></i>
                 </span>
+                </div>
+                <Filter v-if="column.type"
+                        v-model="activeData.filters"
+                        :filtered="activeData.filtered"
+                        :column="column"
+                        :sort-obj="sortObj"
+                        ref="filterRef"
+                        @filter="$emit('filter')"
+                />
             </div>
-            <Filter v-if="column.type"
-                    v-model="activeData.filters"
-                    :filtered="activeData.filtered"
-                    :column="column"
-                    :sort-obj="sortObj"
-                    ref="filterRef"
-                    @filter="$emit('filter')"
-            />
+            <span class="absolute top-0 right-0 h-full w-2 bg-red-500 cursor-col-resize"></span>
         </div>
         <div v-else class="px-4 py-3 flex justify-between items-center">
             &nbsp;

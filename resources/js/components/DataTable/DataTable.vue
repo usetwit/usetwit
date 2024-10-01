@@ -45,7 +45,7 @@ const orderedColumns = computed(() => {
     return columnsArray
 })
 
-const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
+const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
 </script>
 
 <template>
@@ -72,7 +72,7 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
         <InputGroup class="sm:mt-0 mt-2">
             <InputText v-model="activeData.filters.global.constraints[0].value"
                        placeholder="Search..."
-                       @input="save"
+                       @input="filter"
             />
             <InputGroupAddon>
                 <i class="pi pi-search"></i>
@@ -80,7 +80,7 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
         </InputGroup>
     </div>
 
-    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="save" class="mt-8"/>
+    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch" class="mt-8"/>
 
     <div class="my-3 overflow-x-auto relative">
         <table class="min-w-full">
@@ -89,7 +89,7 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
                 <HeaderCell v-for="col in orderedColumns"
                             v-model="activeData"
                             :column="col"
-                            @sort="$emit('sort');save()"
+                            @sort="$emit('sort');fetch()"
                             @filter="$emit('filter');filter()"
                 />
             </tr>
@@ -123,7 +123,7 @@ const { save, filter, getFilteredFields, reset, clearFilters } = inject('tableIn
         </div>
     </div>
 
-    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="save"/>
+    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch"/>
 </template>
 
 <style scoped lang="postcss">

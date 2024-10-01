@@ -12,11 +12,11 @@ const sorted = computed(() => {
 const { clearFilter, clearSort, filter, getSortedFields, getFilteredFields } = inject('tableInstance')
 
 const clearFilterAndSort = field => {
-    const fetch = getSortedFields().includes(field) || getFilteredFields().includes(field)
+    const doFetch = getSortedFields().includes(field) || getFilteredFields().includes(field)
 
     clearSort(field)
     clearFilter(field)
-    filter(fetch)
+    filter(doFetch)
 }
 
 const {
@@ -30,7 +30,7 @@ const {
 <template>
     <button type="button"
             ref="inputRef"
-            class="p-1.5 rounded inline-flex items-center bg-slate-800 text-white hover:bg-slate-700"
+            class="p-1.5 rounded inline-flex items-center bg-emerald-500 text-white hover:bg-emerald-400"
             @click="toggleDropdown"
             title="Select Columns"
     >

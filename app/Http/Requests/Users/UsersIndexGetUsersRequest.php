@@ -49,6 +49,9 @@ class UsersIndexGetUsersRequest extends FormRequest
             'boolean' => [
                 'active',
             ],
+            'number' => [
+                'id',
+            ]
         ];
 
         $filters = $service->makeValidationFilterRules($filterRules);
@@ -66,7 +69,7 @@ class UsersIndexGetUsersRequest extends FormRequest
             'visible' => 'array',
             'visible.*' => [
                 'string',
-                Rule::in(array_diff($filterRules['string'], ['global'])),
+                Rule::in(array_diff(Arr::flatten($filterRules), ['global'])),
             ],
         ];
 

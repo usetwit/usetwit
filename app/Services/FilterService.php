@@ -88,7 +88,7 @@ class FilterService
 
         $valueType = match (strtolower($type)) {
             'boolean' => 'boolean',
-            'number' => 'number',
+            'number' => 'numeric',
             'date' => 'date_format:Y-m-d',
             default => 'string',
         };
@@ -221,7 +221,8 @@ class FilterService
     {
         if (in_array(strtolower($matchMode), $this->getMatchModes('date', false, true))) {
             $whereMethod = $operator === 'or' ? 'orWhereDate' : 'whereDate';
-            $value = Carbon::parse($value)->format('Y-m-d');
+            $value = Carbon::parse($value)
+                           ->format('Y-m-d');
         } else {
             $whereMethod = $operator === 'or' ? 'orWhere' : 'where';
         }
@@ -311,14 +312,12 @@ class FilterService
         }
 
         foreach ($visible as &$field) {
-//            if (array_key_exists($field, $substitutions)) {
-                $field = $substitutions[$field] ?? $field;
-//            }
+            $field = $substitutions[$field] ?? $field;
         }
 
         $columns = array_intersect($visible, $global);
 
-        if(count($columns)) {
+        if (count($columns)) {
             $query->where(function (Builder $query) use ($columns, $value) {
                 foreach ($columns as $column) {
                     $query->orWhere($column, 'like', "%{$value}%");

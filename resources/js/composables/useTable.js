@@ -3,7 +3,7 @@ import { watch } from 'vue'
 
 export default function useTable(defaultData, fetchFn, storageInstance) {
 
-    const { activeData, set } = storageInstance
+    const { activeData, set: saveToStorage } = storageInstance
 
     const getColumn = field => {
         return activeData.value.columns.find(col => col.field === field) || null
@@ -28,7 +28,7 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
     const isVisible = field => getVisibleFields().includes(field)
 
     watch(activeData, () => {
-        save(false)
+        saveToStorage()
     }, { deep: true })
 
     const sort = (column, removeOtherSorts = false) => {
@@ -61,8 +61,6 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
     }
 
     const setConstraints = (col, value) => {
-        activeData.value.pagination.page = 1
-
         const modeMapping = {
             number: 'equals',
             date: 'date_equals',
@@ -85,7 +83,6 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
     }
 
     const clearFilters = () => {
-        activeData.value.pagination.page = 1
         const { filters } = activeData.value
 
         Object.keys(filters).forEach(key => {
@@ -96,7 +93,6 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
     }
 
     const clearFilter = (field) => {
-        activeData.value.pagination.page = 1
         activeData.value.filters[field].constraints = [{
             value: null,
             mode: activeData.value.filters[field].constraints[0].mode
@@ -113,7 +109,6 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
     }
 
     const reset = () => {
-        activeData.value.pagination.page = 1
         activeData.value.filters = cloneDeep(defaultData.filters)
 
         const filteredFields = getFilteredFields()
@@ -125,22 +120,21 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
         filter()
     }
 
-    const debouncedFetchFn = debounce(fetchFn, 300, { leading: true, trailing: true })
+    const fetch = debounce(fetchFn, 300, { leading: true, trailing: true })
 
-    const save = (fetch = true) => {
-        set()
+    const filter = (doFetch = true, setPageFirst = true) => {
+        if (setPageFirst) {
+            activeData.value.pagination.page = 1
+        }
 
-        if (fetch) {
-            debouncedFetchFn()
+        activeData.value.filtered = getFilteredFields(activeData.value.filters)
+
+        if (doFetch) {
+            fetch()
         }
     }
 
-    const filter = (doFetch = true) => {
-        activeData.value.filtered = getFilteredFields(activeData.value.filters)
-        save(doFetch)
-    }
-
-    filter()
+    filter(true, false)
 
     return {
         getColumn,
@@ -154,7 +148,7 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
         isVisible,
         getVisibleFields,
         reset,
-        save,
+        fetch,
         filter,
         clearFilters,
         clearFilter,

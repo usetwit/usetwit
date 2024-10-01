@@ -49,11 +49,8 @@ export const applyFilterRegex = (string, global, self = []) => {
     self = Array.from(self)
     string = String(string)
     global = String(global)
-    const regexParts = []
 
-    if (!regexParts.length && global === '') {
-        return string
-    }
+    const regexParts = []
 
     if (global !== '') {
         regexParts.push(escapeRegex(global))
@@ -69,6 +66,10 @@ export const applyFilterRegex = (string, global, self = []) => {
             regexParts.push(value)
         }
     })
+
+    if (!regexParts.length) {
+        return string
+    }
 
     return string.replace(new RegExp(regexParts.join('|'), 'gi'), `<span class="regex-result">$&</span>`)
 }

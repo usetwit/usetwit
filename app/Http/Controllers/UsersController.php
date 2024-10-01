@@ -34,7 +34,7 @@ class UsersController extends Controller
         $sort = $request->input('sort');
         $visible = $request->input('visible');
 
-        $substitutions = ['role_name' => 'roles.name'];
+        $substitutions = ['role_name' => 'roles.name', 'id' => 'users.id'];
         $global = [
             'username',
             'email',

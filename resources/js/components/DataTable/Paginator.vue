@@ -1,7 +1,7 @@
 <script setup>
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed } from 'vue'
 import Select from '../Form/Select.vue'
-import { range } from "lodash";
+import { range } from 'lodash'
 
 const props = defineProps({
     settings: { type: Object, required: true },
@@ -18,17 +18,14 @@ const totalPages = computed(() => model.value.total > 0 ? Math.ceil(model.value.
 const perSide = 2
 const start = computed(() => Math.max(1, model.value.page - perSide))
 const end = computed(() => Math.min(totalPages.value, model.value.page + perSide))
+
 const pages = computed(() => {
     return range(start.value, end.value + 1).map(num => ({ number: num, current: num === model.value.page }))
 })
 
 const changePerPage = () => {
-    // nextTick(() => {
-        if (start.value >= end.value) {
-            model.value.page = end.value
-        }
-        emit('changed')
-    // })
+    model.value.page = Math.min(model.value.page, end.value)
+    emit('changed')
 }
 
 const selectPage = number => {

@@ -20,6 +20,7 @@ const isLoading = ref(false)
 const defaultData = {
     filters: {
         global: { constraints: [{ value: null, mode: 'contains' }] },
+        id: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
         username: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
         first_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
         last_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
@@ -34,12 +35,15 @@ const defaultData = {
         active: { constraints: [{ value: true, mode: 'equals' }] },
     },
     filtered: [],
+    widths: [],
     columns: [
+        { field: 'id', label: 'ID', visible: true, order: 1, global: true },
         { field: 'username', label: 'Username', visible: true, order: 1, global: true },
         { field: 'full_name', label: 'Full Name', visible: true, order: 2, global: true },
         { field: 'first_name', label: 'First Name', visible: false, order: 3, global: true },
         { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 4, global: true },
         { field: 'last_name', label: 'Last Name', visible: false, order: 5, global: true },
+        { field: 'email', label: 'Email', visible: true, order: 6, global: true },
         { field: 'role_name', label: 'Role', visible: true, order: 6, global: true },
         { field: 'joined_at', label: 'Join Date', visible: true, order: 7 },
         { field: 'created_at', label: 'Created Date', visible: true, order: 7 },
@@ -109,6 +113,11 @@ provide('tableInstance', tableInstance)
         <Column :column="getColumn('username')" v-if="isVisible('username')" sortable type="string">
             <template #body="{ row }">
                 <a :href="row.edit_user_route" title="Edit" v-html="r('username', row.username)"></a>
+            </template>
+        </Column>
+        <Column :column="getColumn('id')" v-if="isVisible('id')" sortable type="string">
+            <template #body="{ row }">
+                <a :href="row.edit_user_route" title="Edit" v-html="r('id', row.id)"></a>
             </template>
         </Column>
         <Column :column="getColumn('full_name')" v-if="isVisible('full_name')" sortable type="string">
