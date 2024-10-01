@@ -16,6 +16,10 @@
     font-family: 'Inter', sans-serif;
 }
 
+.bg-gradient {
+    background: linear-gradient(45deg, theme('colors.yellow.100'), theme('colors.orange.100'), theme('colors.red.100'), theme('colors.fuchsia.100'));
+}
+
 .regex-result {
     @apply font-bold text-orange-500;
 }

@@ -33,13 +33,11 @@ const filterClicked = (event) => {
 }
 
 const applySort = (column, removeOtherSorts = false) => {
-    const { sort } = activeData.value
-
-    const sortField = sort.find(col => col.field === column.field)
+    const sortField = activeData.value.sort.find(col => col.field === column.field)
 
     if (sortField) {
         if (sortField.order === 'desc') {
-            activeData.value.sort = sort.filter(col => col.field !== column.field)
+            activeData.value.sort = activeData.value.sort.filter(col => col.field !== column.field)
         } else {
             sortField.order = 'desc'
         }
@@ -48,7 +46,7 @@ const applySort = (column, removeOtherSorts = false) => {
     }
 
     if (removeOtherSorts) {
-        activeData.value.sort = sort.filter(col => col.field === column.field)
+        activeData.value.sort = activeData.value.sort.filter(col => col.field === column.field)
     }
 }
 

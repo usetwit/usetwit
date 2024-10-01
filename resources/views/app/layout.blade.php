@@ -9,18 +9,18 @@
 </head>
 
 <body>
-<div id="storage"><storage :version="{{ Js::from($version) }}"></storage></div>
+<div id="storage">
+    <storage :version="{{ Js::from($version) }}"></storage>
+</div>
 
 <div id="navbar">
-    @include('app._navbar')
+    <navbar></navbar>
 </div>
 
 @if(session()->has('success') || count($errors))
     <div id="flash">
-        <Flash
-            @if(session()->has('success')) type="success" message="{{ addslashes(session('success')) }}"
-
-            @elseif(count($errors)) type="error" message="{{ addslashes($errors->first()) }}" @endif
+        <Flash @if(session()->has('success')) type="success" message="{{ addslashes(session('success')) }}"
+               @elseif(count($errors)) type="error" message="{{ addslashes($errors->first()) }}" @endif
         />
     </div>
 @endif
@@ -39,7 +39,9 @@
 
         @yield('breadcrumbs')
 
-        <main class="p-4 bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto" id="xxx">
+        <main
+            class="p-4 bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto"
+        >
             @include('app._errors')
 
             @yield('content')

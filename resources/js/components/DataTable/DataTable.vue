@@ -66,13 +66,6 @@ watch(rows, () => {
 })
 
 const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
-
-const c = (event) => {
-    console.log('click', event.target)
-}
-const md = (event) => {
-    console.log('md', event.target)
-}
 </script>
 
 <template>
@@ -113,7 +106,7 @@ const md = (event) => {
     <div class="my-3 overflow-x-auto relative">
 
         <Teleport to="body" v-if="resizeLeftStyle">
-            <div class="absolute w-[2px] bg-slate-500 z-[999]" :style="[resizeLeftStyle, style]" @click="c" @mousedown="md"></div>
+            <div class="absolute w-[2px] bg-slate-500 z-[999]" :style="[resizeLeftStyle, style]"></div>
         </Teleport>
 
         <table ref="tableRef">
