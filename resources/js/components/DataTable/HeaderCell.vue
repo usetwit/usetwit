@@ -1,10 +1,10 @@
 <script setup>
-import { computed, useTemplateRef } from 'vue'
+import { computed, inject, ref, useTemplateRef } from 'vue'
 import Filter from './Filter.vue'
 import ColumnSelect from './ColumnSelect.vue'
 
 const props = defineProps({
-    column: { type: Object, required: true },
+    column: { type: Object, required: true }
 })
 
 const emit = defineEmits(['sort', 'filter'])
@@ -22,17 +22,21 @@ const sortObj = computed(() => {
 })
 
 const filterEl = useTemplateRef('filterRef')
+const thRef = useTemplateRef('thRef')
+const { getColumn } = inject('tableInstance')
 
 const filterClicked = (event) => {
     return filterEl.value?.inputRef.childNodes && Array.from(filterEl.value?.inputRef.childNodes).includes(event.target) || event.target === filterEl.value?.inputRef
 }
 
-const sort = (column, removeOtherSorts = false) => {
-    const sortField = activeData.value.sort.find(col => col.field === column.field)
+const applySort = (column, removeOtherSorts = false) => {
+    const { sort } = activeData.value
+
+    const sortField = sort.find(col => col.field === column.field)
 
     if (sortField) {
         if (sortField.order === 'desc') {
-            activeData.value.sort = activeData.value.sort.filter(col => col.field !== column.field)
+            activeData.value.sort = sort.filter(col => col.field !== column.field)
         } else {
             sortField.order = 'desc'
         }
@@ -41,26 +45,51 @@ const sort = (column, removeOtherSorts = false) => {
     }
 
     if (removeOtherSorts) {
-        activeData.value.sort = activeData.value.sort.filter(col => col.field === column.field)
+        activeData.value.sort = sort.filter(col => col.field === column.field)
     }
 }
 
 const singleClick = (event, column) => {
-    if (filterClicked(event)) {
-        return
+    if (!filterClicked(event)) {
+        applySort(column, true)
+        emit('sort')
     }
-
-    sort(column, true)
-    emit('sort')
 }
 
 const ctrlClick = (event, column) => {
-    if (filterClicked(event)) {
-        return
+    if (!filterClicked(event)) {
+        applySort(column)
+        emit('sort')
+    }
+}
+
+const mouseX = ref();
+const col = getColumn(props.column.field); // Ensure this returns a reactive object if needed
+
+const resizeMouseup = (event) => {
+    if (!col) return; // Early return if col is not found
+
+    const movement = event.pageX - mouseX.value;
+    const currentWidth = thRef.value.getBoundingClientRect().width;
+
+    // Calculate new width, ensuring a minimum width of 20
+    const newWidth = Math.max(20, currentWidth + movement);
+
+    if (movement !== 0) {
+        // Create a new column object reference to ensure reactivity
+        col.width = newWidth; // Assuming col is reactive
     }
 
-    sort(column)
-    emit('sort')
+    // Clean up the mouseup event listener
+    window.removeEventListener('mouseup', resizeMouseup);
+};
+
+// Computed property for width
+const width = computed(() => col ? col.width : 0)
+
+const resizeMousedown = (event) => {
+    mouseX.value = event.pageX
+    window.addEventListener('mouseup', resizeMouseup)
 }
 </script>
 
@@ -74,7 +103,11 @@ const ctrlClick = (event, column) => {
             'bg-slate-800 text-white hover:bg-slate-700': sortObj,
             'cursor-pointer': column.sortable,
         }"
-    >
+        :style="{
+            minWidth: width + 'px'
+        }"
+        ref="thRef"
+    >{{ width }}
         <div v-if="column.options" class="px-4 py-3.5 flex items-center">
             <ColumnSelect v-model="activeData.columns"/>
         </div>
@@ -108,7 +141,9 @@ const ctrlClick = (event, column) => {
                         @filter="$emit('filter')"
                 />
             </div>
-            <span class="absolute top-0 right-0 h-full w-2 bg-red-500 cursor-col-resize"></span>
+            <span class="absolute top-0 right-0 h-full w-2 bg-red-500 cursor-col-resize"
+                  @mousedown="resizeMousedown"
+            ></span>
         </template>
         <div v-else class="px-4 py-3 flex justify-between items-center">
             &nbsp;

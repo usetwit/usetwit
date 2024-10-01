@@ -22,7 +22,7 @@ export default function useStorage(key, defaultData, passThrough = false) {
     }
 
     const clear = () => {
-        localStorage.clear()
+        // localStorage.clear()
     }
 
     if (!passThrough) {

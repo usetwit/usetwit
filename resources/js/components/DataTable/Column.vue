@@ -24,6 +24,7 @@ const instance = getCurrentInstance()
 const column = {
     field: props.column?.field,
     order: props.column?.order,
+    width: props.column?.width,
     label: props.column?.label || props.label,
     sticky: props.sticky,
     sortable: props.sortable,

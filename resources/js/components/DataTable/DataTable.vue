@@ -1,12 +1,12 @@
 <script setup>
-import { ref, provide, computed, inject } from 'vue'
+import { inject, provide, ref, watch } from 'vue'
 import HeaderCell from './HeaderCell.vue'
 import Cell from './Cell.vue'
 import Button from '../Form/Button.vue'
 import Paginator from './Paginator.vue'
 import InputText from '../Form/InputText.vue'
-import InputGroup from "../Form/InputGroup.vue";
-import InputGroupAddon from "../Form/InputGroupAddon.vue";
+import InputGroup from '../Form/InputGroup.vue'
+import InputGroupAddon from '../Form/InputGroupAddon.vue'
 
 const props = defineProps({
     rows: { type: Array, required: true },
@@ -15,24 +15,22 @@ const props = defineProps({
     dateSettings: { type: Object },
 })
 
-const columns = ref(new Set())
-defineEmits(['sort', 'filter'])
+const columnSet = ref(new Set())
+const columns = ref([])
 const activeData = defineModel()
 
 provide('registerColumn', column => {
-    columns.value.add(column)
+    columnSet.value.add(column)
 })
 
 provide('deregisterColumn', column => {
-    columns.value.delete(column)
+    columnSet.value.delete(column)
 })
 
 provide('dateSettings', props.dateSettings)
 
-const orderedColumns = computed(() => {
-    const columnsArray = Array.from(columns.value)
-
-    columnsArray.sort((a, b) => {
+watch(columnSet, (newValue) => {
+    columns.value = Array.from(newValue).sort((a, b) => {
         if (a.order === undefined && b.order !== undefined) {
             return -1
         } else if (a.order !== undefined && b.order === undefined) {
@@ -41,9 +39,23 @@ const orderedColumns = computed(() => {
 
         return a.order - b.order
     })
+}, { deep: true })
 
-    return columnsArray
-})
+// const orderedColumns = computed(() => {
+//     const columnsArray = Array.from(columns.value)
+//
+//     columnsArray.sort((a, b) => {
+//         if (a.order === undefined && b.order !== undefined) {
+//             return -1
+//         } else if (a.order !== undefined && b.order === undefined) {
+//             return 1
+//         }
+//
+//         return a.order - b.order
+//     })
+//
+//     return columnsArray
+// })
 
 const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
 </script>
@@ -86,11 +98,11 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
         <table class="min-w-full">
             <thead>
             <tr>
-                <HeaderCell v-for="col in orderedColumns"
+                <HeaderCell v-for="col in columns"
                             v-model="activeData"
                             :column="col"
-                            @sort="$emit('sort');fetch()"
-                            @filter="$emit('filter');filter()"
+                            @sort="fetch"
+                            @filter="filter"
                 />
             </tr>
             </thead>
@@ -101,7 +113,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
                 class="hover:bg-gray-100 body-row"
                 :class="{'even': i % 2 === 1, 'odd': i % 2 === 0}"
             >
-                <Cell v-for="col in orderedColumns"
+                <Cell v-for="col in columns"
                       :key="col.field + '_' + row.id.toString()"
                       :class="{'sticky left-0': col.sticky}"
                       v-bind="col.attrs"
