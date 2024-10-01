@@ -70,7 +70,6 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
 
 <template>
     <slot/>
-<Flash/>
     <div class="flex justify-between items-start sm:flex-row flex-col">
         <div>
             <Button :badge="getFilteredFields().length"
@@ -146,7 +145,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
             </tbody>
         </table>
         <div v-if="isLoading"
-             class="bg-opacity-50 bg-slate-100 z-[150] w-full h-full left-0 top-0 absolute text-[2rem] text-slate-700 flex items-center justify-center"
+             class="bg-opacity-50 bg-slate-100 z-[150] w-full h-full left-0 top-0 absolute text-[4rem] text-slate-700 flex items-center justify-center"
         >
             <i class="pi pi-spinner pi-spin"></i>
         </div>

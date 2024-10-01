@@ -28,7 +28,7 @@ const sortObj = computed(() => {
 const filterEl = useTemplateRef('filterRef')
 const thRef = useTemplateRef('thRef')
 
-const filterClicked = (event) => {
+const filterClicked = event => {
     return filterEl.value?.inputRef.childNodes && Array.from(filterEl.value?.inputRef.childNodes).includes(event.target) || event.target === filterEl.value?.inputRef
 }
 
@@ -71,7 +71,7 @@ const width = computed(() => activeDataCol && activeDataCol.width !== null && ac
                              activeDataCol.width :
                              defaultWidth)
 
-const resizeMouseup = (event) => {
+const resizeMouseup = event => {
     resizeLeftStyle.value = null
     window.removeEventListener('mousemove', resizeMousemove)
 
@@ -85,13 +85,13 @@ const resizeMouseup = (event) => {
     window.removeEventListener('mouseup', resizeMouseup)
 }
 
-const resizeMousemove = (event) => {
-    const x = event.pageX
+const resizeMousemove = event => {
+    const x = event.pageX + 2
     resizeLeftStyle.value = { 'left': x.toString() + 'px' }
 }
 
-const resizeMousedown = (event) => {
-    const x = event.pageX
+const resizeMousedown = event => {
+    const x = event.pageX + 2
     resizeLeftStyle.value = { 'left': x.toString() + 'px' }
     mouseX.value = event.pageX
     window.addEventListener('mouseup', resizeMouseup)
@@ -101,6 +101,12 @@ const resizeMousedown = (event) => {
 const resizeDblclick = () => {
     activeDataCol.width = defaultWidth
 }
+
+const x = event => {
+    console.log(event.target)
+}
+
+window.addEventListener('click', x)
 </script>
 
 <template>

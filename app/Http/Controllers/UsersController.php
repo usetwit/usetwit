@@ -44,6 +44,7 @@ class UsersController extends Controller
             'full_name',
             'employee_id',
             'roles.name',
+            'users.id',
         ];
 
         $cols = Cache::remember('user_columns', 24 * 60 * 60 * 7, function () {
