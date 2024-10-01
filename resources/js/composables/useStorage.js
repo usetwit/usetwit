@@ -5,12 +5,12 @@ export default function useStorage(key, defaultData, passThrough = false) {
     let activeData = ref()
 
     const set = () => {
-        // if (passThrough) {
-        //     localStorage.setItem(key, JSON.stringify(defaultData))
-        //     return
-        // }
-        //
-        // localStorage.setItem(key, JSON.stringify(activeData.value))
+        if (passThrough) {
+            localStorage.setItem(key, JSON.stringify(defaultData))
+            return
+        }
+
+        localStorage.setItem(key, JSON.stringify(activeData.value))
     }
 
     const get = () => {
@@ -22,7 +22,7 @@ export default function useStorage(key, defaultData, passThrough = false) {
     }
 
     const clear = () => {
-        // localStorage.clear()
+        localStorage.clear()
     }
 
     if (!passThrough) {

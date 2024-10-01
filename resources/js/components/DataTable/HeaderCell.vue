@@ -4,11 +4,13 @@ import Filter from './Filter.vue'
 import ColumnSelect from './ColumnSelect.vue'
 
 const props = defineProps({
-    column: { type: Object, required: true }
+    column: { type: Object, required: true },
+    isLast: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['sort', 'filter'])
 const activeData = defineModel()
+const defaultWidth = 20
 
 const sortObj = computed(() => {
     const index = activeData.value.sort.findIndex(obj => obj.field === props.column.field)
@@ -23,7 +25,6 @@ const sortObj = computed(() => {
 
 const filterEl = useTemplateRef('filterRef')
 const thRef = useTemplateRef('thRef')
-const { getColumn } = inject('tableInstance')
 
 const filterClicked = (event) => {
     return filterEl.value?.inputRef.childNodes && Array.from(filterEl.value?.inputRef.childNodes).includes(event.target) || event.target === filterEl.value?.inputRef
@@ -63,30 +64,28 @@ const ctrlClick = (event, column) => {
     }
 }
 
-const mouseX = ref();
-const col = getColumn(props.column.field); // Ensure this returns a reactive object if needed
+const mouseX = ref()
+const { getColumn } = inject('tableInstance')
+const activeDataCol = getColumn(props.column.field)
 
 const resizeMouseup = (event) => {
-    if (!col) return; // Early return if col is not found
-
-    const movement = event.pageX - mouseX.value;
-    const currentWidth = thRef.value.getBoundingClientRect().width;
-
-    // Calculate new width, ensuring a minimum width of 20
-    const newWidth = Math.max(20, currentWidth + movement);
+    const movement = event.pageX - mouseX.value
+    const currentWidth = thRef.value.getBoundingClientRect().width
 
     if (movement !== 0) {
-        // Create a new column object reference to ensure reactivity
-        col.width = newWidth; // Assuming col is reactive
+        activeDataCol.width = Math.max(defaultWidth, currentWidth + movement)
     }
 
-    // Clean up the mouseup event listener
-    window.removeEventListener('mouseup', resizeMouseup);
-};
+    window.removeEventListener('mouseup', resizeMouseup)
+}
 
-// Computed property for width
-const width = computed(() => col ? col.width : 0)
+const width = computed(() => activeDataCol && activeDataCol.width !== null && activeDataCol.width !== undefined ?
+                             activeDataCol.width :
+                             defaultWidth)
 
+const resizeDblclick = () => {
+    activeDataCol.width = defaultWidth
+}
 const resizeMousedown = (event) => {
     mouseX.value = event.pageX
     window.addEventListener('mouseup', resizeMouseup)
@@ -104,10 +103,11 @@ const resizeMousedown = (event) => {
             'cursor-pointer': column.sortable,
         }"
         :style="{
-            minWidth: width + 'px'
+            width: width + 'px',
+            minWidth: width + 'px',
         }"
         ref="thRef"
-    >{{ width }}
+    >
         <div v-if="column.options" class="px-4 py-3.5 flex items-center">
             <ColumnSelect v-model="activeData.columns"/>
         </div>
@@ -120,17 +120,15 @@ const resizeMousedown = (event) => {
                 <div class="inline-flex items-center">
                     <span class="py-2 whitespace-nowrap">{{ column.label }}</span>
                     <span v-if="sortObj" class="text-white inline-flex ml-2">
-                    <i v-if="sortObj.order === 'asc'" class="pi pi-sort-amount-up-alt"></i>
-                    <i v-if="sortObj.order === 'desc'" class="pi pi-sort-amount-down-alt"></i>
-                    <span
-                        class="ml-2 flex items-center justify-center h-5 p-1.5 min-w-5 bg-slate-500 text-white text-xs rounded-full"
-                    >
-                        {{ sortObj.position }}
+                        <i v-if="sortObj.order === 'asc'" class="pi pi-sort-amount-up-alt"></i>
+                        <i v-if="sortObj.order === 'desc'" class="pi pi-sort-amount-down-alt"></i>
+                        <span
+                            class="ml-2 flex items-center justify-center h-5 p-1.5 min-w-5 bg-slate-500 text-white text-xs rounded-full"
+                        >
+                            {{ sortObj.position }}
+                        </span>
                     </span>
-                </span>
-                    <span v-else-if="column.sortable" class="text-gray-500 ml-2">
-                    <i class="pi pi-sort-alt"></i>
-                </span>
+                    <span v-else-if="column.sortable" class="text-gray-500 ml-2"><i class="pi pi-sort-alt"></i></span>
                 </div>
                 <Filter v-if="column.type"
                         v-model="activeData.filters"
@@ -141,12 +139,13 @@ const resizeMousedown = (event) => {
                         @filter="$emit('filter')"
                 />
             </div>
-            <span class="absolute top-0 right-0 h-full w-2 bg-red-500 cursor-col-resize"
+            <span class="absolute top-0 right-0 h-full w-2 cursor-col-resize"
                   @mousedown="resizeMousedown"
+                  @dblclick="resizeDblclick"
             ></span>
         </template>
         <div v-else class="px-4 py-3 flex justify-between items-center">
-            &nbsp;
+            &nbsp
         </div>
     </th>
 </template>

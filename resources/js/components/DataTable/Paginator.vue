@@ -35,7 +35,7 @@ const selectPage = number => {
 </script>
 
 <template>
-    <nav aria-label="Page navigation" class="flex justify-center items-center text-gray-600 text-sm">
+    <nav aria-label="Page navigation" class="flex items-center text-gray-600 text-sm">
         <ul class="flex flex-nowrap">
             <li>
                 <span v-if="model.page === 1" class="base disabled"><i class="pi pi-angle-double-left"></i></span>

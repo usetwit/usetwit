@@ -95,11 +95,12 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
     <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch" class="mt-8"/>
 
     <div class="my-3 overflow-x-auto relative">
-        <table class="min-w-full">
+        <table class="">
             <thead>
             <tr>
-                <HeaderCell v-for="col in columns"
+                <HeaderCell v-for="(col, i) in columns"
                             v-model="activeData"
+                            :is-last="i === columns.length - 1"
                             :column="col"
                             @sort="fetch"
                             @filter="filter"
