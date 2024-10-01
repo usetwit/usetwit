@@ -35,20 +35,19 @@ const defaultData = {
         active: { constraints: [{ value: true, mode: 'equals' }] },
     },
     filtered: [],
-    widths: [],
     columns: [
-        { field: 'id', label: 'ID', visible: true, order: 1, global: true },
-        { field: 'username', label: 'Username', visible: true, order: 1, global: true },
-        { field: 'full_name', label: 'Full Name', visible: true, order: 2, global: true },
-        { field: 'first_name', label: 'First Name', visible: false, order: 3, global: true },
-        { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 4, global: true },
-        { field: 'last_name', label: 'Last Name', visible: false, order: 5, global: true },
-        { field: 'email', label: 'Email', visible: true, order: 6, global: true },
-        { field: 'role_name', label: 'Role', visible: true, order: 6, global: true },
-        { field: 'joined_at', label: 'Join Date', visible: true, order: 7 },
-        { field: 'created_at', label: 'Created Date', visible: true, order: 7 },
-        { field: 'updated_at', label: 'Updated Date', visible: true, order: 7 },
-        { field: 'active', label: 'Active', visible: true, order: 8 },
+        { field: 'id', label: 'ID', visible: true, order: 1 },
+        { field: 'username', label: 'Username', visible: true, order: 2, width: 400 },
+        { field: 'full_name', label: 'Full Name', visible: true, order: 3 },
+        { field: 'first_name', label: 'First Name', visible: false, order: 4 },
+        { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 5 },
+        { field: 'last_name', label: 'Last Name', visible: false, order: 6 },
+        { field: 'email', label: 'Email', visible: true, order: 7 },
+        { field: 'role_name', label: 'Role', visible: true, order: 8 },
+        { field: 'joined_at', label: 'Join Date', visible: true, order: 9 },
+        { field: 'created_at', label: 'Created Date', visible: true, order: 8 },
+        { field: 'updated_at', label: 'Updated Date', visible: true, order: 9 },
+        { field: 'active', label: 'Active', visible: true, order: 10 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
     pagination: {
@@ -69,7 +68,7 @@ const fetchUsers = async () => {
         page: activeData.value.pagination.page,
         per_page: activeData.value.pagination.per_page,
         sort: activeData.value.sort,
-        visible: activeData.value.columns.filter(col => col.visible && col.global).map(col => col.field)
+        visible: activeData.value.columns.filter(col => col.visible).map(col => col.field)
     })
 
     await getResponse()

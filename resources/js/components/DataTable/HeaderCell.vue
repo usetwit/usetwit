@@ -1,7 +1,7 @@
 <script setup>
-import { computed, inject, useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import Filter from './Filter.vue'
-import ColumnSelect from "./ColumnSelect.vue";
+import ColumnSelect from './ColumnSelect.vue'
 
 const props = defineProps({
     column: { type: Object, required: true },
@@ -27,7 +27,23 @@ const filterClicked = (event) => {
     return filterEl.value?.inputRef.childNodes && Array.from(filterEl.value?.inputRef.childNodes).includes(event.target) || event.target === filterEl.value?.inputRef
 }
 
-const { sort } = inject('tableInstance')
+const sort = (column, removeOtherSorts = false) => {
+    const sortField = activeData.value.sort.find(col => col.field === column.field)
+
+    if (sortField) {
+        if (sortField.order === 'desc') {
+            activeData.value.sort = activeData.value.sort.filter(col => col.field !== column.field)
+        } else {
+            sortField.order = 'desc'
+        }
+    } else {
+        activeData.value.sort.push({ field: column.field, order: 'asc' })
+    }
+
+    if (removeOtherSorts) {
+        activeData.value.sort = activeData.value.sort.filter(col => col.field === column.field)
+    }
+}
 
 const singleClick = (event, column) => {
     if (filterClicked(event)) {
@@ -49,24 +65,22 @@ const ctrlClick = (event, column) => {
 </script>
 
 <template>
-    <th class="border-y p-0 select-none"
+    <th class="border-y p-0 select-none border-gray"
         :class="{
-            'sticky left-0': column.sticky,
-            'relative': !column.sticky,
+            'sticky left-0 z-[25]': column.sticky,
+            'relative z-[24]': !column.sticky,
             'bg-white text-gray-800': !sortObj,
             'hover:bg-gray-100': !sortObj && column.sortable,
             'bg-slate-800 text-white hover:bg-slate-700': sortObj,
             'cursor-pointer': column.sortable,
-            'border-t-white border-b-gray-200': column.options,
-            'border-gray-200': !column.options,
         }"
     >
         <div v-if="column.options" class="px-4 py-3.5 flex items-center">
             <ColumnSelect v-model="activeData.columns"/>
         </div>
 
-        <div v-else-if="column.label" class="bg-sky-200">
-            <div class="px-4 py-2 flex justify-between items-center bg-yellow-200"
+        <template v-else-if="column.label">
+            <div class="px-4 py-2 flex justify-between items-center"
                  @click.exact="singleClick($event, column)"
                  @click.ctrl="ctrlClick($event, column)"
             >
@@ -95,7 +109,7 @@ const ctrlClick = (event, column) => {
                 />
             </div>
             <span class="absolute top-0 right-0 h-full w-2 bg-red-500 cursor-col-resize"></span>
-        </div>
+        </template>
         <div v-else class="px-4 py-3 flex justify-between items-center">
             &nbsp;
         </div>

@@ -31,24 +31,6 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
         saveToStorage()
     }, { deep: true })
 
-    const sort = (column, removeOtherSorts = false) => {
-        const sortField = activeData.value.sort.find(col => col.field === column.field)
-
-        if (sortField) {
-            if (sortField.order === 'desc') {
-                activeData.value.sort = activeData.value.sort.filter(col => col.field !== column.field)
-            } else {
-                sortField.order = 'desc'
-            }
-        } else {
-            activeData.value.sort.push({ field: column.field, order: 'asc' })
-        }
-
-        if (removeOtherSorts) {
-            activeData.value.sort = activeData.value.sort.filter(col => col.field === column.field)
-        }
-    }
-
     const getModeFromMap = fieldType => {
         const modeMapping = {
             number: 'equals',
@@ -153,6 +135,5 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
         clearFilters,
         clearFilter,
         clearSort,
-        sort,
     }
 }
