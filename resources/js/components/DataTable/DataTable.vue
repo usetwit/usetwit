@@ -1,15 +1,14 @@
 <script setup>
 import { inject, nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, watch } from 'vue'
-import HeaderCell from './HeaderCell.vue'
-import Cell from './Cell.vue'
-import Button from '../Form/Button.vue'
-import Paginator from './Paginator.vue'
-import InputText from '../Form/InputText.vue'
-import InputGroup from '../Form/InputGroup.vue'
-import InputGroupAddon from '../Form/InputGroupAddon.vue'
+import HeaderCell from '@/components/DataTable/HeaderCell.vue'
+import Cell from '@/components/DataTable/Cell.vue'
+import Button from '@/components/Form/Button.vue'
+import Paginator from '@/components/DataTable/Paginator.vue'
+import InputText from '@/components/Form/InputText.vue'
+import InputGroup from '@/components/Form/InputGroup.vue'
+import InputGroupAddon from '@/components/Form/InputGroupAddon.vue'
 
 const props = defineProps({
-    rows: { type: Array, required: true },
     isLoading: { type: Boolean, default: false },
     paginationSettings: { type: Object, required: true },
     dateSettings: { type: Object },
@@ -18,8 +17,9 @@ const props = defineProps({
 const columnSet = ref(new Set())
 const columns = ref([])
 const activeData = defineModel()
+const rows = defineModel('rows', {required: true, default: []})
 const style = ref({ top: 0, height: 0 })
-const resizing = ref(null)
+const resizeLeftStyle = ref(null)
 
 const tableRef = useTemplateRef('tableRef')
 
@@ -61,27 +61,23 @@ watch(columnSet, (newValue) => {
     })
 }, { deep: true })
 
-watch(tableRef, () => {
-    console.log('changed')
-    if (tableRef.value) {
-        updateStyle()
-    }
-}, { deep: true })
-
-const paginatorChanged = () => {
-    fetch()
-    // await nextTick(() => {
-    //     updateStyle()
-    // })
-}
-
+watch(rows, () => {
+    nextTick(()=>updateStyle())
+})
 
 const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
+
+const c = (event) => {
+    console.log('click', event.target)
+}
+const md = (event) => {
+    console.log('md', event.target)
+}
 </script>
 
 <template>
     <slot/>
-
+<Flash/>
     <div class="flex justify-between items-start sm:flex-row flex-col">
         <div>
             <Button :badge="getFilteredFields().length"
@@ -116,8 +112,8 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
 
     <div class="my-3 overflow-x-auto relative">
 
-        <Teleport to="body" v-if="resizing">
-            <div class="absolute w-[1px] bg-red-500 z-[999]" :style="[resizing, style]"></div>
+        <Teleport to="body" v-if="resizeLeftStyle">
+            <div class="absolute w-[2px] bg-slate-500 z-[999]" :style="[resizeLeftStyle, style]" @click="c" @mousedown="md"></div>
         </Teleport>
 
         <table ref="tableRef">
@@ -125,7 +121,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
             <tr>
                 <HeaderCell v-for="(col, i) in columns"
                             v-model="activeData"
-                            v-model:resizing="resizing"
+                            v-model:resize-left-style="resizeLeftStyle"
                             :is-last="i === columns.length - 1"
                             :column="col"
                             :table="tableRef"
@@ -163,7 +159,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
         </div>
     </div>
 
-    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="paginatorChanged"/>
+    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch"/>
 </template>
 
 <style scoped lang="postcss">

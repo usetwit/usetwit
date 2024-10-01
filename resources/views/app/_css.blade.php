@@ -1,3 +1,3 @@
-@vite(['resources/sass/app.scss'])
+@vite(['resources/css/app.css'])
 
 @yield('css')

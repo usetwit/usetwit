@@ -11,7 +11,7 @@ const props = defineProps({
 
 const emit = defineEmits(['sort', 'filter'])
 const activeData = defineModel()
-const resizing = defineModel('resizing')
+const resizeLeftStyle = defineModel('resizeLeftStyle')
 const defaultWidth = 20
 
 const sortObj = computed(() => {
@@ -74,7 +74,7 @@ const width = computed(() => activeDataCol && activeDataCol.width !== null && ac
                              defaultWidth)
 
 const resizeMouseup = (event) => {
-    resizing.value = null
+    resizeLeftStyle.value = null
     window.removeEventListener('mousemove', resizeMousemove)
 
     const movement = event.pageX - mouseX.value
@@ -89,12 +89,12 @@ const resizeMouseup = (event) => {
 
 const resizeMousemove = (event) => {
     const x = event.pageX
-    resizing.value = { 'left': x.toString() + 'px' }
+    resizeLeftStyle.value = { 'left': x.toString() + 'px' }
 }
 
 const resizeMousedown = (event) => {
     const x = event.pageX
-    resizing.value = { 'left': x.toString() + 'px' }
+    resizeLeftStyle.value = { 'left': x.toString() + 'px' }
     mouseX.value = event.pageX
     window.addEventListener('mouseup', resizeMouseup)
     window.addEventListener('mousemove', resizeMousemove)

@@ -1,9 +1,9 @@
+@import 'primeicons/primeicons.css';
+@import 'checkbox.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import 'primeicons/primeicons.css';
-@import 'checkbox';
 
 @font-face {
     font-family: 'Inter';
@@ -32,13 +32,13 @@ input[type="checkbox"] {
 }
 
 .breadcrumbs {
-    > li:before {
+    > li::before {
         content: '/';
         display: inline-block;
         margin: 0 6px;
     }
 
-    > li:first-child:before {
+    > li:first-child::before {
         content: "";
         margin: 0;
     }

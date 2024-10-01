@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Composers\SidebarComposer;
 use App\Composers\StorageComposer;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 

@@ -1,12 +1,12 @@
 <script setup>
 import { provide, ref } from 'vue'
-import useAxios from '../composables/useAxios.js'
-import DataTable from './DataTable/DataTable.vue'
-import Column from './DataTable/Column.vue'
-import Button from './Form/Button.vue'
-import useTable from '../composables/useTable.js'
-import { formatDate, applyFilterRegex } from '../app/helpers.js'
-import useStorage from '../composables/useStorage.js'
+import useAxios from '@/composables/useAxios.js'
+import DataTable from '@/components/DataTable/DataTable.vue'
+import Column from '@/components/DataTable/Column.vue'
+import Button from '@/components/Form/Button.vue'
+import useTable from '@/composables/useTable.js'
+import { formatDate, applyFilterRegex } from '@/app/helpers.js'
+import useStorage from '@/composables/useStorage.js'
 import { startCase } from 'lodash'
 
 const props = defineProps({
@@ -15,7 +15,7 @@ const props = defineProps({
     routeGetUsers: { type: String, required: true },
 })
 
-const users = ref([])
+const rows = ref([])
 const isLoading = ref(false)
 const defaultData = {
     filters: {
@@ -42,11 +42,11 @@ const defaultData = {
         { field: 'first_name', label: 'First Name', visible: false, order: 4 },
         { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 5 },
         { field: 'last_name', label: 'Last Name', visible: false, order: 6 },
-        { field: 'email', label: 'Email', visible: true, order: 7 },
+        { field: 'email', label: 'Email', visible: false, order: 7 },
         { field: 'role_name', label: 'Role', visible: true, order: 8 },
         { field: 'joined_at', label: 'Join Date', visible: true, order: 9 },
-        { field: 'created_at', label: 'Created Date', visible: true, order: 8 },
-        { field: 'updated_at', label: 'Updated Date', visible: true, order: 9 },
+        { field: 'created_at', label: 'Created Date', visible: false, order: 8 },
+        { field: 'updated_at', label: 'Updated Date', visible: false, order: 9 },
         { field: 'active', label: 'Active', visible: true, order: 10 },
     ],
     sort: [{ field: 'username', order: 'asc' }],
@@ -74,10 +74,10 @@ const fetchUsers = async () => {
     await getResponse()
 
     if (!errors.value.raw) {
-        users.value = data.value.users
+        rows.value = data.value.users
         activeData.value.pagination.total = data.value.total
     } else {
-        users.value = []
+        rows.value = []
     }
 
     isLoading.value = false
@@ -93,7 +93,7 @@ provide('tableInstance', tableInstance)
 </script>
 
 <template>
-    <DataTable :rows="users"
+    <DataTable v-model:rows="rows"
                v-model="activeData"
                :is-loading="isLoading"
                :pagination-settings="paginationSettings"
