@@ -56,9 +56,8 @@ const handleInput = () => {
         </InputGroup>
     </div>
 
-    <Teleport to="body">
-        <div v-if="showDropdown"
-             ref="dropdownRef"
+    <Teleport to="body" v-if="showDropdown">
+        <div ref="dropdownRef"
              class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto w-max"
              :style="dropdownStyle"
         >

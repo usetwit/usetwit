@@ -80,7 +80,7 @@ const setSizeClasses = computed(() => {
         :disabled="disabled || loading"
         :aria-disabled="disabled || loading"
     >
-        <i v-if="loading" class="pi pi-spin pi-spinner-dotted mr-2"></i>
+        <i v-if="loading" class="pi pi-spin pi-spinner mr-2"></i>
         <i v-if="icon && !loading" :class="icon" class="mr-2"></i>
         <span v-if="label || $slots.default">{{ label }}<slot/></span>
         <span v-if="badge"

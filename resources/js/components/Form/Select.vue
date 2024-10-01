@@ -87,9 +87,8 @@ const setClasses = computed(() => {
         <span v-if="isLoading" class="inline-flex items-center p-2"><i class="pi pi-spinner pi-spin"></i></span>
     </div>
 
-    <Teleport to="body">
-        <div v-if="showDropdown"
-             ref="dropdownRef"
+    <Teleport to="body" v-if="showDropdown">
+        <div ref="dropdownRef"
              class="rounded absolute z-[350] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1"
              :class="dropdownClass"
              :style="dropdownStyle"

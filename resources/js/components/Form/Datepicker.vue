@@ -148,9 +148,8 @@ watch(inputModel, (newValue) => {
         </button>
     </InputGroup>
 
-    <Teleport to="body">
-        <div v-if="showDropdown"
-             ref="dropdownRef"
+    <Teleport to="body" v-if="showDropdown">
+        <div ref="dropdownRef"
              class="rounded absolute z-[250] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto px-2 pb-2 w-max"
              :style="dropdownStyle"
         >

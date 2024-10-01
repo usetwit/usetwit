@@ -36,9 +36,8 @@ const {
     >
         <i class="pi pi-bars"></i>
     </button>
-    <Teleport to="body">
-        <div v-if="showDropdown"
-             ref="dropdownRef"
+    <Teleport to="body" v-if="showDropdown">
+        <div ref="dropdownRef"
              class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1 min-w-64 max-h-80"
              :style="dropdownStyle"
         >

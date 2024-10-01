@@ -6,10 +6,12 @@ import ColumnSelect from './ColumnSelect.vue'
 const props = defineProps({
     column: { type: Object, required: true },
     isLast: { type: Boolean, default: false },
+    table: { type: Object, default: null },
 })
 
 const emit = defineEmits(['sort', 'filter'])
 const activeData = defineModel()
+const resizing = defineModel('resizing')
 const defaultWidth = 20
 
 const sortObj = computed(() => {
@@ -67,8 +69,14 @@ const ctrlClick = (event, column) => {
 const mouseX = ref()
 const { getColumn } = inject('tableInstance')
 const activeDataCol = getColumn(props.column.field)
+const width = computed(() => activeDataCol && activeDataCol.width !== null && activeDataCol.width !== undefined ?
+                             activeDataCol.width :
+                             defaultWidth)
 
 const resizeMouseup = (event) => {
+    resizing.value = null
+    window.removeEventListener('mousemove', resizeMousemove)
+
     const movement = event.pageX - mouseX.value
     const currentWidth = thRef.value.getBoundingClientRect().width
 
@@ -79,16 +87,21 @@ const resizeMouseup = (event) => {
     window.removeEventListener('mouseup', resizeMouseup)
 }
 
-const width = computed(() => activeDataCol && activeDataCol.width !== null && activeDataCol.width !== undefined ?
-                             activeDataCol.width :
-                             defaultWidth)
+const resizeMousemove = (event) => {
+    const x = event.pageX
+    resizing.value = { 'left': x.toString() + 'px' }
+}
+
+const resizeMousedown = (event) => {
+    const x = event.pageX
+    resizing.value = { 'left': x.toString() + 'px' }
+    mouseX.value = event.pageX
+    window.addEventListener('mouseup', resizeMouseup)
+    window.addEventListener('mousemove', resizeMousemove)
+}
 
 const resizeDblclick = () => {
     activeDataCol.width = defaultWidth
-}
-const resizeMousedown = (event) => {
-    mouseX.value = event.pageX
-    window.addEventListener('mouseup', resizeMouseup)
 }
 </script>
 

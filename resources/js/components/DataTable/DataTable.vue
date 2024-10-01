@@ -1,5 +1,5 @@
 <script setup>
-import { inject, provide, ref, watch } from 'vue'
+import { inject, nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, watch } from 'vue'
 import HeaderCell from './HeaderCell.vue'
 import Cell from './Cell.vue'
 import Button from '../Form/Button.vue'
@@ -18,6 +18,26 @@ const props = defineProps({
 const columnSet = ref(new Set())
 const columns = ref([])
 const activeData = defineModel()
+const style = ref({ top: 0, height: 0 })
+const resizing = ref(null)
+
+const tableRef = useTemplateRef('tableRef')
+
+const updateStyle = () => {
+    style.value = {
+        top: String(tableRef.value.getBoundingClientRect().top + window.scrollY) + 'px',
+        height: tableRef.value.getBoundingClientRect().height.toString() + 'px',
+    }
+}
+
+onMounted(() => {
+    updateStyle()
+    window.addEventListener('scroll', updateStyle)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('scroll', updateStyle)
+})
 
 provide('registerColumn', column => {
     columnSet.value.add(column)
@@ -41,21 +61,20 @@ watch(columnSet, (newValue) => {
     })
 }, { deep: true })
 
-// const orderedColumns = computed(() => {
-//     const columnsArray = Array.from(columns.value)
-//
-//     columnsArray.sort((a, b) => {
-//         if (a.order === undefined && b.order !== undefined) {
-//             return -1
-//         } else if (a.order !== undefined && b.order === undefined) {
-//             return 1
-//         }
-//
-//         return a.order - b.order
-//     })
-//
-//     return columnsArray
-// })
+watch(tableRef, () => {
+    console.log('changed')
+    if (tableRef.value) {
+        updateStyle()
+    }
+}, { deep: true })
+
+const paginatorChanged = () => {
+    fetch()
+    // await nextTick(() => {
+    //     updateStyle()
+    // })
+}
+
 
 const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
 </script>
@@ -63,7 +82,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
 <template>
     <slot/>
 
-    <div class="flex justify-between items-center sm:flex-row flex-col">
+    <div class="flex justify-between items-start sm:flex-row flex-col">
         <div>
             <Button :badge="getFilteredFields().length"
                     @click="reset"
@@ -81,10 +100,11 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
                     :loading="isLoading"
             />
         </div>
-        <InputGroup class="sm:mt-0 mt-2">
+        <InputGroup class="sm:mt-0 mt-2 w-full sm:w-80">
             <InputText v-model="activeData.filters.global.constraints[0].value"
                        placeholder="Search..."
                        @input="filter"
+                       class="w-full"
             />
             <InputGroupAddon>
                 <i class="pi pi-search"></i>
@@ -95,13 +115,20 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
     <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch" class="mt-8"/>
 
     <div class="my-3 overflow-x-auto relative">
-        <table class="">
+
+        <Teleport to="body" v-if="resizing">
+            <div class="absolute w-[1px] bg-red-500 z-[999]" :style="[resizing, style]"></div>
+        </Teleport>
+
+        <table ref="tableRef">
             <thead>
             <tr>
                 <HeaderCell v-for="(col, i) in columns"
                             v-model="activeData"
+                            v-model:resizing="resizing"
                             :is-last="i === columns.length - 1"
                             :column="col"
+                            :table="tableRef"
                             @sort="fetch"
                             @filter="filter"
                 />
@@ -136,7 +163,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
         </div>
     </div>
 
-    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch"/>
+    <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="paginatorChanged"/>
 </template>
 
 <style scoped lang="postcss">

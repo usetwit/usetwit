@@ -56,9 +56,8 @@ const modified = computed(() => getModifiedFields(filters.value, props.filtered)
         <i v-if="filtered" class="pi pi-filter-fill"></i>
     </button>
 
-    <Teleport to="body">
-        <div v-if="showDropdown"
-             ref="dropdownRef"
+    <Teleport to="body" v-if="showDropdown">
+        <div ref="dropdownRef"
              class="rounded absolute z-[250] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1 w-64 max-h-80"
              :style="dropdownStyle"
         >
