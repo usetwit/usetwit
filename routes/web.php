@@ -11,7 +11,7 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['guest']],
 Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], function () {
     Route::get('', ['uses' => 'App\Http\Controllers\HomeController@index', 'as' => 'home']);
 
-    Route::get('logout', ['uses' => 'AuthController@logout', 'as' => 'auth.logout']);
+    Route::post('logout', ['uses' => 'AuthController@logout', 'as' => 'auth.logout']);
 
 
     /* Application Settings */

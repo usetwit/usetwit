@@ -7,9 +7,16 @@
 
 @font-face {
     font-family: 'Inter';
-    src: local('Inter'), local('Inter-Regular'), url('../fonts/Inter_18pt-Regular.ttf') format('truetype');
+    src: url('../fonts/Inter_18pt-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('../fonts/Cabin-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
 }
 
 * {

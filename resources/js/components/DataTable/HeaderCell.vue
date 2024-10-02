@@ -101,12 +101,6 @@ const resizeMousedown = event => {
 const resizeDblclick = () => {
     activeDataCol.width = defaultWidth
 }
-
-const x = event => {
-    console.log(event.target)
-}
-
-window.addEventListener('click', x)
 </script>
 
 <template>

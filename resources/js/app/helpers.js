@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon'
-import { u } from "../../../public/build/assets/menuStore-DJKc6H4o.js";
 
 export const formatDate = (dateString, format, separator) => {
     if (!dateString) {

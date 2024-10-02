@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Composers\NavbarComposer;
 use App\Composers\SidebarComposer;
 use App\Composers\StorageComposer;
 use Illuminate\Support\Facades\View;
@@ -29,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('app._sidebar', SidebarComposer::class);
         View::composer('app.layout', StorageComposer::class);
+        View::composer('app._navbar', NavbarComposer::class);
     }
 }

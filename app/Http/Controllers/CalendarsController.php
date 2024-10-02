@@ -24,11 +24,9 @@ class CalendarsController extends Controller
         //
     }
 
-    public function show(Calendar $calendar)
+    public function show()
     {
-        $calendars = Calendar::all();
-
-        return view('calendars.calendar-shifts-edit', compact('calendar', 'calendars'));
+        //
     }
 
     public function edit(string $id)

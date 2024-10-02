@@ -13,9 +13,7 @@
     <storage :version="{{ Js::from($version) }}"></storage>
 </div>
 
-<div id="navbar">
-    <navbar></navbar>
-</div>
+@include('app._navbar')
 
 @if(session()->has('success') || count($errors))
     <div id="flash">
@@ -40,7 +38,7 @@
         @yield('breadcrumbs')
 
         <main
-            class="p-4 bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto"
+            class="bg-white border-y dark:bg-slate-700 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto"
         >
             @include('app._errors')
 
