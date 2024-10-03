@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Models\Scopes\ExcludeSystemScope;
 use Illuminate\Contracts\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,5 +74,26 @@ class User extends Authenticatable implements Authorizable
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');
+    }
+
+    /**
+     * @return MorphMany
+     */
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
+    /**
+     * @return MorphMany
+     */
+    public function profileImages(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable')->whereType('user_profile');
+    }
+
+    public function uploadedImages(): HasMany
+    {
+        return $this->hasMany(Image::class);
     }
 }

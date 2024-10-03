@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Composers\NavbarComposer;
 use App\Composers\SidebarComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -26,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         Route::pattern('year', '^\d{4}$');
 
         View::composer('app._sidebar', SidebarComposer::class);
+        View::composer('app._navbar', NavbarComposer::class);
     }
 }

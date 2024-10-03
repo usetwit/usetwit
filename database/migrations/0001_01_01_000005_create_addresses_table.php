@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('address_line_2', 50)->nullable();
             $table->string('address_line_3', 50)->nullable();
             $table->string('postcode', 10)->nullable();
-            $table->string('country', 2)->nullable();
+            $table->string('country', 2)->collation('utf8mb4_bin')->nullable();
             $table->boolean('default_address')->default(false);
-            $table->string('addressable_type');
+            $table->string('addressable_type')->collation('utf8mb4_bin');
             $table->unsignedBigInteger('addressable_id');
             $table->index(['addressable_id', 'addressable_type'], 'model_has_addresses_addressable_id_addressable_type_index');
             $table->softDeletes();

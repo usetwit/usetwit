@@ -1,5 +1,8 @@
-<div id="navbar">
+<div id="navbar" class="sticky">
     <navbar logout-route="{{ route('auth.logout') }}"
-            icon="{{ asset('images/logo.svg') }}"
+            logo="{{ asset('images/logo.svg') }}"
+            default-profile-image="{{ asset('images/user/profile/profile_default.svg') }}"
+            user-profile-image="{{ $userProfileImage }}"
+            name="{{ $name }}"
     ></navbar>
 </div>

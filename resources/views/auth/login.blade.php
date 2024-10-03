@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full">
 <head>
     <title>Sign In - useTwit</title>
     @include('app._meta')

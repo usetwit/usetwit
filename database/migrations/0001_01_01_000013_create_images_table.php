@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('filename')->unique();
+            $table->string('type', 20)->collation('utf8mb4_bin');
             $table->string('hash', 64);
             $table->string('extension', 5);
             $table->string('mime_type', 50);
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('width');
             $table->unsignedSmallInteger('height');
             $table->boolean('default_image')->default(false);
-            $table->string('imageable_type');
+            $table->string('imageable_type')->collation('utf8mb4_bin');
             $table->unsignedBigInteger('imageable_id');
             $table->index(['imageable_id', 'imageable_type'], 'model_has_images_imageable_id_imageable_type_index');
             $table->unsignedBigInteger('user_id')->nullable();

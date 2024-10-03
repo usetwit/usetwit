@@ -132,7 +132,7 @@ window.addEventListener('resize', checkScreenSize)
     ></div>
 
     <nav v-if="store.isMenuVisible && !store.isLargeScreen || store.isLargeScreen"
-         class="bg-white border-r w-[250px] border-gray-200 overflow-y-auto"
+         class="bg-white border-r w-[280px] border-gray-200 overflow-y-auto"
          :class="{'z-[200] fixed h-full top-0 left-0': !store.isLargeScreen && store.isMenuVisible}"
     >
         <div v-if="store.isMenuVisible && !store.isLargeScreen"

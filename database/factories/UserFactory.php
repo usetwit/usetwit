@@ -27,7 +27,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'username' => strtolower($this->faker->unique()->domainWord),
+            'username' => strtolower($this->faker->domainWord . $this->faker->numberBetween(100, 999)),
             'first_name' => $this->faker->firstName,
             'middle_names' => $this->faker->optional()->firstName,
             'last_name' => $this->faker->optional()->lastName,

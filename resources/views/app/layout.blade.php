@@ -13,9 +13,7 @@
 </head>
 
 <body>
-<div id="storage">
-    <storage version="{{ config('app.version') }}"></storage>
-</div>
+<div id="storage"><storage version="{{ config('app.version') }}"></storage></div>
 
 @include('app._navbar')
 
@@ -36,7 +34,7 @@
 
     <div class="flex-1 pb-4 overflow-x-auto">
 
-        <header class="mx-4 mt-8 font-bold text-2xl text-slate-700">
+        <header class="mx-2 mt-4 lg:mx-4 lg:mt-8 font-bold text-2xl text-slate-700">
             @yield('heading')
         </header>
 
