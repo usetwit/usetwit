@@ -1,14 +1,14 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Sign In - useTwit</title>
     @include('app._meta')
-
     @include('app._css')
 </head>
 <body class="bg-gradient h-full">
 <section class="flex flex-col items-center justify-center w-full max-w-md mx-auto mt-16">
     <a href="#" class="flex items-center mb-4 text-2xl font-semibold text-slate-600">
-        <img class="w-8 h-8 mr-1" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="useTwit">
+        <img class="w-8 h-8 mr-1" src="{{ asset('images/logo.svg') }}" alt="useTwit">
         useTwit
     </a>
     <div class="w-full bg-white rounded-lg shadow shadow-slate-100">

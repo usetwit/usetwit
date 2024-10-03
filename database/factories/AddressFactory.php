@@ -16,14 +16,8 @@ class AddressFactory extends Factory
 
     public function definition(): array
     {
-        $addressableTypes = [
-            User::class,
-            Company::class,
-            Customer::class,
-        ];
-
+        $addressableTypes = Address::getValidAddressables();
         $addressableType = Arr::random($addressableTypes);
-        $addressableModel = $addressableType::factory()->create();
 
         return [
             'address_line_1' => $this->faker->streetAddress,
@@ -32,7 +26,8 @@ class AddressFactory extends Factory
             'postcode' => $this->faker->postcode,
             'country' => strtolower($this->faker->countryCode),
             'addressable_type' => $addressableType,
-            'addressable_id' => $addressableModel::factory()->create()->id,
+            'addressable_id' => $addressableType::factory()->create()->id,
+            'deleted_at' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

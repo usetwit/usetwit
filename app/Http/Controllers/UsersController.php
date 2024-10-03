@@ -27,12 +27,12 @@ class UsersController extends Controller
         return view('users.users-index', compact('paginationSettings', 'routeGetUsers', 'dateSettings'));
     }
 
-    public function getUsers(UsersIndexGetUsersRequest $request, FilterService $service)
+    public function getUsers(UsersIndexGetUsersRequest $request, FilterService $service, GeneralSettings $settings)
     {
-        $perPage = $request->input('per_page');
-        $filters = $request->input('filters');
-        $sort = $request->input('sort');
-        $visible = $request->input('visible');
+        $perPage = $request->input('per_page', $settings->per_page_default);
+        $filters = $request->input('filters', []);
+        $sort = $request->input('sort', []);
+        $visible = $request->input('visible', []);
 
         $substitutions = ['role_name' => 'roles.name', 'id' => 'users.id'];
         $global = [
@@ -54,31 +54,24 @@ class UsersController extends Controller
             return array_merge($cols, ['roles.name as role_name']);
         });
 
-        $query = DB::table('users')
-                   ->select($cols)
-                   ->leftJoin('model_has_roles', function ($join) {
-                       $join->on('model_has_roles.model_id', 'users.id')
-                            ->where('model_has_roles.model_type', User::class);
-                   })
-                   ->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')
-                   ->where('users.id', '!=', 1);
+        $query = DB::table('users')->select($cols)->leftJoin('model_has_roles', function ($join) {
+            $join->on('model_has_roles.model_id', 'users.id')->where('model_has_roles.model_type', User::class);
+        })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')->where('users.id', '!=', 1);
 
         $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
-                ->filter($query, $filters, ['global'], $substitutions)
-                ->sort($query, $sort, ['global'], $substitutions);
+                ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
 
         $query = $query->paginate($perPage);
         $total = $query->total();
 
-        $users = $query->getCollection()
-                       ->map(function ($user) {
-                           return array_merge((array) $user, [
-                               'edit_user_route' => route('users.edit', $user->id),
-                               'created_at' => Carbon::parse($user->created_at)->format('Y-m-d'),
-                               'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d'),
-                               'joined_at' => $user->joined_at === null ? null : Carbon::parse($user->joined_at)->format('Y-m-d'),
-                           ]);
-                       });
+        $users = $query->getCollection()->map(function ($user) {
+            return array_merge((array) $user, [
+                'edit_user_route' => route('users.edit', $user->id),
+                'created_at' => Carbon::parse($user->created_at)->format('Y-m-d'),
+                'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d'),
+                'joined_at' => $user->joined_at === null ? null : Carbon::parse($user->joined_at)->format('Y-m-d'),
+            ]);
+        });
 
         return compact('users', 'total');
     }
@@ -105,7 +98,7 @@ class UsersController extends Controller
 
         return view('users.users-create',
             compact('routeCheckUsername', 'routeStore', 'routeRedirect', 'dateFormat', 'suggestedId', 'roles',
-                'countries', 'selectedCountry',));
+                'countries', 'selectedCountry'));
     }
 
     public function checkUsername(UsersCreateCheckUsernameRequest $request)
@@ -116,9 +109,7 @@ class UsersController extends Controller
             return [];
         }
 
-        return User::withTrashed()
-                   ->where('username', $username)
-                   ->get(['username']);
+        return User::withTrashed()->where('username', $username)->get(['username']);
     }
 
     public function store(UsersStoreRequest $request)
@@ -147,8 +138,7 @@ class UsersController extends Controller
         $addressFields = $request->only(['address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'country',]);
 
         $addressFields['default_address'] = true;
-        $newUser->addresses()
-                ->create($addressFields);
+        $newUser->addresses()->create($addressFields);
 
         $role = Role::find($request->input('role_id'));
         $newUser->syncRoles($role);

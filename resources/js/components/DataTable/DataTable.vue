@@ -138,7 +138,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
                 />
             </tr>
             <tr v-else>
-                <td class="text-center px-4 py-3 border-b border-gray-200 bg-white italic" :colspan="columns.size">
+                <td class="text-center px-4 py-3 border-b border-gray-200 bg-white italic" :colspan="columns.length">
                     No Results
                 </td>
             </tr>

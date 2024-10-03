@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\User;
+use Closure;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Spatie\Permission\Models\Permission;
@@ -31,6 +32,19 @@ abstract class TestCase extends BaseTestCase
         $this->actingAs($user);
 
         return $user;
+    }
+
+    /**
+     * Create a Closure for custom Rules
+     * @param string $errorMessage
+     *
+     * @return Closure
+     */
+    public function failClosure(string &$errorMessage): Closure
+    {
+        return function ($message) use (&$errorMessage) {
+            $errorMessage = $message;
+        };
     }
 
     /**

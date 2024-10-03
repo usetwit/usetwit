@@ -14,7 +14,6 @@ const props = defineProps({
 })
 
 toast(props.message, {
-    type: props.type
+    type: props.type,
 })
-
 </script>

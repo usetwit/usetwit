@@ -136,10 +136,10 @@ window.addEventListener('resize', checkScreenSize)
          :class="{'z-[200] fixed h-full top-0 left-0': !store.isLargeScreen && store.isMenuVisible}"
     >
         <div v-if="store.isMenuVisible && !store.isLargeScreen"
-             @click="closeMenu"
-             class="flex"
+             class="flex pt-2 pr-4"
         >
-            <div class="ml-auto flex items-center text-sm pt-2 pr-4 cursor-pointer text-slate-700">Close</div>
+
+            <button class="ml-auto flex items-center text-sm text-slate-700" @click="closeMenu">Close</button>
         </div>
 
         <ul class="p-4">

@@ -29,6 +29,14 @@ return [
     'env' => env('APP_ENV', 'production'),
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | The version is used to remove any javascript storage data
+    |
+    */
     'version' => env('APP_VERSION', '0.0.1-alpha'),
 
     /*
@@ -55,7 +63,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://usetwit.test'),
 
     /*
     |--------------------------------------------------------------------------
@@ -100,7 +108,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'key' => env('APP_KEY', 'base64:aomEpQavWC1miRRLsvLEs/6gyuzEfHUQmHY+77YLOv8='),
+    'key' => env('APP_KEY', 'base64:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx='),
 
     'previous_keys' => [
         ...array_filter(

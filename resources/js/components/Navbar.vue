@@ -47,7 +47,7 @@ const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('con
                 useTwit
             </a>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center right-buttons">
             <button @click="toggleDarkMode" :title="darkMode ? 'Light Mode' : 'Dark Mode'">
                 <i v-if="darkMode" class="pi pi-sun"></i>
                 <i v-else class="pi pi-moon"></i>
@@ -62,6 +62,10 @@ const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('con
 
 <style scoped lang="postcss">
     button {
-        @apply p-2 ml-1;
+        @apply p-2 border rounded border-slate-500 hover:border-slate-600 bg-slate-700 align-middle inline-flex;
+    }
+
+    .right-buttons button {
+        @apply ml-2
     }
 </style>

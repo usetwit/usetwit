@@ -3,7 +3,9 @@
 namespace Tests\Unit;
 
 use App\Exceptions\FilterServiceGetTypeInvalidException;
+use App\Rules\HasMultipleConstraints;
 use App\Services\FilterService;
+use Illuminate\Validation\Rule;
 use Mockery;
 use Mockery\LegacyMockInterface;
 use Tests\TestCase;
@@ -365,5 +367,111 @@ class FilterServiceTest extends TestCase
         $visible = ['username', 'email'];
 
         $this->filter->globalFilter($this->builder, 'john', $global, $visible, $substitutions);
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_make_validation_filter_rules_with_string_type(): void
+    {
+        $constraintType = 'string';
+        $fields = ['username'];
+
+        $expectedRules = [
+            'filters.username' => 'nullable|array',
+            'filters.username.constraints' => 'nullable|array|max:5',
+            'filters.username.constraints.*.mode' => [
+                'nullable',
+                'string',
+                Rule::in($this->filter->getValidStringMatchModes()),
+                'required_with:filters.username.constraints.*.value',
+            ],
+            'filters.username.constraints.*.value' => [
+                'nullable',
+                'present_with:filters.username.constraints.*.mode',
+                'string',
+            ],
+            'filters.username.operator' => [
+                'nullable',
+                'in:and,or',
+                new HasMultipleConstraints(request()->input('filters.username.constraints')),
+            ],
+        ];
+
+        $result = $this->filter->makeValidationFilterRules($constraintType, $fields);
+
+        $this->assertEquals($expectedRules, $result);
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_make_validation_filter_rules_with_array_type(): void
+    {
+        $constraintType = [
+            'string' => ['username', 'email'],
+            'number' => ['age'],
+        ];
+
+        $expectedRules = [
+            'filters.username' => 'nullable|array',
+            'filters.username.constraints' => 'nullable|array|max:5',
+            'filters.username.constraints.*.mode' => [
+                'nullable',
+                'string',
+                Rule::in($this->filter->getValidStringMatchModes()),
+                'required_with:filters.username.constraints.*.value',
+            ],
+            'filters.username.constraints.*.value' => [
+                'nullable',
+                'present_with:filters.username.constraints.*.mode',
+                'string',
+            ],
+            'filters.username.operator' => [
+                'nullable',
+                'in:and,or',
+                new HasMultipleConstraints(request()->input('filters.username.constraints')),
+            ],
+            'filters.email' => 'nullable|array',
+            'filters.email.constraints' => 'nullable|array|max:5',
+            'filters.email.constraints.*.mode' => [
+                'nullable',
+                'string',
+                Rule::in($this->filter->getValidStringMatchModes()), // Adjust based on the actual method you have for valid string match modes
+                'required_with:filters.email.constraints.*.value',
+            ],
+            'filters.email.constraints.*.value' => [
+                'nullable',
+                'present_with:filters.email.constraints.*.mode',
+                'string',
+            ],
+            'filters.email.operator' => [
+                'nullable',
+                'in:and,or',
+                new HasMultipleConstraints(request()->input('filters.email.constraints')),
+            ],
+            'filters.age' => 'nullable|array',
+            'filters.age.constraints' => 'nullable|array|max:5',
+            'filters.age.constraints.*.mode' => [
+                'nullable',
+                'string',
+                Rule::in($this->filter->getValidNumberMatchModes()),
+                'required_with:filters.age.constraints.*.value',
+            ],
+            'filters.age.constraints.*.value' => [
+                'nullable',
+                'present_with:filters.age.constraints.*.mode',
+                'numeric',
+            ],
+            'filters.age.operator' => [
+                'nullable',
+                'in:and,or',
+                new HasMultipleConstraints(request()->input('filters.age.constraints')),
+            ],
+        ];
+
+        $result = $this->filter->makeValidationFilterRules($constraintType);
+
+        $this->assertEquals($expectedRules, $result);
     }
 }

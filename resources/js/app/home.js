@@ -1,5 +1,5 @@
-import vueConfig from '../vue-config.js'
-import Home from '../components/Home.vue'
+import vueConfig from '@/vue-config.js'
+import Home from '@/components/Home.vue'
 
 const { app } = vueConfig()
 

@@ -78,6 +78,10 @@ class FilterService
     }
 
     /**
+     * @param array  $fields
+     * @param string $type
+     *
+     * @return array
      * @throws FilterServiceGetTypeInvalidException
      */
     private function makeValidationRulesForField(array $fields, string $type): array
@@ -103,7 +107,7 @@ class FilterService
                     'nullable',
                     'string',
                     Rule::in($this->$validMatchModeProperty),
-                    "present_with:filters.{$field}.constraints.*.value",
+                    "required_with:filters.{$field}.constraints.*.value",
                 ],
                 "filters.{$field}.constraints.*.value" => [
                     'nullable',
@@ -161,7 +165,6 @@ class FilterService
     /**
      * @param bool   $asString
      * @param string $separator
-     * @param string $separator
      *
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
@@ -217,8 +220,7 @@ class FilterService
     {
         if (in_array(strtolower($matchMode), $this->getMatchModes('date', false, true))) {
             $whereMethod = $operator === 'or' ? 'orWhereDate' : 'whereDate';
-            $value = Carbon::parse($value)
-                           ->format('Y-m-d');
+            $value = Carbon::parse($value)->format('Y-m-d');
         } else {
             $whereMethod = $operator === 'or' ? 'orWhere' : 'where';
         }

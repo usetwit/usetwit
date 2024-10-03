@@ -51,7 +51,7 @@ class UsersIndexGetUsersRequest extends FormRequest
             ],
             'number' => [
                 'id',
-            ]
+            ],
         ];
 
         $filters = $service->makeValidationFilterRules($filterRules);

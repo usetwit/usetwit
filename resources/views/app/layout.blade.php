@@ -6,21 +6,26 @@
     @include('app._css')
     @include('app._meta')
     @include('app._javascript')
+
+    @if(session()->has('success') || count($errors))
+        @vite(['resources/js/app/flash.js'])
+    @endif
 </head>
 
 <body>
 <div id="storage">
-    <storage :version="{{ Js::from($version) }}"></storage>
+    <storage version="{{ config('app.version') }}"></storage>
 </div>
 
 @include('app._navbar')
 
 @if(session()->has('success') || count($errors))
-    <div id="flash">
-        <Flash @if(session()->has('success')) type="success" message="{{ addslashes(session('success')) }}"
-               @elseif(count($errors)) type="error" message="{{ addslashes($errors->first()) }}" @endif
-        />
-    </div>
+<div id="flash">
+    <Flash @if(session()->has('success')) type="success" message="{{ addslashes(session('success')) }}"
+           @elseif(count($errors)) type="error" message="{{ addslashes($errors->first()) }}"
+           @else type="success" message="hello world" @endif
+    ></Flash>
+</div>
 @endif
 
 <div class="bg-slate-100 dark:bg-slate-900 flex">
@@ -51,5 +56,4 @@
 @include('app._footer')
 
 </body>
-
 </html>

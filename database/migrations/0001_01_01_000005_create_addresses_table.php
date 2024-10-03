@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('addressable_type');
             $table->unsignedBigInteger('addressable_id');
             $table->index(['addressable_id', 'addressable_type'], 'model_has_addresses_addressable_id_addressable_type_index');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

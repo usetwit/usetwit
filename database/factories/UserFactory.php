@@ -14,8 +14,6 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    use SoftDeletes;
-
     /**
      * The current password being used by the factory.
      */
@@ -51,6 +49,7 @@ class UserFactory extends Factory
             'emergency_number' => $this->faker->phoneNumber,
             'joined_at' => $this->faker->boolean(80) ? Carbon::parse('2024-01-01')->addDays(rand(0, 7000)) : null,
             'active' => true,
+            'deleted_at' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ];

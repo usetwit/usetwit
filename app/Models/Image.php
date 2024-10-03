@@ -7,29 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Address extends Model
+class Image extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
     public $casts = [
-        'default_address' => 'boolean',
+        'default_image' => 'boolean',
     ];
 
-    protected array $validAddressables = [
-        Company::class,
-        Customer::class,
+    protected array $validImageables = [
         User::class,
     ];
 
-    public function addressable(): MorphTo
+    public function imageable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function getValidAddressables(): array
+    public function getValidImageables(): array
     {
-        return $this->validAddressables;
+        return $this->validImageables;
     }
 }
