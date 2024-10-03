@@ -39,12 +39,17 @@ const {
 </script>
 
 <template>
-    <button ref="inputRef" class="flex items-center rounded-full bg-slate-700 ml-3 hover:bg-slate-600 border border-slate-500" @click="toggleDropdown">
+    <button ref="inputRef"
+            class="flex items-center rounded-full bg-slate-700 ml-3 hover:bg-slate-600 border border-slate-500"
+            @click="toggleDropdown"
+    >
         <span class="pl-4 hidden sm:block mr-2 whitespace-nowrap text-sm">{{ name }}</span>
-        <img :src="userProfileImage ? userProfileImage : defaultProfileImage"
-             :alt="name"
-             class="object-cover w-10 h-10 rounded-full shadow"
-        />
+        <span class="rounded-full bg-emerald-500">
+            <img :src="userProfileImage ? userProfileImage : defaultProfileImage"
+                 :alt="name"
+                 class="object-cover w-10 h-10 rounded-full shadow"
+            />
+        </span>
     </button>
 
     <Teleport to="body" v-if="showDropdown">

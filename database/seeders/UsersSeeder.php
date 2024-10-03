@@ -81,7 +81,7 @@ class UsersSeeder extends Seeder
 
         $roleIds = Role::where('id', '!=', 1)->pluck('id')->toArray();
 
-        User::factory(500)->create()->each(function ($user) use ($roleIds) {
+        User::factory(1000)->create()->each(function ($user) use ($roleIds) {
             $user->roles()->attach($roleIds[array_rand($roleIds)]);
         });
     }

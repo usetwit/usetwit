@@ -87,12 +87,12 @@ const resizeMouseup = event => {
 
 const resizeMousemove = event => {
     const x = event.pageX + 2
-    resizeLeftStyle.value = { 'left': x.toString() + 'px' }
+    resizeLeftStyle.value = { 'left': x + 'px' }
 }
 
 const resizeMousedown = event => {
     const x = event.pageX + 2
-    resizeLeftStyle.value = { 'left': x.toString() + 'px' }
+    resizeLeftStyle.value = { 'left': x + 'px' }
     mouseX.value = event.pageX
     window.addEventListener('mouseup', resizeMouseup)
     window.addEventListener('mousemove', resizeMousemove)
