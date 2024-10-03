@@ -249,6 +249,7 @@ class FilterService
             case 'gt':
                 $query->$whereMethod($field, '>', $value);
                 break;
+            case 'date_gte':
             case 'gte':
                 $query->$whereMethod($field, '>=', $value);
                 break;
@@ -256,6 +257,7 @@ class FilterService
             case 'lt':
                 $query->$whereMethod($field, '<', $value);
                 break;
+            case 'date_lte':
             case 'lte':
                 $query->$whereMethod($field, '<=', $value);
                 break;

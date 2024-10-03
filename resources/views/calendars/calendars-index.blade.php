@@ -13,8 +13,8 @@
 
     <ul>
         @foreach ($calendars as $calendar)
-            <li>
-                <a href="{{ route('calendars.calendar-shifts.edit', $calendar) }}" class="text-sky-800 hover:text-orange-700">{{ $calendar->name }}</a>
+            <li class="py-1 ml-2">
+                <a href="{{ route('calendars.calendar-shifts.edit', $calendar) }}" class="text-slate-800 hover:text-orange-700">{{ $calendar->name }}</a>
             </li>
         @endforeach
     </ul>

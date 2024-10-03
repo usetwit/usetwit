@@ -32,8 +32,12 @@ class FilterServiceTest extends TestCase
 
     public function test_sort_method_applies_order_by_correctly(): void
     {
-        $this->builder->shouldReceive('orderBy')->with('name', 'asc')->once();
-        $this->builder->shouldReceive('orderBy')->with('age', 'desc')->times(2);
+        $this->builder->shouldReceive('orderBy')
+                      ->with('name', 'asc')
+                      ->once();
+        $this->builder->shouldReceive('orderBy')
+                      ->with('age', 'desc')
+                      ->times(2);
 
         $sort = [
             ['field' => 'name', 'order' => 'asc'],
@@ -56,7 +60,9 @@ class FilterServiceTest extends TestCase
 
     public function test_sort_method_correctly_substitutes_column_names(): void
     {
-        $this->builder->shouldReceive('orderBy')->with('name.test', 'asc')->once();
+        $this->builder->shouldReceive('orderBy')
+                      ->with('name.test', 'asc')
+                      ->once();
 
         $sort = [['field' => 'name', 'order' => 'asc']];
         $substitutes = ['name' => 'name.test'];
@@ -121,5 +127,202 @@ class FilterServiceTest extends TestCase
         $result = $this->filter->getValidNumberMatchModes(false, true);
 
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_contains_mode(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->with('name', 'LIKE', '%john%')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'name', 'john', 'contains', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_starts_with_mode(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->with('name', 'LIKE', 'john%')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'name', 'john', 'starts_with', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_ends_with_mode(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->with('name', 'LIKE', '%john')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'name', 'john', 'ends_with', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_equals_mode(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->with('name', '=', 'john')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'name', 'john', 'equals', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_not_equals_mode(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->with('name', '!=', 'john')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'name', 'john', 'not_equals', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_gt_mode(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->with('age', '>', 30)
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'age', 30, 'gt', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_gte_mode(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->with('age', '>=', 30)
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'age', 30, 'gte', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_date_equals_mode(): void
+    {
+        $this->builder->shouldReceive('whereDate')
+                      ->with('joined_at', '=', '2023-01-01')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_equals', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_date_not_equals_mode(): void
+    {
+        $this->builder->shouldReceive('whereDate')
+                      ->with('joined_at', '!=', '2023-01-01')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_not_equals', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_date_gt_mode(): void
+    {
+        $this->builder->shouldReceive('whereDate')
+                      ->with('joined_at', '>', '2023-01-01')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_gt', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_date_gte_mode(): void
+    {
+        $this->builder->shouldReceive('whereDate')
+                      ->with('joined_at', '>=', '2023-01-01')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_gte', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_date_lt_mode(): void
+    {
+        $this->builder->shouldReceive('whereDate')
+                      ->with('joined_at', '<', '2023-01-01')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_lt', 'and');
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_query_filter_applies_date_lte_mode(): void
+    {
+        $this->builder->shouldReceive('whereDate')
+                      ->with('joined_at', '<=', '2023-01-01')
+                      ->once();
+
+        $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_lte', 'and');
+    }
+
+    public function test_filter_method_applies_nested_where_orWhere_correctly(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->times(2)
+                      ->with(Mockery::type('callable'))
+                      ->andReturnUsing(function (callable $callback) {
+                $callback($this->builder);
+            });
+
+        $this->builder->shouldReceive('orWhere')
+                      ->once()
+                      ->with('email', '>', 'john@example.com')
+                      ->andReturn($this->builder);
+        $this->builder->shouldReceive('orWhere')
+                      ->once()
+                      ->with('email', 'LIKE', '%lee@example.com%')
+                      ->andReturn($this->builder);
+        $this->builder->shouldReceive('orWhere')
+                      ->once()
+                      ->with('username', '=', 'john')
+                      ->andReturn($this->builder);
+
+        $filters = [
+            'username' => [
+                'operator' => 'or',
+                'constraints' => [
+                    ['value' => 'john', 'mode' => 'equals'],
+                ],
+            ],
+            'email' => [
+                'operator' => 'or',
+                'constraints' => [
+                    ['value' => 'john@example.com', 'mode' => 'gt'],
+                    ['value' => 'lee@example.com', 'mode' => 'contains'],
+                ],
+            ],
+        ];
+
+        $this->filter->filter($this->builder, $filters);
     }
 }
