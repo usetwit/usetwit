@@ -125,53 +125,50 @@ class FilterService
     /**
      * @param bool   $asString
      * @param string $separator
-     * @param bool   $lowerCase
      *
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function getValidDateMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    public function getValidDateMatchModes(bool $asString = false, string $separator = ','): array|string
     {
-        return $this->getMatchModes('date', $asString, $lowerCase, $separator);
+        return $this->getMatchModes('date', $asString, $separator);
     }
 
     /**
      * @param bool   $asString
      * @param string $separator
-     * @param bool   $lowerCase
      *
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function getValidStringMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    public function getValidStringMatchModes(bool $asString = false, string $separator = ','): array|string
     {
-        return $this->getMatchModes('string', $asString, $lowerCase, $separator);
+        return $this->getMatchModes('string', $asString, $separator);
     }
 
     /**
      * @param bool   $asString
      * @param string $separator
-     * @param bool   $lowerCase
      *
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function getValidNumberMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    public function getValidNumberMatchModes(bool $asString = false, string $separator = ','): array|string
     {
-        return $this->getMatchModes('number', $asString, $lowerCase, $separator);
+        return $this->getMatchModes('number', $asString, $separator);
     }
 
     /**
      * @param bool   $asString
      * @param string $separator
-     * @param bool   $lowerCase
+     * @param string $separator
      *
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function getValidBooleanMatchModes(bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    public function getValidBooleanMatchModes(bool $asString = false, string $separator = ','): array|string
     {
-        return $this->getMatchModes('boolean', $asString, $lowerCase, $separator);
+        return $this->getMatchModes('boolean', $asString, $separator);
     }
 
     /**
@@ -188,12 +185,11 @@ class FilterService
      * @param string $type
      * @param bool   $asString
      * @param string $separator
-     * @param bool   $lowerCase
      *
      * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function getMatchModes(string $type, bool $asString = false, bool $lowerCase = false, string $separator = ','): array|string
+    public function getMatchModes(string $type, bool $asString = false, string $separator = ','): array|string
     {
         $this->validateType($type);
 
@@ -201,7 +197,7 @@ class FilterService
         $type = "valid{$type}MatchModes";
 
         if (!$asString) {
-            return $lowerCase ? array_map('strtolower', $this->$type) : $this->$type;
+            return $this->$type;
         }
 
         return implode($separator, $this->$type);
@@ -229,13 +225,13 @@ class FilterService
 
         switch (strtolower($matchMode)) {
             case 'contains':
-                $query->$whereMethod($field, 'LIKE', "%$value%");
+                $query->$whereMethod($field, 'like', "%$value%");
                 break;
             case 'starts_with':
-                $query->$whereMethod($field, 'LIKE', "$value%");
+                $query->$whereMethod($field, 'like', "$value%");
                 break;
             case 'ends_with':
-                $query->$whereMethod($field, 'LIKE', "%$value");
+                $query->$whereMethod($field, 'like', "%$value");
                 break;
             case 'date_equals':
             case 'equals':

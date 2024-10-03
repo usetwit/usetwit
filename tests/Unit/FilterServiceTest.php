@@ -124,7 +124,19 @@ class FilterServiceTest extends TestCase
     {
         $expected = ['contains', 'starts_with', 'ends_with', 'equals', 'not_equals', 'gt', 'gte', 'lt', 'lte'];
 
-        $result = $this->filter->getValidNumberMatchModes(false, true);
+        $result = $this->filter->getValidNumberMatchModes();
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function test_get_valid_boolean_match_modes_lowercase_array(): void
+    {
+        $expected = ['equals'];
+
+        $result = $this->filter->getValidBooleanMatchModes();
 
         $this->assertEquals($expected, $result);
     }
@@ -135,7 +147,7 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_contains_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', 'LIKE', '%john%')
+                      ->with('name', 'like', '%john%')
                       ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'contains', 'and');
@@ -147,7 +159,7 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_starts_with_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', 'LIKE', 'john%')
+                      ->with('name', 'like', 'john%')
                       ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'starts_with', 'and');
@@ -159,7 +171,7 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_ends_with_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', 'LIKE', '%john')
+                      ->with('name', 'like', '%john')
                       ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'ends_with', 'and');
@@ -291,8 +303,8 @@ class FilterServiceTest extends TestCase
                       ->times(2)
                       ->with(Mockery::type('callable'))
                       ->andReturnUsing(function (callable $callback) {
-                $callback($this->builder);
-            });
+                          $callback($this->builder);
+                      });
 
         $this->builder->shouldReceive('orWhere')
                       ->once()
@@ -300,7 +312,7 @@ class FilterServiceTest extends TestCase
                       ->andReturn($this->builder);
         $this->builder->shouldReceive('orWhere')
                       ->once()
-                      ->with('email', 'LIKE', '%lee@example.com%')
+                      ->with('email', 'like', '%lee@example.com%')
                       ->andReturn($this->builder);
         $this->builder->shouldReceive('orWhere')
                       ->once()
@@ -324,5 +336,34 @@ class FilterServiceTest extends TestCase
         ];
 
         $this->filter->filter($this->builder, $filters);
+    }
+
+    public function test_global_filter_applies_correct_queries_based_on_visible_fields_and_substitutions(): void
+    {
+        $this->builder->shouldReceive('where')
+                      ->once()
+                      ->with(Mockery::type('callable'))
+                      ->andReturnUsing(function (callable $callback) {
+                          $callback($this->builder);
+                      });
+
+        $this->builder->shouldReceive('orWhere')
+                      ->once()
+                      ->with('users.username', 'like', '%john%')
+                      ->andReturn($this->builder);
+
+        $this->builder->shouldReceive('orWhere')
+                      ->once()
+                      ->with('email', 'like', '%john%')
+                      ->andReturn($this->builder);
+
+        $this->builder->shouldNotReceive('orWhere')
+                      ->with('first_name', Mockery::any(), Mockery::any());
+
+        $global = ['users.username', 'email', 'first_name'];
+        $substitutions = ['username' => 'users.username'];
+        $visible = ['username', 'email'];
+
+        $this->filter->globalFilter($this->builder, 'john', $global, $visible, $substitutions);
     }
 }
