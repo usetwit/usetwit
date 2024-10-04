@@ -1,7 +1,7 @@
 <script setup>
-import useDropdown from '../../composables/useDropdown'
-import InputText from './InputText.vue'
-import InputGroup from './InputGroup.vue'
+import useDropdown from '@/composables/useDropdown'
+import InputText from '@/components/Form/InputText.vue'
+import InputGroup from '@/components/Form/InputGroup.vue'
 import { nextTick, onMounted, useTemplateRef } from 'vue'
 
 const props = defineProps({
@@ -58,7 +58,7 @@ const handleInput = () => {
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="rounded absolute z-50 bg-white shadow border-gray-200 border flex flex-col overflow-y-auto w-max"
+             class="dropdown z-50 w-max"
              :style="dropdownStyle"
         >
             <ul v-if="!optionGroupLabel && items.length">

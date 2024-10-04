@@ -54,7 +54,7 @@ const {
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="rounded min-w-48 absolute z-[350] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1"
+             class="dropdown z-[350] min-w-48"
              :style="dropdownStyle"
         >
             <ul>

@@ -7,11 +7,10 @@
 </head>
 <body class="bg-gradient h-full">
 <section class="flex flex-col items-center justify-center w-full max-w-md mx-auto mt-16">
-    <a href="#" class="flex items-center mb-4 text-2xl font-semibold text-slate-600">
-        <img class="w-8 h-8 mr-1" src="{{ asset('images/logo.svg') }}" alt="useTwit">
-        useTwit
+    <a href="#" class="flex items-center mb-2 text-3xl font-semibold text-slate-600">
+        <img class="w-20 h-20" src="{{ asset('images/logo.svg', true) }}" alt="useTwit">
     </a>
-    <div class="w-full bg-white rounded-lg shadow shadow-slate-100">
+    <div class="w-full bg-white rounded-lg shadow">
         <div class="space-y-4 p-4">
             <h1 class="text-xl font-bold text-gray-800 mb-4">
                 Sign in to your account
@@ -34,7 +33,7 @@
                     <input type="text"
                            name="username"
                            id="username"
-                           class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-teal-500 focus:border-teal-500 focus:outline-teal-400/50 ring-0 outline-offset-0 focus:outline block w-full p-2.5"
                            placeholder="Username"
                            maxlength="255"
                            required
@@ -49,7 +48,7 @@
                     <input type="password"
                            name="password"
                            id="password"
-                           class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-teal-500 focus:border-teal-500 focus:outline-teal-400/50 ring-0 outline-offset-0 focus:outline block w-full p-2.5"
                            placeholder="••••••••"
                            maxlength="255"
                            required
@@ -63,7 +62,7 @@
             </form>
         </div>
     </div>
-    <div class="text-teal-500 mt-4 text-sm">useTwit {{ config('app.version') }}</div>
+    <div class="text-teal-500 mt-4 text-sm">&copy; 2024 useTwit v{{ config('app.version') }}</div>
 </section>
 </body>
 

@@ -1,11 +1,11 @@
 <script setup>
-import useDropdown from '../../composables/useDropdown'
-import useDates from '../../composables/useDates'
+import useDropdown from '@/composables/useDropdown'
+import useDates from '@/composables/useDates'
 import { onMounted, ref, useTemplateRef, watch } from 'vue'
-import InputGroup from './InputGroup.vue'
-import InputText from './InputText.vue'
+import InputGroup from '@/components/Form/InputGroup.vue'
+import InputText from '@/components/Form/InputText.vue'
+import DatepickerHeader from '@/components/Form/DatepickerHeader.vue'
 import { DateTime } from 'luxon'
-import DatepickerHeader from './DatepickerHeader.vue'
 
 const props = defineProps({
     disabled: { type: Boolean, default: false },
@@ -150,7 +150,7 @@ watch(inputModel, (newValue) => {
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="rounded absolute z-[250] bg-white shadow border-gray-200 border flex flex-col overflow-y-auto px-2 pb-2 w-max"
+             class="dropdown z-[250] w-max"
              :style="dropdownStyle"
         >
             <div v-if="mode === 'year'">

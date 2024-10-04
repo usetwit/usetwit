@@ -11,6 +11,7 @@ class NavbarComposer
      * Bind data to the view.
      *
      * @param View $view
+     *
      * @return void
      */
     public function compose(View $view): void
@@ -22,7 +23,7 @@ class NavbarComposer
 
         $userProfileImage = null;
         if ($image) {
-            $userProfileImage = asset("images/user/profile/{$user->id}/{$image->filename}");
+            $userProfileImage = asset("images/user/profile/{$user->id}/{$image->filename}", true);
         }
 
         $view->with(compact('userProfileImage', 'name', 'role'));

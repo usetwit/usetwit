@@ -24,11 +24,15 @@
 }
 
 .bg-gradient {
-    background: linear-gradient(45deg, theme('colors.yellow.100'), theme('colors.orange.100'), theme('colors.red.100'), theme('colors.fuchsia.100'));
+    background: linear-gradient(45deg, theme('colors.yellow.200'), theme('colors.orange.200'), theme('colors.red.200'), theme('colors.fuchsia.200'));
 }
 
 .regex-result {
     @apply font-bold text-orange-500;
+}
+
+.dropdown {
+    @apply rounded absolute bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1;
 }
 
 @layer components {
@@ -39,14 +43,13 @@
 
 label,
 input[type="checkbox"] {
-    cursor: pointer;
+    @apply cursor-pointer;
 }
 
 .breadcrumbs {
     > li::before {
         content: '/';
-        display: inline-block;
-        margin: 0 6px;
+        @apply inline-block mx-1.5;
     }
 
     > li:first-child::before {
