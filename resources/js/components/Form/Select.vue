@@ -82,6 +82,7 @@ const setClasses = computed(() => {
     >
         <span class="px-2 py-1.5 flex-1 select-none">{{ text }}</span>
         <span v-if="showClear && model && !isLoading" @click.stop="clear" class="inline-flex items-center p-2">
+            {{model}}d
             <i class="pi pi-times"></i>
         </span>
         <span v-if="!isLoading" class="inline-flex items-center p-2"><i class="pi pi-angle-down"></i></span>

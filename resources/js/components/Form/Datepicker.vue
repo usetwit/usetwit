@@ -17,7 +17,7 @@ const props = defineProps({
     regex: { type: String, required: true },
     separator: { type: String, required: true },
     containerClass: { type: [String, Object] },
-    positionY: { type: String, default: 'top' },
+    positionY: { type: String, default: 'bottom' },
     positionX: { type: String, default: 'center' },
 })
 
@@ -150,7 +150,7 @@ watch(inputModel, (newValue) => {
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-[250] w-max"
+             class="dropdown z-[250] min-w-[250px]"
              :style="dropdownStyle"
         >
             <div v-if="mode === 'year'">
@@ -182,12 +182,12 @@ watch(inputModel, (newValue) => {
                             class="px-1.5 py-0.5 text-sm rounded hover:bg-gray-100 text-gray-800"
                             @click.stop="selectMonth(i)"
                     >
-                        {{ monthTexts[i - 1] }}
+                        {{ monthTexts[i - 1].substring(0, 3) }}
                     </button>
                 </div>
             </div>
 
-            <div v-else-if="mode === 'day'" class="flex month-wrapper">
+            <div v-else-if="mode === 'day'" class="month-wrapper">
                 <div v-for="(month, monthIndex) in months" :key="monthIndex">
 
                     <DatepickerHeader v-if="monthIndex === 0" @change="direction => changeMonth(direction)">
@@ -236,7 +236,11 @@ watch(inputModel, (newValue) => {
 </template>
 
 <style scoped lang="postcss">
-.month-wrapper > :not(:first-child) {
-    @apply ml-3 pl-3 border-l border-gray-200;
+.month-wrapper {
+    @apply w-full;
+
+    & > :not(:first-child) {
+        @apply ml-3 pl-3 border-l border-gray-200;
+    }
 }
 </style>

@@ -23,26 +23,26 @@ const props = defineProps({
 const usernameExists = ref(false)
 const isLoading = ref(false)
 const user = ref({
-    username: '',
+    username: null,
     employee_id: props.suggestedId,
-    password: '',
-    password_confirmation: '',
-    first_name: '',
-    middle_names: '',
-    last_name: '',
-    address_line_1: '',
-    address_line_2: '',
-    address_line_3: '',
-    postcode: '',
-    company_number: '',
-    company_ext: '',
-    home_number: '',
-    mobile_number: '',
-    emergency_name: '',
-    emergency_number: '',
-    email: '',
-    home_email: '',
-    join_date: '',
+    password: null,
+    password_confirmation: null,
+    first_name: null,
+    middle_names: null,
+    last_name: null,
+    address_line_1: null,
+    address_line_2: null,
+    address_line_3: null,
+    postcode: null,
+    company_number: null,
+    company_ext: null,
+    home_number: null,
+    mobile_number: null,
+    emergency_name: null,
+    emergency_number: null,
+    email: null,
+    home_email: null,
+    joined_at: null,
     role_id: 0,
     country: props.selectedCountry.code,
 })
@@ -60,8 +60,7 @@ const checkUsername = async () => {
         )
         await getResponse()
 
-        if (errors.value.raw) {
-        } else {
+        if (!errors.value.raw) {
             usernameExists.value = data.value.length > 0
         }
 
@@ -74,7 +73,7 @@ const checkUsername = async () => {
 const save = async () => {
     isLoading.value = true
 
-    const { data, errors, getResponse } = useAxios(
+    const { errors, getResponse } = useAxios(
         props.routeStore,
         {
             ...user.value,
@@ -161,6 +160,7 @@ watch(() => user.value.username, (newValue) => {
             <template #input>
                 <Password v-model="user.password"
                           required
+                          id="password"
                           maxlength="255"
                 />
             </template>
@@ -177,6 +177,8 @@ watch(() => user.value.username, (newValue) => {
                 <InputText v-model="user.password_confirmation"
                            required
                            maxlength="255"
+                           id="password_confirmation"
+                           placeholder="••••••••"
                            type="password"
                            class="rounded-md"
                 />
@@ -264,8 +266,14 @@ watch(() => user.value.username, (newValue) => {
                 <Datepicker v-model="user.joined_at"
                             dropdown
                             placeholder="Date Joined"
+                            id="joined_at"
                             :dateFormat="props.dateFormat"
                             :invalid="errorFields.includes('joined_at')"
+                            :placeholder="dateSettings.display"
+                            :display-format="dateSettings.display"
+                            :format="dateSettings.format"
+                            :regex="dateSettings.regex"
+                            :separator="dateSettings.separator"
                 />
             </template>
         </FormWrapper>
