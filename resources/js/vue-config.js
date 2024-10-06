@@ -10,7 +10,7 @@ export default function vueConfig() {
 
     app.use(pinia)
         .use(Vue3Toastify, {
-            autoClose: 543000,
+            autoClose: 3000,
             position: toast.POSITION.BOTTOM_RIGHT,
             style: {
                 fontSize: '0.75rem',

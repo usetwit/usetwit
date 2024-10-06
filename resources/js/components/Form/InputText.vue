@@ -4,6 +4,7 @@ import { computed, defineProps, useTemplateRef } from 'vue'
 const props = defineProps({
     disabled: { type: Boolean, default: false },
     invalid: { type: Boolean, default: false },
+    type: { type: String, default: 'text' }
 })
 
 const setClasses = computed(() => {
@@ -24,7 +25,7 @@ defineExpose({
 </script>
 
 <template>
-    <input type="text"
+    <input :type="type"
            class="ring-0 outline-offset-0 focus:outline focus:invalid:outline-red-600/50 hover:invalid:border-red-500 invalid:border-red-600 focus:invalid:border-red-600 leading-5 border align-middle py-2 px-2 text-gray-800 dark:text-gray-300"
            :class="setClasses"
            :disabled="disabled"

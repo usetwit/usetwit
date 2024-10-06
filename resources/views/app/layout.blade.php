@@ -3,8 +3,8 @@
 
 <head>
     <title>{!! Breadcrumbs::view('app._title') !!}</title>
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('app._css')
+    @vite(['resources/js/app.js'])
 
     @yield('javascript')
 

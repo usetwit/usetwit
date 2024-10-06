@@ -8,7 +8,7 @@ const props = defineProps({
     options: { type: Array, required: true },
     optionLabel: { type: String, required: true },
     optionValue: {
-        type: String, default: null, validator(value, props) {
+        type: String, default: null, validator(_, props) {
             return typeof props.modelValue === 'string' || typeof props.modelValue === 'number'
         }
     },
@@ -21,6 +21,7 @@ const props = defineProps({
 
 const model = defineModel()
 const emit = defineEmits(['selected'])
+
 defineOptions({
     inheritAttrs: false,
 })
@@ -89,7 +90,7 @@ const setClasses = computed(() => {
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-[350]"
+             class="dropdown z-[350] max-h-60"
              :class="dropdownClass"
              :style="dropdownStyle"
         >

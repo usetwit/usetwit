@@ -11,15 +11,15 @@
 @section('javascript')
     @parent
 
-    @vite(['resources/js/users-create.js'])
+    @vite(['resources/js/app/users-create.js'])
 @endsection
 
 @section('content')
-    <div id="users-create">
+    <div id="app">
         <users-create route-check-username="{{ $routeCheckUsername }}"
                       route-store="{{ $routeStore }}"
                       route-redirect="{{ $routeRedirect }}"
-                      date-format="{{ $dateFormat }}"
+                      :date-settings="{{ Js::from($dateSettings) }}"
                       suggested-id="{{ $suggestedId }}"
                       :roles="{{ Js::from($roles) }}"
                       :countries="{{ Js::from($countries) }}"

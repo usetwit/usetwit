@@ -32,7 +32,7 @@
 }
 
 .dropdown {
-    @apply rounded absolute bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1;
+    @apply rounded-lg absolute bg-white shadow border-gray-200 border flex flex-col overflow-y-auto p-1;
 }
 
 @layer components {

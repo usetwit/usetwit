@@ -44,6 +44,31 @@ class UsersIndexGetUsersRequestTest extends TestCase
         $this->assertTrue($errorMessage === 'The :attribute field is required when there is more than one constraint.');
     }
 
+    /**
+     * @throws FilterServiceGetTypeInvalidException|Exception
+     */
+    public function test_max_5_constraints_permitted()
+    {
+        $data = [
+            'filters' => [
+                'first_name' => [
+                    'constraints' => [
+                        ['value' => 'john_doe', 'mode' => 'contains'],
+                        ['value' => 'jane_smith', 'mode' => 'contains'],
+                        ['value' => 'jane_smith', 'mode' => 'contains'],
+                        ['value' => 'jane_smith', 'mode' => 'contains'],
+                        ['value' => 'jane_smith', 'mode' => 'contains'],
+                        ['value' => 'jane_smith', 'mode' => 'contains'],
+                    ],
+                ],
+            ],
+        ];
+
+        $validator = $this->validate($data);
+        $this->assertTrue($validator->errors()
+                                    ->first() === 'The filters.first name.constraints field must not have more than 5 items.');
+    }
+
     public function test_operator_is_not_required_with_single_constraints()
     {
         $constraints = [
