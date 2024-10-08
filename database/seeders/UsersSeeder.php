@@ -15,14 +15,7 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
-        $role['system'] = Role::findByName('system');
         $role['admin'] = Role::findByName('admin');
-
-        User::create([
-            'username' => 'system',
-            'first_name' => 'System',
-            'password' => Hash::make('password'),
-        ])->assignRole($role['system']);
 
         $lee = User::create([
             'username' => 'lee',
@@ -37,7 +30,7 @@ class UsersSeeder extends Seeder
             'joined_at' => '2024-01-01',
         ])->assignRole($role['admin']);
 
-        $filePath = storage_path('app/images/user/profile/2/b0f8b49f22c718e9924f5b1165111a67.png');
+        $filePath = storage_path('app/images/user/profile/1/b0f8b49f22c718e9924f5b1165111a67.png');
         $img = null;
 
         if (file_exists($filePath)) {

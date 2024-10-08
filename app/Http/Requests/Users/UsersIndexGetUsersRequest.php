@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Users;
 
 use App\Exceptions\FilterServiceGetTypeInvalidException;
+use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -17,8 +18,7 @@ class UsersIndexGetUsersRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() && $this->user()
-                                     ->can('users.edit');
+        return $this->user()->can('viewAny', User::class);
     }
 
     /**

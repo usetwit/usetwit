@@ -13,6 +13,8 @@ export default defineConfig({
                 'resources/js/app/home.js',
                 'resources/js/app/flash.js',
                 'resources/js/app/users-index.js',
+                'resources/js/app/users-edit.js',
+                'resources/js/app/users-create.js',
             ],
             refresh: true,
         }),

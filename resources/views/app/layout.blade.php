@@ -44,9 +44,7 @@
 
         @yield('breadcrumbs')
 
-        <main
-            class="bg-white border-y dark:bg-slate-600 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto"
-        >
+        <main class="overflow-x-auto">
             @include('app._errors')
 
             @yield('content')

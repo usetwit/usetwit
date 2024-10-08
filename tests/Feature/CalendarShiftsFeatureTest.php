@@ -19,7 +19,7 @@ class CalendarShiftsFeatureTest extends TestCase
 
     public function test_calendar_shift_edit_can_be_seen_if_user_has_permission()
     {
-        $this->setUserWithPermissions('calendars.edit');
+        $this->setUserWithPermissions('calendars.update');
 
         $calendar = Calendar::factory()
                             ->create();
@@ -54,7 +54,7 @@ class CalendarShiftsFeatureTest extends TestCase
 
     public function test_calendar_shifts_can_be_retrieved_via_post_request_if_user_has_permission()
     {
-        $this->setUserWithPermissions('calendars.edit');
+        $this->setUserWithPermissions('calendars.update');
 
         $calendarShift = CalendarShift::factory()
                                       ->create();
@@ -89,7 +89,7 @@ class CalendarShiftsFeatureTest extends TestCase
 
     public function test_calendar_shift_can_be_updated_via_patch_request_with_nwd_as_false()
     {
-        $this->setUserWithPermissions('calendars.edit');
+        $this->setUserWithPermissions('calendars.update');
 
         $calendar = Calendar::factory()
                             ->create();
@@ -113,7 +113,7 @@ class CalendarShiftsFeatureTest extends TestCase
 
     public function test_calendar_shift_can_be_updated_via_patch_request_when_nwd_is_true_even_if_other_shifts_specified()
     {
-        $this->setUserWithPermissions('calendars.edit');
+        $this->setUserWithPermissions('calendars.update');
 
         $calendar = Calendar::factory()
                             ->create();
@@ -161,7 +161,7 @@ class CalendarShiftsFeatureTest extends TestCase
 
     public function test_calendar_shifts_table_should_be_empty_if_nwd_is_false_and_shift1_start_and_end_are_midnight()
     {
-        $this->setUserWithPermissions('calendars.edit');
+        $this->setUserWithPermissions('calendars.update');
 
         $calendarShift = CalendarShift::factory()
                                       ->create();

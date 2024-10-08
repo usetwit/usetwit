@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\ExcludeSystemScope;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,7 +56,6 @@ class User extends Authenticatable implements Authorizable
     protected static function booted(): void
     {
         parent::booted();
-        static::addGlobalScope(new ExcludeSystemScope);
 
         static::saving(function ($user) {
             $user->full_name = trim(preg_replace('/\s+/', ' ',
@@ -89,11 +88,11 @@ class User extends Authenticatable implements Authorizable
     }
 
     /**
-     * @return MorphMany
+     * @return MorphOne
      */
-    public function addresses(): MorphMany
+    public function address(): MorphOne
     {
-        return $this->morphMany(Address::class, 'addressable');
+        return $this->morphOne(Address::class, 'addressable');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Users;
 
+use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,7 @@ class UsersCreateCheckUsernameRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() && $this->user()->can('users.create');
+        return $this->user()->can('create', User::class);
     }
 
     /**

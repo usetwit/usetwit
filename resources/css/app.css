@@ -57,3 +57,7 @@ input[type="checkbox"] {
         margin: 0;
     }
 }
+
+#content {
+    @apply bg-white border-y dark:bg-slate-600 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto;
+}

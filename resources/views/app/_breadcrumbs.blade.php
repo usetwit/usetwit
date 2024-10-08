@@ -3,7 +3,7 @@
         @foreach ($breadcrumbs as $breadcrumb)
             @if (!is_null($breadcrumb->url) && !$loop->last)
                 <li><a href="{{ $breadcrumb->url }}"
-                       class="text-slate-500 hover:text-orange-600 dark:hover:text-orange-600 dark:text-teal-500"
+                       class="text-slate-500 hover:text-orange-500 dark:text-teal-500"
                     >{{ $breadcrumb->title }}</a></li>
             @else
                 <li>{{ $breadcrumb->title }}</li>

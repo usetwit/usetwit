@@ -27,7 +27,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'slug' => $this->faker->unique()->slug(3, 3),
+            'slug' => $this->faker->unique()->slug(2, 2),
             'username' => $this->faker->unique()->numerify("{$this->faker->domainWord}###"),
             'first_name' => $this->faker->firstName,
             'middle_names' => $this->faker->optional()->firstName,
@@ -38,12 +38,13 @@ class UserFactory extends Factory
                 return preg_replace('/\s+/', ' ', trim($fullName));
             },
             'company_number' => $this->faker->optional()->phoneNumber,
+            'company_mobile_number' => $this->faker->optional()->phoneNumber,
             'company_ext' => $this->faker->optional()->numerify,
-            'home_number' => $this->faker->phoneNumber,
-            'mobile_number' => $this->faker->phoneNumber,
+            'personal_number' => $this->faker->phoneNumber,
+            'personal_mobile_number' => $this->faker->phoneNumber,
             'employee_id' => $this->faker->optional()->numerify('E#####'),
             'email' => $this->faker->unique()->companyEmail,
-            'home_email' => $this->faker->optional()->safeEmail,
+            'personal_email' => $this->faker->optional()->safeEmail,
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'emergency_name' => $this->faker->optional()->firstName,

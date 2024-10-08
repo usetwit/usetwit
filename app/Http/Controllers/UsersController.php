@@ -60,7 +60,7 @@ class UsersController extends Controller
 
         $query = DB::table('users')->select($cols)->leftJoin('model_has_roles', function ($join) {
             $join->on('model_has_roles.model_id', 'users.id')->where('model_has_roles.model_type', User::class);
-        })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')->where('users.id', '!=', 1);
+        })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id');
 
         $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
                 ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
@@ -83,7 +83,74 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        return $user;
+        $visible = [];
+        $address = null;
+        $images = [];
+        $roles = [];
+        $roleId = null;
+        $permissions = [
+            'protected_info' => auth()->user()->can('updateProtectedInfo', User::class),
+            'delete' => auth()->user()->can('delete', User::class),
+            'restore' => auth()->user()->can('restore', User::class),
+            'address' => auth()->user()->can('updateAddress', $user),
+            'personal_profile' => auth()->user()->can('updatePersonalProfile', $user),
+            'company_profile' => auth()->user()->can('updateCompanyProfile', $user),
+            'image' => auth()->user()->can('updateProfileImage', $user),
+        ];
+        $routes = [
+            'delete' => route('users.destroy', $user),
+            'restore' => route('users.restore', $user),
+            'protected_info' => route('users.update.protected-info', $user),
+            'address' => route('users.update.address', $user),
+            'personal_profile' => route('users.update.personal-profile', $user),
+            'company_profile' => route('users.update.company-profile', $user),
+        ];
+
+        if (auth()->user()->can('updateAddress', $user)) {
+            $address = $user->address;
+        }
+
+        if (auth()->user()->can('updatePersonalProfile', $user)) {
+            $visible += [
+                'first_name',
+                'middle_names',
+                'last_name',
+                'personal_number',
+                'personal_mobile_number',
+                'personal_email',
+                'emergency_name',
+                'emergency_number',
+            ];
+        }
+
+        if (auth()->user()->can('updateCompanyProfile', $user)) {
+            $visible += [
+                'company_mobile_number',
+                'company_number',
+                'email',
+                'company_ext',
+            ];
+        }
+
+        if (auth()->user()->can('updateProfileImage', $user)) {
+            $images = $user->profileImages()->get();
+        }
+
+        if (auth()->user()->can('updateProtectedInfo', User::class)) {
+            $visible += [
+                'joined_at',
+                'username',
+                'employee_id',
+            ];
+
+            $roleId = $user->roles->first()?->id;
+            $roles = Role::get(['id', 'name']);
+        }
+
+        $user = $user->only($visible);
+
+        return view('users.users-edit',
+            compact('user', 'roleId', 'images', 'address', 'routes', 'roles', 'permissions'));
     }
 
     public function create(GeneralSettings $settings)
@@ -128,13 +195,14 @@ class UsersController extends Controller
             'middle_names',
             'last_name',
             'company_number',
+            'company_mobile_number',
             'company_ext',
-            'home_number',
-            'mobile_number',
+            'personal_number',
+            'personal_mobile_number',
             'emergency_name',
             'emergency_number',
             'email',
-            'home_email',
+            'personal_email',
             'joined_at',
         ]);
 
@@ -145,7 +213,7 @@ class UsersController extends Controller
 
         if (count(Arr::whereNotNull($addressFields)) > 0) {
             $addressFields['default_address'] = true;
-            $newUser->addresses()->create($addressFields);
+            $newUser->address()->create($addressFields);
         }
 
         $role = Role::find($request->input('role_id'));

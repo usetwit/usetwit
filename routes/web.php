@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['guest']], function () {
@@ -21,14 +22,15 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
     });
 
     /* Company */
-    Route::group(['prefix' => 'company', 'as' => 'company.', 'middleware' => ['permission:company.edit']], function () {
-        Route::get('', ['uses' => 'CompanyController@index', 'as' => 'index']);
-        Route::get('edit', ['uses' => 'CompanyController@edit', 'as' => 'edit']);
-        Route::patch('', ['uses' => 'CompanyController@update', 'as' => 'update']);
-    });
+    Route::group(['prefix' => 'company', 'as' => 'company.', 'middleware' => ['permission:company.update']],
+        function () {
+            Route::get('', ['uses' => 'CompanyController@index', 'as' => 'index']);
+            Route::get('edit', ['uses' => 'CompanyController@edit', 'as' => 'edit']);
+            Route::patch('', ['uses' => 'CompanyController@update', 'as' => 'update']);
+        });
 
     /* Roles and Permissions */
-    Route::group(['prefix' => 'roles', 'as' => 'roles.', 'middleware' => ['permission:roles.edit']], function () {
+    Route::group(['prefix' => 'roles', 'as' => 'roles.', 'middleware' => ['permission:roles.update']], function () {
         Route::get('{role}/edit', ['uses' => 'RolesController@edit', 'as' => 'edit']);
     });
 
@@ -37,38 +39,67 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
         Route::get('', [
             'uses' => 'UsersController@index',
             'as' => 'index',
-            'middleware' => ['permission:users.edit'],
-        ]);
+        ])->can('viewAny', User::class);
+
+        Route::delete('{user}', [
+            'uses' => 'UsersController@destroy',
+            'as' => 'destroy',
+        ])->can('destroy', 'user');
+
+        Route::patch('{user}/restore', [
+            'uses' => 'UsersController@restore',
+            'as' => 'restore',
+        ])->withTrashed()->can('restore', 'user');
+
         Route::get('create', [
-                'uses' => 'UsersController@create',
-                'as' => 'create',
-                'middleware' => ['permission:users.create'],
-            ]);
+            'uses' => 'UsersController@create',
+            'as' => 'create',
+        ])->can('create', User::class);
+
         Route::get('{user}/edit', [
-                'uses' => 'UsersController@edit',
-                'as' => 'edit',
-                'middleware' => ['permission:users.edit'],
-            ])->withTrashed();
-        Route::patch('{user}', [
-            'uses' => 'UsersController@update',
-            'as' => 'update',
-            'middleware' => ['permission:users.edit'],
-        ])->withTrashed();
+            'uses' => 'UsersController@edit',
+            'as' => 'edit',
+        ])->withTrashed()->can('update', 'user');
+
+        /* Users Update */
+        Route::group(['prefix' => 'update', 'as' => 'update.'], function () {
+
+            Route::patch('company-profile/{user}', [
+                'uses' => 'UsersUpdateController@companyProfile',
+                'as' => 'company-profile',
+            ])->withTrashed()->can('updateCompanyProfile', 'user');
+
+            Route::patch('personal-profile/{user}', [
+                'uses' => 'UsersUpdateController@personalProfile',
+                'as' => 'personal-profile',
+            ])->withTrashed()->can('updatePersonalProfile', 'user');
+
+            Route::patch('address/{user}', [
+                'uses' => 'UsersUpdateController@address',
+                'as' => 'address',
+            ])->withTrashed()->can('updateAddress', 'user');
+
+            Route::patch('protected-info/{user}', [
+                'uses' => 'UsersUpdateController@protectedInfo',
+                'as' => 'protected-info',
+            ])->withTrashed()->can('updateProtectedInfo', User::class);
+
+        });
+
         Route::post('check-username', [
             'uses' => 'UsersController@checkUsername',
             'as' => 'check-username',
-            'middleware' => ['permission:users.edit|users.create'],
-        ]);
+        ])->can('updateProfileProtectedInfo', User::class);
+
         Route::post('', [
             'uses' => 'UsersController@store',
             'as' => 'store',
-            'middleware' => ['permission:users.create'],
-        ]);
+        ])->can('create', User::class);
+
         Route::post('get-users', [
             'uses' => 'UsersController@getUsers',
             'as' => 'get-users',
-            'middleware' => ['permission:users.create|users.edit'],
-        ]);
+        ])->can('viewAny', User::class);
     });
 
     /* Sales Orders */
@@ -80,7 +111,7 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
     });
 
     /* Calendars */
-    Route::group(['prefix' => 'calendars', 'as' => 'calendars.', 'middleware' => ['permission:calendars.edit']],
+    Route::group(['prefix' => 'calendars', 'as' => 'calendars.', 'middleware' => ['permission:calendars.update']],
         function () {
             Route::get('', ['uses' => 'CalendarsController@index', 'as' => 'index']);
             Route::get('create', ['uses' => 'CalendarsController@create', 'as' => 'create']);

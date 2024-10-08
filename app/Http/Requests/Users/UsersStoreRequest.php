@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Users;
 
+use App\Settings\GeneralSettings;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -28,7 +29,7 @@ class UsersStoreRequest extends FormRequest
             'username' => 'required|string|unique:users,username|max:255|regex:/^[a-z0-9]+$/',
             'password' => 'required|string|confirmed|max:255',
             'email' => 'nullable|email:strict|max:255',
-            'home_email' => 'nullable|email:strict|max:255',
+            'personal_email' => 'nullable|email:strict|max:255',
             'first_name' => 'required|string|max:85',
             'middle_names' => 'nullable|string|max:85',
             'last_name' => 'nullable|string|max:85',
@@ -40,8 +41,9 @@ class UsersStoreRequest extends FormRequest
             'postcode' => 'nullable|string|max:255',
             'company_ext' => 'nullable|string|regex:/^[0-9 ]*$/|max:255',
             'company_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
-            'home_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
-            'mobile_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
+            'company_mobile_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
+            'personal_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
+            'personal_mobile_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
             'emergency_name' => 'nullable|string|max:255',
             'emergency_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
             'role_id' => 'required|integer|exists:roles,id',

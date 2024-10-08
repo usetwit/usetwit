@@ -32,10 +32,8 @@ class UsersStoreRequestTest extends TestCase
 
     protected function validate(array $data)
     {
-        $settings = app(GeneralSettings::class);
-
         $request = new UsersStoreRequest();
-        return Validator::make($data, $request->rules($settings));
+        return Validator::make($data, $request->rules());
     }
 
     public function test_valid_role_id()
@@ -96,7 +94,7 @@ class UsersStoreRequestTest extends TestCase
         $validUsernames = [
             'validusername1',
             'anotheruser123',
-            'user2024'
+            'user2024',
         ];
 
         foreach ($validUsernames as $username) {
@@ -184,13 +182,16 @@ class UsersStoreRequestTest extends TestCase
 
     public function test_password_max_length()
     {
-        $validator = $this->validate($this->sampleData(['password' => $this->longString(), 'password_confirmation' => $this->longString()]));
+        $validator = $this->validate($this->sampleData([
+            'password' => $this->longString(),
+            'password_confirmation' => $this->longString(),
+        ]));
         $this->assertTrue($validator->errors()->has('password'));
     }
 
     public function test_email_and_home_email_format()
     {
-        $fields = ['email', 'home_email'];
+        $fields = ['email', 'personal_email'];
 
         $validEmails = [
             'user@example.com',
@@ -223,7 +224,13 @@ class UsersStoreRequestTest extends TestCase
 
     public function test_telephone_number_formats()
     {
-        $fields = ['company_number', 'home_number', 'mobile_number', 'emergency_number'];
+        $fields = [
+            'company_number',
+            'company_mobile_number',
+            'personal_number',
+            'personal_mobile_number',
+            'emergency_number',
+        ];
 
         $validNumbers = ['1234567890', '123 456 7890', '+123 (456) 7890', '123-456-7890', '123.456.789'];
         $invalidNumbers = ['123ABC456', $this->longString(256, true)];

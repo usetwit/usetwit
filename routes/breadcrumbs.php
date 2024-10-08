@@ -51,6 +51,11 @@ Breadcrumbs::for('users.create', function (BreadcrumbTrail $trail) {
     $trail->push('Create New User');
 });
 
+Breadcrumbs::for('users.edit', function (BreadcrumbTrail $trail) {
+    $trail->parent('users.index');
+    $trail->push('Edit User');
+});
+
 
 /* Company */
 Breadcrumbs::for('company.edit', function (BreadcrumbTrail $trail) {

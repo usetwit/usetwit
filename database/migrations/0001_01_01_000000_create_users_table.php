@@ -20,12 +20,13 @@ return new class extends Migration
             $table->string('last_name', 85)->nullable();
             $table->string('full_name')->nullable();
             $table->string('company_number')->nullable();
+            $table->string('company_mobile_number')->nullable();
             $table->string('company_ext')->nullable();
-            $table->string('home_number')->nullable();
-            $table->string('mobile_number')->nullable();
+            $table->string('personal_number')->nullable();
+            $table->string('personal_mobile_number')->nullable();
             $table->string('employee_id')->nullable();
             $table->string('email')->nullable();
-            $table->string('home_email')->nullable();
+            $table->string('personal_email')->nullable();
             $table->string('password');
             $table->string('emergency_name')->nullable();
             $table->string('emergency_number')->nullable();
