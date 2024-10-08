@@ -8,9 +8,9 @@ export default function useAxios(url, params = {}, method = 'post') {
         fields: [],
         list: '',
         raw: null,
-        status: 0,
         message: '',
     })
+    const status = ref(null)
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 
@@ -24,18 +24,26 @@ export default function useAxios(url, params = {}, method = 'post') {
                     'X-CSRF-TOKEN': csrfToken,
                 },
             })
+
             data.value = response.data
+            status.value = response.status
+            errors.value = {
+                fields: [],
+                list: '',
+                raw: null,
+                message: '',
+            }
 
         } catch (error) {
 
-            if (error.response && error.response.data && error.response.data.errors) {
+            if (error.response?.data?.errors) {
                 const responseErrors = error.response.data.errors
                 errors.value.fields = Object.keys(responseErrors)
                 errors.value.list = Object.values(responseErrors).flat().join('\n')
             }
 
             errors.value.raw = error
-            errors.value.status = error.response.status
+            status.value = error.response.status
             errors.value.message = error.message
 
             toast.error(`<b>${errors.value.message}</b>\n${errors.value.list}`, {
@@ -44,5 +52,5 @@ export default function useAxios(url, params = {}, method = 'post') {
         }
     }
 
-    return { data, errors, getResponse }
+    return { data, status, errors, getResponse }
 }

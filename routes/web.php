@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['guest']], function () {
     Route::get('login', ['uses' => 'AuthController@showLoginForm', 'as' => 'auth.show-login-form']);
     Route::post('login', ['uses' => 'AuthController@login', 'as' => 'auth.login']);
-
 });
 
 Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], function () {
@@ -35,13 +34,41 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
 
     /* Users */
     Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
-        Route::get('', ['uses' => 'UsersController@index', 'as' => 'index', 'middleware' => ['permission:users.edit']]);
-        Route::get('create', ['uses' => 'UsersController@create', 'as' => 'create', 'middleware' => ['permission:users.create']]);
-        Route::get('{user}/edit', ['uses' => 'UsersController@edit', 'as' => 'edit', 'middleware' => ['permission:users.edit']])->withTrashed();
-        Route::patch('{user}', ['uses' => 'UsersController@update', 'as' => 'update', 'middleware' => ['permission:users.edit']])->withTrashed();
-        Route::post('check-username', ['uses' => 'UsersController@checkUsername', 'as' => 'check-username', 'middleware' => ['permission:users.edit|users.create']]);
-        Route::post('', ['uses' => 'UsersController@store', 'as' => 'store', 'middleware' => ['permission:users.create']]);
-        Route::post('get-users', ['uses' => 'UsersController@getUsers', 'as' => 'get-users', 'middleware' => ['permission:users.create|users.edit']]);
+        Route::get('', [
+            'uses' => 'UsersController@index',
+            'as' => 'index',
+            'middleware' => ['permission:users.edit'],
+        ]);
+        Route::get('create', [
+                'uses' => 'UsersController@create',
+                'as' => 'create',
+                'middleware' => ['permission:users.create'],
+            ]);
+        Route::get('{user}/edit', [
+                'uses' => 'UsersController@edit',
+                'as' => 'edit',
+                'middleware' => ['permission:users.edit'],
+            ])->withTrashed();
+        Route::patch('{user}', [
+            'uses' => 'UsersController@update',
+            'as' => 'update',
+            'middleware' => ['permission:users.edit'],
+        ])->withTrashed();
+        Route::post('check-username', [
+            'uses' => 'UsersController@checkUsername',
+            'as' => 'check-username',
+            'middleware' => ['permission:users.edit|users.create'],
+        ]);
+        Route::post('', [
+            'uses' => 'UsersController@store',
+            'as' => 'store',
+            'middleware' => ['permission:users.create'],
+        ]);
+        Route::post('get-users', [
+            'uses' => 'UsersController@getUsers',
+            'as' => 'get-users',
+            'middleware' => ['permission:users.create|users.edit'],
+        ]);
     });
 
     /* Sales Orders */
@@ -53,17 +80,19 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
     });
 
     /* Calendars */
-    Route::group(['prefix' => 'calendars', 'as' => 'calendars.', 'middleware' => ['permission:calendars.edit']], function () {
-        Route::get('', ['uses' => 'CalendarsController@index', 'as' => 'index']);
-        Route::get('create', ['uses' => 'CalendarsController@create', 'as' => 'create']);
-        Route::get('{calendar}', ['uses' => 'CalendarsController@edit', 'as' => 'edit']);
-        Route::patch('{calendar}', ['uses' => 'CalendarsController@update', 'as' => 'update']);
+    Route::group(['prefix' => 'calendars', 'as' => 'calendars.', 'middleware' => ['permission:calendars.edit']],
+        function () {
+            Route::get('', ['uses' => 'CalendarsController@index', 'as' => 'index']);
+            Route::get('create', ['uses' => 'CalendarsController@create', 'as' => 'create']);
+            Route::get('{calendar}', ['uses' => 'CalendarsController@edit', 'as' => 'edit']);
+            Route::patch('{calendar}', ['uses' => 'CalendarsController@update', 'as' => 'update']);
 
-        /* Calendar Shifts */
-        Route::group(['prefix' => 'calendar-shifts', 'as' => 'calendar-shifts.'], function () {
-            Route::patch('edit/{calendar}', ['uses' => 'CalendarShiftsController@update', 'as' => 'update']);
-            Route::post('{calendar}', ['uses' => 'CalendarShiftsController@getCalendarShifts', 'as' => 'get-calendar-shifts']);
-            Route::get('{calendar}', ['uses' => 'CalendarShiftsController@edit', 'as' => 'edit']);
+            /* Calendar Shifts */
+            Route::group(['prefix' => 'calendar-shifts', 'as' => 'calendar-shifts.'], function () {
+                Route::patch('edit/{calendar}', ['uses' => 'CalendarShiftsController@update', 'as' => 'update']);
+                Route::post('{calendar}',
+                    ['uses' => 'CalendarShiftsController@getCalendarShifts', 'as' => 'get-calendar-shifts']);
+                Route::get('{calendar}', ['uses' => 'CalendarShiftsController@edit', 'as' => 'edit']);
+            });
         });
-    });
 });

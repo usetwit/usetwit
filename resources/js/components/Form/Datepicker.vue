@@ -25,7 +25,6 @@ defineOptions({
     inheritAttrs: false,
 })
 
-
 const model = defineModel()
 
 let initialTextValue = ''

@@ -30,20 +30,6 @@ class GeneralSettings extends Settings
     }
 
     /**
-     * @return array
-     */
-    public function countriesAsArrayForJson(): array
-    {
-        $array = [];
-
-        foreach ($this->countries as $code => $country) {
-            $array[] = ['code' => $code, 'name' => $country];
-        }
-
-        return $array;
-    }
-
-    /**
      * Returns either the default country or country specified
      *
      * @param string|null $code

@@ -24,7 +24,7 @@ class AddressFactory extends Factory
             'address_line_2' => $this->faker->city,
             'address_line_3' => $this->faker->country,
             'postcode' => $this->faker->postcode,
-            'country' => strtolower($this->faker->countryCode),
+            'country' => $this->faker->countryCode,
             'addressable_type' => $addressableType,
             'addressable_id' => $addressableType::factory()->create()->id,
             'deleted_at' => null,

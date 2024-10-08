@@ -8,6 +8,8 @@ import Button from "@/components/Form/Button.vue";
 import Password from "@/components/Form/Password.vue";
 import useAxios from '@/composables/useAxios.js'
 import { debounce } from 'lodash'
+import FileUpload from "./Form/FileUpload.vue";
+import { toast } from "vue3-toastify";
 
 const props = defineProps({
     routeCheckUsername: { type: String, required: true },
@@ -15,39 +17,40 @@ const props = defineProps({
     routeRedirect: { type: String, required: true },
     dateSettings: { type: Object, required: true },
     suggestedId: { type: String, required: true },
-    roles: { required: true, type: Array },
-    countries: { required: true, type: Array },
-    selectedCountry: { required: true, type: Object },
+    roles: { type: Array, required: true },
+    countries: { type: Array, required: true },
+    selectedCountry: { type: String, required: true },
 })
 
 const usernameExists = ref(false)
 const isLoading = ref(false)
 const user = ref({
-    username: null,
+    username: 'a',
     employee_id: props.suggestedId,
-    password: null,
-    password_confirmation: null,
-    first_name: null,
-    middle_names: null,
-    last_name: null,
-    address_line_1: null,
-    address_line_2: null,
-    address_line_3: null,
-    postcode: null,
-    company_number: null,
-    company_ext: null,
-    home_number: null,
-    mobile_number: null,
-    emergency_name: null,
-    emergency_number: null,
-    email: null,
-    home_email: null,
-    joined_at: null,
+    password: 'a',
+    password_confirmation: 'a',
+    first_name: 'a',
+    middle_names: '',
+    last_name: '',
+    address_line_1: '',
+    address_line_2: '',
+    address_line_3: '',
+    postcode: '',
+    company_number: '',
+    company_ext: '',
+    home_number: '',
+    mobile_number: '',
+    emergency_name: '',
+    emergency_number: '',
+    email: '',
+    home_email: '',
+    joined_at: '',
     role_id: 0,
-    country: props.selectedCountry.code,
+    country: props.selectedCountry,
 })
 const submitDisabled = ref(false)
 const errorFields = ref([])
+const profileImage = ref([])
 
 const checkUsername = async () => {
     if (user.value.username) {
@@ -73,7 +76,7 @@ const checkUsername = async () => {
 const save = async () => {
     isLoading.value = true
 
-    const { errors, getResponse } = useAxios(
+    const { data, status, errors, getResponse } = useAxios(
         props.routeStore,
         {
             ...user.value,
@@ -82,12 +85,15 @@ const save = async () => {
     )
     await getResponse()
 
-    if (errors.value.raw) {
-    } else {
-        // submitDisabled.value = true
+    if (status.value === 200) {
+        submitDisabled.value = true
         errorFields.value = []
 
-        // setTimeout(() => window.location.replace(props.routeRedirect), 2000)
+        toast.success(data.value.message)
+
+        setTimeout(() => window.location.replace(data.value.redirect), 2000)
+    } else if (errors.value.raw) {
+        errorFields.value = errors.value.fields
     }
 
     isLoading.value = false
@@ -121,6 +127,7 @@ watch(() => user.value.username, (newValue) => {
                            id="username"
                            placeholder="Username"
                            required
+                           autocomplete="off"
                            v-model="user.username"
                            @input="debouncedCheckUsername"
                            pattern="^[a-z0-9]{1,255}$"
@@ -359,6 +366,7 @@ watch(() => user.value.username, (newValue) => {
                 <Select v-model="user.country"
                         :options="props.countries"
                         option-label="name"
+                        option-value="code"
                         placeholder="Select a Country"
                         class="w-full"
                         show-clear

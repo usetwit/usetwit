@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Image;
 use App\Models\User;
 use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 use Illuminate\Database\Seeder;

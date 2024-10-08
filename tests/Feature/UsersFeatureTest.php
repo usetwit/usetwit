@@ -28,7 +28,7 @@ class UsersFeatureTest extends TestCase
             'address_line_2' => $this->faker->city,
             'address_line_3' => $this->faker->city,
             'postcode' => $this->faker->postcode,
-            'country' => strtolower($this->faker->countryCode),
+            'country' => $this->faker->countryCode,
             'role_id' => $role->id,
             'joined_at' => optional($user->joined_at)->format('Y-m-d'),
             'password' => 'password',

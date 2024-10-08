@@ -1,7 +1,7 @@
 <script setup>
-import useDropdown from "@/composables/useDropdown.js";
-import { computed, onMounted, useTemplateRef } from "vue";
-import InputText from "./InputText.vue";
+import useDropdown from '@/composables/useDropdown.js'
+import { computed, onMounted, useTemplateRef } from 'vue'
+import InputText from './InputText.vue'
 import zxcvbn from 'zxcvbn'
 
 defineOptions({
@@ -23,7 +23,7 @@ onMounted(() => {
     }
 })
 
-const strength = computed(() => zxcvbn(model.value).score)
+const strength = computed(() => zxcvbn(model.value || '').score)
 const width = computed(() => ((strength.value + 1) / 5 * 100) + '%')
 const texts = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong']
 const strengthText = computed(() => !model.value ? 'Enter a password' : texts[strength.value])

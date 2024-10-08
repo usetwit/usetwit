@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('hash', 64);
             $table->string('extension', 5);
             $table->string('mime_type', 50);
-            $table->string('alt_text')->nullable();
             $table->text('comments')->nullable();
             $table->unsignedInteger('size');
             $table->unsignedSmallInteger('width');

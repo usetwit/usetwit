@@ -8,12 +8,15 @@ use App\Http\Requests\Users\UsersStoreRequest;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
+use Symfony\Component\Intl\Countries;
+use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 
 class UsersController extends Controller
 {
@@ -36,14 +39,21 @@ class UsersController extends Controller
 
         $substitutions = ['role_name' => 'roles.name', 'id' => 'users.id'];
         $global = [
-            'username', 'email', 'first_name', 'middle_names', 'last_name', 'full_name', 'employee_id', 'roles.name',
+            'username',
+            'email',
+            'first_name',
+            'middle_names',
+            'last_name',
+            'full_name',
+            'employee_id',
+            'roles.name',
             'users.id',
         ];
 
         $cols = Cache::remember('user_columns', 24 * 60 * 60 * 7, function () {
             $cols = Schema::getColumnListing('users');
             $cols = array_diff($cols, ['password', 'remember_token']);
-            $cols = array_map(fn ($value) => 'users.'.$value, $cols);
+            $cols = array_map(fn($value) => 'users.' . $value, $cols);
 
             return array_merge($cols, ['roles.name as role_name']);
         });
@@ -53,7 +63,7 @@ class UsersController extends Controller
         })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')->where('users.id', '!=', 1);
 
         $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
-            ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
+                ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
 
         $query = $query->paginate($perPage);
         $total = $query->total();
@@ -84,10 +94,12 @@ class UsersController extends Controller
 
         $maxIdPlusOne = User::max('id') + 1;
         $paddedId = str_pad($maxIdPlusOne, $settings->employee_id_padding, '0', STR_PAD_LEFT);
-        $suggestedId = $settings->employee_id_prefix.$paddedId;
+        $suggestedId = $settings->employee_id_prefix . $paddedId;
         $roles = Role::all(['id', 'name']);
-        $countries = $settings->countriesAsArrayForJson();
-        $selectedCountry = $settings->countryAsObjectForJson();
+        $selectedCountry = $settings->default_country;
+        $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
+            return ['code' => $code, 'name' => $name];
+        })->values();
 
         return view('users.users-create',
             compact('routeCheckUsername', 'routeStore', 'routeRedirect', 'dateSettings', 'suggestedId', 'roles',
@@ -98,7 +110,7 @@ class UsersController extends Controller
     {
         $username = $request->input('username');
 
-        if (! $username) {
+        if (!$username) {
             return [];
         }
 
@@ -108,8 +120,20 @@ class UsersController extends Controller
     public function store(UsersStoreRequest $request)
     {
         $userFields = $request->only([
-            'username', 'employee_id', 'password', 'first_name', 'middle_names', 'last_name', 'company_number',
-            'company_ext', 'home_number', 'mobile_number', 'emergency_name', 'emergency_number', 'email', 'home_email',
+            'username',
+            'employee_id',
+            'password',
+            'first_name',
+            'middle_names',
+            'last_name',
+            'company_number',
+            'company_ext',
+            'home_number',
+            'mobile_number',
+            'emergency_name',
+            'emergency_number',
+            'email',
+            'home_email',
             'joined_at',
         ]);
 
@@ -118,12 +142,14 @@ class UsersController extends Controller
 
         $addressFields = $request->only(['address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'country']);
 
-        $addressFields['default_address'] = true;
-        $newUser->addresses()->create($addressFields);
+        if (count(Arr::whereNotNull($addressFields)) > 0) {
+            $addressFields['default_address'] = true;
+            $newUser->addresses()->create($addressFields);
+        }
 
         $role = Role::find($request->input('role_id'));
         $newUser->syncRoles($role);
 
-        return 'User Created';
+        return ['message' => 'User Created', 'redirect' => route('users.edit', $newUser)];
     }
 }

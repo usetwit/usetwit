@@ -2,17 +2,13 @@
 
 namespace App\Http\Requests\Users;
 
-use App\Settings\GeneralSettings;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Symfony\Component\Intl\Countries;
 
 class UsersStoreRequest extends FormRequest
 {
-    public function __construct()
-    {
-        @parent::__construct();
-    }
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,10 +22,8 @@ class UsersStoreRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array|string>
      */
-    public function rules(GeneralSettings $settings): array
+    public function rules(): array
     {
-        $countryCodes = array_keys($settings->countries);
-
         return [
             'username' => 'required|string|unique:users,username|max:255|regex:/^[a-z0-9]+$/',
             'password' => 'required|string|confirmed|max:255',
@@ -53,7 +47,7 @@ class UsersStoreRequest extends FormRequest
             'role_id' => 'required|integer|exists:roles,id',
             'country' => [
                 'nullable',
-                Rule::in($countryCodes),
+                Rule::in(Countries::getCountryCodes()),
             ],
         ];
     }
