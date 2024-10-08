@@ -6,7 +6,6 @@ use Spatie\LaravelSettings\Settings;
 
 class GeneralSettings extends Settings
 {
-    public array $countries;
     public string $locale;
     public array $locales;
     public string $currency;

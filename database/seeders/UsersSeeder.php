@@ -49,7 +49,6 @@ class UsersSeeder extends Seeder
                 'hash' => hash_file('sha256', $filePath),
                 'extension' => pathinfo($filePath, PATHINFO_EXTENSION),
                 'mime_type' => mime_content_type($filePath),
-                'alt_text' => 'Profile picture of Lee Jeffries',
                 'comments' => 'Lee\'s profile picture',
                 'size' => filesize($filePath),
                 'width' => $img->width(),

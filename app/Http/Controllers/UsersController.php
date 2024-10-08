@@ -69,8 +69,9 @@ class UsersController extends Controller
         $total = $query->total();
 
         $users = $query->getCollection()->map(function ($user) {
+
             return array_merge((array) $user, [
-                'edit_user_route' => route('users.edit', $user->id),
+                'edit_user_route' => route('users.edit', $user->slug),
                 'created_at' => Carbon::parse($user->created_at)->format('Y-m-d'),
                 'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d'),
                 'joined_at' => $user->joined_at === null ? null : Carbon::parse($user->joined_at)->format('Y-m-d'),

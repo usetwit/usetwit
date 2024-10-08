@@ -11,6 +11,7 @@ class CreateGeneralSettings extends SettingsMigration
     public function up(): void
     {
         $this->migrator->add('general.default_country', 'GB');
+        $this->migrator->add('general.password_strength', '3');
         $this->migrator->add('general.locale', 'en-GB');
         $this->migrator->add('general.currency', 'GBP');
         $this->migrator->add('general.locales', [

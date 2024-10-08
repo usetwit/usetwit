@@ -27,6 +27,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'slug' => $this->faker->unique()->slug(3, 3),
             'username' => $this->faker->unique()->numerify("{$this->faker->domainWord}###"),
             'first_name' => $this->faker->firstName,
             'middle_names' => $this->faker->optional()->firstName,

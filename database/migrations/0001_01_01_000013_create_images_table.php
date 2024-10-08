@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->string('filename')->unique();
+            $table->string('filename')->collation('utf8mb4_bin')->unique();
             $table->string('type', 20)->collation('utf8mb4_bin');
-            $table->string('hash', 64);
+            $table->string('hash', 64)->collation('utf8mb4_bin');
             $table->string('extension', 5);
             $table->string('mime_type', 50);
             $table->text('comments')->nullable();
