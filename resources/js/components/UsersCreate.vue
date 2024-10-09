@@ -273,7 +273,6 @@ watch(() => user.value.username, (newValue) => {
                                 dropdown
                                 placeholder="Date Joined"
                                 id="joined_at"
-                                :dateFormat="props.dateFormat"
                                 :invalid="errorFields.includes('joined_at')"
                                 :placeholder="dateSettings.display"
                                 :display-format="dateSettings.display"
@@ -363,7 +362,7 @@ watch(() => user.value.username, (newValue) => {
 
                 <template #input>
                     <Select v-model="user.country"
-                            :options="props.countries"
+                            :options="countries"
                             option-label="name"
                             option-value="code"
                             placeholder="Select a Country"

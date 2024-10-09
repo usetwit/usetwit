@@ -6,6 +6,7 @@ import InputText from "./Form/InputText.vue";
 import Button from "./Form/Button.vue";
 import FormWrapper from "./Form/Wrapper.vue";
 import Select from "./Form/Select.vue";
+import Datepicker from "./Form/Datepicker.vue";
 
 const props = defineProps({
     roles: { type: Array, required: true },
@@ -13,11 +14,13 @@ const props = defineProps({
     routes: { type: Object, required: true },
     user: { type: Object, required: true },
     countries: { type: Array, required: true },
+    dateSettings: { type: Object, required: true },
 })
 
 const isLoading = ref(false)
 const tabs = ref([])
 const activeTab = ref(null)
+const errorFields = ref([])
 const user = ref({
     // Personal Profile
     first_name: props.user.first_name,
@@ -34,18 +37,17 @@ const user = ref({
     company_ext: props.user.company_ext,
 
     // Address
-    address_line_1: props.user.address?.address_line_1,
-    address_line_2: props.user.address?.address_line_2,
-    address_line_3: props.user.address?.address_line_3,
-    postcode: props.user.address?.postcode,
-    country: props.user.address?.country,
+    address_line_1: props.user.address?.address_line_1 || null,
+    address_line_2: props.user.address?.address_line_2 || null,
+    address_line_3: props.user.address?.address_line_3 || null,
+    postcode: props.user.address?.postcode || null,
+    country: props.user.address?.country || null,
 
     // Protected Info
     joined_at: props.user.joined_at,
     username: props.user.username,
+    employee_id: props.user.employee_id,
 })
-
-console.log(props.user)
 
 const tabTexts = {
     personal_profile: 'Personal Profile',
@@ -143,6 +145,7 @@ const handleClick = text => {
                         <InputText class="rounded-md"
                                    id="personal_number"
                                    type="tel"
+                                   maxlength="255"
                                    placeholder="Personal Landline"
                                    v-model="user.personal_number"
                                    pattern="^[0-9 \+\(\)\.\-]*$"
@@ -165,6 +168,7 @@ const handleClick = text => {
                         <InputText class="rounded-md"
                                    id="personal_mobile_number"
                                    type="tel"
+                                   maxlength="255"
                                    placeholder="Personal Mobile"
                                    v-model="user.personal_mobile_number"
                                    pattern="^[0-9 \+\(\)\.\-]*$"
@@ -183,6 +187,7 @@ const handleClick = text => {
                         <InputText class="rounded-md"
                                    id="personal_email"
                                    type="email"
+                                   maxlength="255"
                                    placeholder="Personal Email"
                                    v-model="user.personal_email"
                         />
@@ -219,6 +224,7 @@ const handleClick = text => {
                         <InputText class="rounded-md"
                                    id="company_number"
                                    type="tel"
+                                   maxlength="255"
                                    placeholder="Company Landline"
                                    v-model="user.company_number"
                                    pattern="^[0-9 \+\(\)\.\-]*$"
@@ -239,8 +245,8 @@ const handleClick = text => {
 
                     <template #input>
                         <InputText class="rounded-md"
-                                   maxlength="255"
                                    id="company_ext"
+                                   maxlength="255"
                                    placeholder="Company Extension"
                                    v-model="user.company_ext"
                                    pattern="[0-9 ]*"
@@ -263,6 +269,7 @@ const handleClick = text => {
                         <InputText class="rounded-md"
                                    id="company_mobile_number"
                                    type="tel"
+                                   maxlength="255"
                                    placeholder="Company Mobile"
                                    v-model="user.company_mobile_number"
                                    pattern="^[0-9 \+\(\)\.\-]*$"
@@ -281,6 +288,7 @@ const handleClick = text => {
                         <InputText class="rounded-md"
                                    id="company_email"
                                    type="email"
+                                   maxlength="255"
                                    placeholder="Company Email"
                                    v-model="user.personal_email"
                         />
@@ -380,13 +388,85 @@ const handleClick = text => {
 
                     <template #input>
                         <Select v-model="user.country"
-                                :options="props.countries"
+                                :options="countries"
                                 option-label="name"
                                 option-value="code"
                                 placeholder="Select a Country"
                                 class="w-full"
                                 show-clear
                                 filter
+                        />
+                    </template>
+                </Wrapper>
+
+                <div class="flex">
+                    <Button severity="success"
+                            type="submit"
+                            aria-label="Save"
+                            :loading="isLoading"
+                            :disabled="isLoading"
+                            label="Save"
+                            icon="pi pi-save"
+                            class="mx-auto my-4"
+                    />
+                </div>
+            </form>
+        </div>
+
+        <div v-if="activeTab === 'Admin'">
+            <form @submit.prevent="updateProtectedInfo">
+                <Wrapper>
+                    <template #text>
+                        <label for="username">
+                            Username
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md"
+                                   maxlength="255"
+                                   id="username"
+                                   placeholder="Username"
+                                   v-model="user.username"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper>
+                    <template #text>
+                        <label for="joined_at">
+                            Date Joined
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <Datepicker v-model="user.joined_at"
+                                    dropdown
+                                    placeholder="Date Joined"
+                                    id="joined_at"
+                                    :invalid="errorFields.includes('joined_at')"
+                                    :placeholder="dateSettings.display"
+                                    :display-format="dateSettings.display"
+                                    :format="dateSettings.format"
+                                    :regex="dateSettings.regex"
+                                    :separator="dateSettings.separator"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper>
+                    <template #text>
+                        <label for="employee_id">
+                            Employee ID
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md"
+                                   maxlength="255"
+                                   id="employee_id"
+                                   placeholder="Employee ID"
+                                   v-model="user.employee_id"
                         />
                     </template>
                 </Wrapper>

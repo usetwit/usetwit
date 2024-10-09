@@ -84,8 +84,10 @@ class UsersController extends Controller
         return compact('users', 'total');
     }
 
-    public function edit(User $user)
+    public function edit(User $user, GeneralSettings $settings)
     {
+        $dateSettings = $settings->dateSettings();
+
         $permissions = [
             'protected_info' => auth()->user()->can('updateProtectedInfo', User::class),
             'delete' => auth()->user()->can('delete', User::class),
@@ -109,13 +111,17 @@ class UsersController extends Controller
             return ['code' => $code, 'name' => $name];
         })->values();
 
-        $user->load(['address', 'profileImages', 'roles' => function (MorphToMany $query) {
-            $query->limit(1);
-        }]);
+        $user->load([
+            'address',
+            'profileImages',
+            'roles' => function (MorphToMany $query) {
+                $query->limit(1);
+            },
+        ]);
 
         $roles = Role::get(['id', 'name']);
 
-        return view('users.users-edit', compact('user', 'routes', 'roles', 'permissions', 'countries'));
+        return view('users.users-edit', compact('user', 'routes', 'roles', 'permissions', 'countries', 'dateSettings'));
     }
 
     public function create(GeneralSettings $settings)

@@ -21,6 +21,7 @@
                     :permissions="{{ Js::from($permissions) }}"
                     :user="{{ Js::from($user) }}"
                     :countries="{{ Js::from($countries) }}"
+                    :date-settings="{{ Js::from($dateSettings) }}"
         ></users-edit>
     </div>
 @endsection

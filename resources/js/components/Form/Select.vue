@@ -7,12 +7,7 @@ const props = defineProps({
     placeholder: { type: String, default: 'Select an option' },
     options: { type: Array, required: true },
     optionLabel: { type: String, required: true },
-    optionValue: {
-        type: String, default: null, validator(_, props) {
-            console.log(typeof props.modelValue)
-            return typeof props.modelValue === 'string' || typeof props.modelValue === 'number' || props.modelValue === null
-        }
-    },
+    optionValue: { type: String, default: null },
     isLoading: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     invalid: { type: Boolean, default: false },

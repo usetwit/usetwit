@@ -104,14 +104,14 @@ const selectPage = number => {
 
 <style scoped lang="postcss">
 .base {
-    @apply mx-[0.5px] text-sm inline-flex items-center justify-center rounded-full w-8 h-8 bg-white;
+    @apply mx-[0.5px] text-sm inline-flex items-center justify-center rounded-full w-8 h-8;
 
     &.disabled {
-        @apply text-gray-300;
+        @apply text-gray-400;
     }
 
     &.enabled {
-        @apply text-gray-600 hover:bg-gray-100;
+        @apply text-gray-600 hover:bg-slate-200;
     }
 
     &.current {
