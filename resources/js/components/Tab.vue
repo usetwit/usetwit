@@ -19,6 +19,6 @@ const props = defineProps({
 }
 
 .inactive {
-    @apply border-x border-b border-t-4 border-x-gray-200 border-t-gray-200 border-b-gray-200 text-gray-800 hover:border-t-orange-500 hover:bg-white hover:border-b-white cursor-pointer bg-gray-50;
+    @apply border-x border-b border-t-4 border-x-gray-200 border-t-gray-200 border-b-gray-200 text-gray-700 hover:border-t-orange-500 hover:bg-white hover:border-b-white cursor-pointer bg-gray-50;
 }
 </style>

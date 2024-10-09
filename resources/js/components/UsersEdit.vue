@@ -5,30 +5,47 @@ import Wrapper from "./Form/Wrapper.vue";
 import InputText from "./Form/InputText.vue";
 import Button from "./Form/Button.vue";
 import FormWrapper from "./Form/Wrapper.vue";
+import Select from "./Form/Select.vue";
 
 const props = defineProps({
-    roleId: { type: [Number, null], required: true },
     roles: { type: Array, required: true },
     permissions: { type: Object, required: true },
     routes: { type: Object, required: true },
-    images: { type: Array, required: true },
     user: { type: Object, required: true },
-    address: { type: [Object, null], required: true },
+    countries: { type: Array, required: true },
 })
 
 const isLoading = ref(false)
 const tabs = ref([])
 const activeTab = ref(null)
 const user = ref({
-    username: props.user?.username,
-    first_name: props.user?.first_name,
-    middle_names: props.user?.middle_names,
-    last_name: props.user?.last_name,
-    personal_number: props.user?.personal_number,
-    personal_mobile_number: props.user?.personal_mobile_number,
-    personal_email: props.user?.personal_email,
-    last_name: props.user?.last_name,
+    // Personal Profile
+    first_name: props.user.first_name,
+    middle_names: props.user.middle_names,
+    last_name: props.user.last_name,
+    personal_number: props.user.personal_number,
+    personal_mobile_number: props.user.personal_mobile_number,
+    personal_email: props.user.personal_email,
+
+    // Company Profile
+    company_mobile_number: props.user.company_mobile_number,
+    company_number: props.user.company_number,
+    email: props.user.email,
+    company_ext: props.user.company_ext,
+
+    // Address
+    address_line_1: props.user.address?.address_line_1,
+    address_line_2: props.user.address?.address_line_2,
+    address_line_3: props.user.address?.address_line_3,
+    postcode: props.user.address?.postcode,
+    country: props.user.address?.country,
+
+    // Protected Info
+    joined_at: props.user.joined_at,
+    username: props.user.username,
 })
+
+console.log(props.user)
 
 const tabTexts = {
     personal_profile: 'Personal Profile',
@@ -270,6 +287,109 @@ const handleClick = text => {
                     </template>
                 </Wrapper>
 
+                <div class="flex">
+                    <Button severity="success"
+                            type="submit"
+                            aria-label="Save"
+                            :loading="isLoading"
+                            :disabled="isLoading"
+                            label="Save"
+                            icon="pi pi-save"
+                            class="mx-auto my-4"
+                    />
+                </div>
+            </form>
+        </div>
+
+        <div v-if="activeTab === 'Address'">
+            <form @submit.prevent="updateAddress">
+                <Wrapper>
+                    <template #text>
+                        <label for="address_line_1">
+                            Line 1
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md"
+                                   maxlength="255"
+                                   id="address_line_1"
+                                   placeholder="Line 1"
+                                   v-model="user.address_line_1"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper>
+                    <template #text>
+                        <label for="address_line_2">
+                            Line 2
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md"
+                                   maxlength="255"
+                                   id="address_line_2"
+                                   placeholder="Line 2"
+                                   v-model="user.address_line_2"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper>
+                    <template #text>
+                        <label for="address_line_3">
+                            Line 3
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md"
+                                   maxlength="255"
+                                   id="address_line_3"
+                                   placeholder="Line 3"
+                                   v-model="user.address_line_3"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper>
+                    <template #text>
+                        <label for="postcode">
+                            Postcode
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md"
+                                   maxlength="10"
+                                   id="postcode"
+                                   placeholder="Postcode"
+                                   v-model="user.postcode"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper>
+                    <template #text>
+                        <label>
+                            Country
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <Select v-model="user.country"
+                                :options="props.countries"
+                                option-label="name"
+                                option-value="code"
+                                placeholder="Select a Country"
+                                class="w-full"
+                                show-clear
+                                filter
+                        />
+                    </template>
+                </Wrapper>
 
                 <div class="flex">
                     <Button severity="success"

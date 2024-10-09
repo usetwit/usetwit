@@ -9,6 +9,7 @@ const props = defineProps({
     optionLabel: { type: String, required: true },
     optionValue: {
         type: String, default: null, validator(_, props) {
+            console.log(typeof props.modelValue)
             return typeof props.modelValue === 'string' || typeof props.modelValue === 'number' || props.modelValue === null
         }
     },

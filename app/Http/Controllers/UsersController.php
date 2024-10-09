@@ -8,6 +8,8 @@ use App\Http\Requests\Users\UsersStoreRequest;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -16,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\Intl\Countries;
+use Illuminate\Database\Eloquent\Builder;
 use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 
 class UsersController extends Controller
@@ -83,11 +86,6 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        $visible = [];
-        $address = null;
-        $images = [];
-        $roles = [];
-        $roleId = null;
         $permissions = [
             'protected_info' => auth()->user()->can('updateProtectedInfo', User::class),
             'delete' => auth()->user()->can('delete', User::class),
@@ -97,6 +95,7 @@ class UsersController extends Controller
             'company_profile' => auth()->user()->can('updateCompanyProfile', $user),
             'image' => auth()->user()->can('updateProfileImage', $user),
         ];
+
         $routes = [
             'delete' => route('users.destroy', $user),
             'restore' => route('users.restore', $user),
@@ -106,51 +105,17 @@ class UsersController extends Controller
             'company_profile' => route('users.update.company-profile', $user),
         ];
 
-        if (auth()->user()->can('updateAddress', $user)) {
-            $address = $user->address;
-        }
+        $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
+            return ['code' => $code, 'name' => $name];
+        })->values();
 
-        if (auth()->user()->can('updatePersonalProfile', $user)) {
-            $visible += [
-                'first_name',
-                'middle_names',
-                'last_name',
-                'personal_number',
-                'personal_mobile_number',
-                'personal_email',
-                'emergency_name',
-                'emergency_number',
-            ];
-        }
+        $user->load(['address', 'profileImages', 'roles' => function (MorphToMany $query) {
+            $query->limit(1);
+        }]);
 
-        if (auth()->user()->can('updateCompanyProfile', $user)) {
-            $visible += [
-                'company_mobile_number',
-                'company_number',
-                'email',
-                'company_ext',
-            ];
-        }
+        $roles = Role::get(['id', 'name']);
 
-        if (auth()->user()->can('updateProfileImage', $user)) {
-            $images = $user->profileImages()->get();
-        }
-
-        if (auth()->user()->can('updateProtectedInfo', User::class)) {
-            $visible += [
-                'joined_at',
-                'username',
-                'employee_id',
-            ];
-
-            $roleId = $user->roles->first()?->id;
-            $roles = Role::get(['id', 'name']);
-        }
-
-        $user = $user->only($visible);
-
-        return view('users.users-edit',
-            compact('user', 'roleId', 'images', 'address', 'routes', 'roles', 'permissions'));
+        return view('users.users-edit', compact('user', 'routes', 'roles', 'permissions', 'countries'));
     }
 
     public function create(GeneralSettings $settings)

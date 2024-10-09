@@ -17,12 +17,10 @@
 @section('content')
     <div id="app">
         <users-edit :routes="{{ Js::from($routes) }}"
-                    :role-id="{{ Js::from($roleId) }}"
                     :roles="{{ Js::from($roles) }}"
                     :permissions="{{ Js::from($permissions) }}"
-                    :images="{{ Js::from($images) }}"
                     :user="{{ Js::from($user) }}"
-                    :address="{{ Js::from($address) }}"
+                    :countries="{{ Js::from($countries) }}"
         ></users-edit>
     </div>
 @endsection
