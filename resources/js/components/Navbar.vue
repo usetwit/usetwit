@@ -21,7 +21,7 @@ const makeMenuVisible = () => {
 
 
 <template>
-    <div class="flex justify-between items-center bg-slate-800 text-white px-4 py-2">
+    <div class="flex justify-between items-center bg-slate-800 text-white px-2 lg:px-4 py-2">
         <div class="flex items-center align-middle">
             <button
                 class="mr-4 p-2 border rounded border-slate-500 hover:border-slate-600 bg-slate-700 align-middle inline-flex"

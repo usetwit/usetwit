@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('emergency_name')->nullable();
             $table->string('emergency_number')->nullable();
             $table->timestamp('joined_at')->nullable();
+            $table->timestamp('left_at')->nullable();
             $table->rememberToken();
             $table->boolean('active')->default(1);
             $table->softDeletes();

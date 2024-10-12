@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests\Users;
 
-use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UsersCreateCheckUsernameRequest extends FormRequest
+class UpdateCompanyProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', User::class);
+        return $this->user()->can('updateCompanyProfile', $this->route('user'));
     }
 
     /**
@@ -24,7 +23,10 @@ class UsersCreateCheckUsernameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|string|max:85',
+            'company_ext' => 'nullable|string|regex:/^[0-9 ]*$/|max:255',
+            'company_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
+            'company_mobile_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
+            'email' => 'nullable|email:strict|max:255',
         ];
     }
 }

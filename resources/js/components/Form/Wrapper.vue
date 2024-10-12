@@ -20,3 +20,9 @@ const props = defineProps({
         </div>
     </div>
 </template>
+
+<style scoped lang="postcss">
+:deep(label) {
+    @apply font-bold text-sm lg:text-base;
+}
+</style>

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Users\UsersCreateCheckUsernameRequest;
+use App\Http\Requests\Users\UsersCheckEmployeeIdRequest;
+use App\Http\Requests\Users\UsersCheckUsernameRequest;
 use App\Http\Requests\Users\UsersIndexGetUsersRequest;
 use App\Http\Requests\Users\UsersStoreRequest;
 use App\Models\User;
@@ -96,6 +97,9 @@ class UsersController extends Controller
             'personal_profile' => auth()->user()->can('updatePersonalProfile', $user),
             'company_profile' => auth()->user()->can('updateCompanyProfile', $user),
             'image' => auth()->user()->can('updateProfileImage', $user),
+            'override_password' => auth()->user()->can('overridePassword', User::class),
+            'username' => auth()->user()->can('updateUsername', User::class),
+            'employee_id' => auth()->user()->can('updateEmployeeId', User::class),
         ];
 
         $routes = [
@@ -105,6 +109,11 @@ class UsersController extends Controller
             'address' => route('users.update.address', $user),
             'personal_profile' => route('users.update.personal-profile', $user),
             'company_profile' => route('users.update.company-profile', $user),
+            'password' => route('users.update.password', $user),
+            'username' => route('users.update.username', $user),
+            'employee_id' => route('users.update.employee-id', $user),
+            'check_employee_id' => route('users.check-employee-id'),
+            'check_username'=>route('users.check-username'),
         ];
 
         $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
@@ -145,7 +154,7 @@ class UsersController extends Controller
                 'countries', 'selectedCountry'));
     }
 
-    public function checkUsername(UsersCreateCheckUsernameRequest $request)
+    public function checkUsername(UsersCheckUsernameRequest $request)
     {
         $username = $request->input('username');
 
@@ -154,6 +163,17 @@ class UsersController extends Controller
         }
 
         return User::withTrashed()->where('username', $username)->get(['username']);
+    }
+
+    public function checkEmployeeId(UsersCheckEmployeeIdRequest $request)
+    {
+        $employee_id = $request->input('employee_id');
+
+        if (!$employee_id) {
+            return [];
+        }
+
+        return User::withTrashed()->where('employee_id', $employee_id)->get(['employee_id']);
     }
 
     public function store(UsersStoreRequest $request)

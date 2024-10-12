@@ -1,21 +1,22 @@
 <script setup>
 const props = defineProps({
-    text: { type: String, required: true },
+    tab: { type: Object, required: true },
     active: { type: Boolean, default: false },
+    important: { type: Boolean, default: false },
 })
 </script>
 
 <template>
-    <li class="p-2 ml-1 select-none text-sm lg:text-base -mb-[1px]"
-        @click="$emit('clicked', text)"
-        :class="{'active': active, 'inactive': !active}"
-        v-html="text"
+    <li class="p-2 ml-1 select-none text-sm lg:text-base z-[25] flex items-center"
+        @click="$emit('clicked', tab)"
+        :class="{'active': active, 'inactive': !active, 'border-t-red-500': active && important, 'border-t-sky-600': active && !important}"
+        v-html="tab.text"
     ></li>
 </template>
 
 <style scoped lang="postcss">
 .active {
-    @apply border-x border-b border-t-4 border-x-gray-200 border-t-sky-600 border-b-white text-sky-600 bg-white;
+    @apply border-x border-b border-t-4 border-x-gray-200 border-b-white text-sky-600 bg-white;
 }
 
 .inactive {

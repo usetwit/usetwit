@@ -1,11 +1,11 @@
 @extends('app.layout')
 
 @section('heading')
-    Edit User
+    Edit User: {{ $user->full_name }}
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('users.edit') }}
+    {{ Breadcrumbs::render('users.edit', $user) }}
 @endsection
 
 @section('javascript')

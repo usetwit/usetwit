@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import Tab from "./Tab.vue";
 import Wrapper from "./Form/Wrapper.vue";
 import InputText from "./Form/InputText.vue";
@@ -7,6 +7,10 @@ import Button from "./Form/Button.vue";
 import FormWrapper from "./Form/Wrapper.vue";
 import Select from "./Form/Select.vue";
 import Datepicker from "./Form/Datepicker.vue";
+import Password from "./Form/Password.vue";
+import useAxios from "../composables/useAxios.js";
+import { debounce, pick } from "lodash";
+import { toast } from "vue3-toastify";
 
 const props = defineProps({
     roles: { type: Array, required: true },
@@ -17,6 +21,8 @@ const props = defineProps({
     dateSettings: { type: Object, required: true },
 })
 
+const usernameExists = ref(false)
+const employeeIdExists = ref(false)
 const isLoading = ref(false)
 const tabs = ref([])
 const activeTab = ref(null)
@@ -45,38 +51,180 @@ const user = ref({
 
     // Protected Info
     joined_at: props.user.joined_at,
+    left_at: props.user.left_at,
     username: props.user.username,
     employee_id: props.user.employee_id,
+    role_id: props.user.roles[0]?.id,
+
+    // Password
+    new_password_confirmation: '',
+    new_password: '',
+    current_password: '',
 })
 
 const tabTexts = {
-    personal_profile: 'Personal Profile',
-    company_profile: 'Company Profile',
-    address: 'Address',
-    image: 'Profile Image',
-    protected_info: 'Admin',
+    personal_profile: '<i class="pi pi-user-edit hidden md:inline-block mr-2"></i>Personal',
+    company_profile: '<i class="pi pi-building hidden md:inline-block mr-2"></i>Company',
+    address: '<i class="pi pi-map hidden md:inline-block mr-2"></i>Address',
+    image: '<i class="pi pi-image hidden md:inline-block mr-2"></i>Profile Image',
+    protected_info: '<i class="pi pi-exclamation-circle hidden md:inline-block mr-2"></i>Admin',
 }
 
-for (const [permission, tabName] of Object.entries(tabTexts)) {
-    if (props.permissions[permission]) {
-        tabs.value.push(tabName);
+for (const [key, text] of Object.entries(tabTexts)) {
+    if (props.permissions[key]) {
+        tabs.value.push({ key, text })
     }
 }
+
+tabs.value.push({
+    key: 'password',
+    text: `<span class="text-red-500"><i class="pi pi-key hidden md:inline-block mr-2"></i>Password</span>`,
+})
 
 activeTab.value = tabs.value[0]
 
 const handleClick = text => {
     activeTab.value = text
 }
+
+const update = async (route, fields) => {
+    isLoading.value = true
+
+    const { errors, status, data, getResponse } = useAxios(
+        route,
+        pick(user.value, fields),
+        'patch',
+    )
+
+    await getResponse()
+
+    if (status.value === 200) {
+        toast.success(data.value)
+    } else{
+        errorFields.value = errors.value.fields
+    }
+
+    isLoading.value = false
+}
+
+const updatePassword = async () => {
+    await update(props.routes.password, [
+        'current_password',
+        'new_password',
+        'new_password_confirmation',
+    ])
+}
+
+const updatePersonalProfile = async () => {
+    await update(props.routes.personal_profile, [
+        'first_name',
+        'middle_names',
+        'last_name',
+        'personal_number',
+        'personal_mobile_number',
+        'personal_email',
+    ])
+}
+
+const updateCompanyProfile = async () => {
+    update(props.routes.company_profile, [
+            'email',
+            'company_number',
+            'company_ext',
+            'company_mobile_number',
+        ])
+}
+
+const updateAddress = async () => {
+    await update(props.routes.address, [
+        'address_line_1',
+        'address_line_2',
+        'address_line_3',
+        'postcode',
+        'country',
+    ])
+}
+
+const updateProtectedInfo = async () => {
+    await update(props.routes.protected_info, [
+        'joined_at',
+        'left_at',
+        'role_id',
+        'employee_id',
+    ])
+}
+
+const updateUsername = async () => {
+    await update(props.routes.username, ['username'])
+}
+
+const updateEmployeeId = async () => {
+    await update(props.routes.employee_id, ['employee_id',])
+}
+
+const checkUsername = async () => {
+    if (user.value.username) {
+        isLoading.value = true
+
+        const { data, errors, getResponse } = useAxios(
+            props.routes.check_username,
+            { username: user.value.username },
+            'post',
+        )
+        await getResponse()
+
+        if (!errors.value.raw) {
+            usernameExists.value = data.value.length > 0
+        }
+
+        isLoading.value = false
+    } else {
+        usernameExists.value = false
+    }
+}
+
+const checkEmployeeId = async () => {
+    if (user.value.employee_id) {
+        isLoading.value = true
+
+        const { data, errors, getResponse } = useAxios(
+            props.routes.check_employee_id,
+            { employee_id: user.value.employee_id },
+            'post',
+        )
+        await getResponse()
+
+        if (!errors.value.raw) {
+            employeeIdExists.value = data.value.length > 0
+        }
+
+        isLoading.value = false
+    } else {
+        employeeIdExists.value = false
+    }
+}
+
+const debouncedCheckUsername = debounce(checkUsername, 300, { leading: true, trailing: true })
+const debouncedEmployeeId = debounce(checkEmployeeId, 300, { leading: true, trailing: true })
+
+watch(() => user.value.username, (newValue) => {
+    user.value.username = newValue.toLowerCase()
+})
 </script>
 
 <template>
-    <ul v-if="tabs.length" class="flex mx-0 lg:mx-4">
-        <Tab v-for="tab in tabs" :text="tab" :key="tab" :active="tab === activeTab" @clicked="handleClick"/>
+    <ul v-if="tabs.length" class="flex mx-0 lg:mx-4 overflow-x-auto -mb-[1px]">
+        <Tab v-for="tab in tabs"
+             :tab="tab"
+             :key="tab.field"
+             :active="tab.key === activeTab.key"
+             @clicked="handleClick"
+             :important="tab.key === 'password'"
+        />
     </ul>
 
     <div id="content">
-        <div v-if="activeTab === 'Personal Profile'">
+        <div v-if="activeTab.key === 'personal_profile'">
             <form @submit.prevent="updatePersonalProfile" autocomplete="off">
                 <Wrapper required>
                     <template #text>
@@ -86,7 +234,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="first_name"
                                    maxlength="85"
                                    required
@@ -104,7 +252,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="middle_names"
                                    maxlength="85"
                                    placeholder="Middle Name(s)"
@@ -121,7 +269,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="last_name"
                                    maxlength="85"
                                    placeholder="Last Name"
@@ -142,7 +290,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="personal_number"
                                    type="tel"
                                    maxlength="255"
@@ -165,7 +313,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="personal_mobile_number"
                                    type="tel"
                                    maxlength="255"
@@ -184,7 +332,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="personal_email"
                                    type="email"
                                    maxlength="255"
@@ -207,7 +355,7 @@ const handleClick = text => {
                 </div>
             </form>
         </div>
-        <div v-if="activeTab === 'Company Profile'">
+        <div v-if="activeTab.key === 'company_profile'">
             <form @submit.prevent="updateCompanyProfile" autocomplete="off">
                 <Wrapper>
                     <template #text>
@@ -221,7 +369,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="company_number"
                                    type="tel"
                                    maxlength="255"
@@ -244,7 +392,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="company_ext"
                                    maxlength="255"
                                    placeholder="Company Extension"
@@ -266,7 +414,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="company_mobile_number"
                                    type="tel"
                                    maxlength="255"
@@ -285,7 +433,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    id="company_email"
                                    type="email"
                                    maxlength="255"
@@ -308,9 +456,8 @@ const handleClick = text => {
                 </div>
             </form>
         </div>
-
-        <div v-if="activeTab === 'Address'">
-            <form @submit.prevent="updateAddress">
+        <div v-if="activeTab.key === 'address'">
+            <form @submit.prevent="updateAddress" autocomplete="off">
                 <Wrapper>
                     <template #text>
                         <label for="address_line_1">
@@ -319,7 +466,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    maxlength="255"
                                    id="address_line_1"
                                    placeholder="Line 1"
@@ -336,7 +483,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    maxlength="255"
                                    id="address_line_2"
                                    placeholder="Line 2"
@@ -353,7 +500,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    maxlength="255"
                                    id="address_line_3"
                                    placeholder="Line 3"
@@ -370,7 +517,7 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    maxlength="10"
                                    id="postcode"
                                    placeholder="Postcode"
@@ -412,10 +559,9 @@ const handleClick = text => {
                 </div>
             </form>
         </div>
-
-        <div v-if="activeTab === 'Admin'">
-            <form @submit.prevent="updateProtectedInfo">
-                <Wrapper>
+        <div v-if="activeTab.key === 'protected_info'">
+            <form @submit.prevent="updateUsername" autocomplete="off" v-if="permissions.username">
+                <Wrapper required>
                     <template #text>
                         <label for="username">
                             Username
@@ -423,11 +569,83 @@ const handleClick = text => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <InputText class="rounded-md w-full sm:w-60"
                                    maxlength="255"
                                    id="username"
+                                   @input="debouncedCheckUsername"
                                    placeholder="Username"
                                    v-model="user.username"
+                                   pattern="^[a-z0-9]{1,255}$"
+                                   :invalid="errorFields.includes('username')"
+                        />
+                        <div v-if="usernameExists" class="text-red-600 pt-1 text-sm">Username is already in use</div>
+                    </template>
+                </Wrapper>
+
+                <div class="flex mb-4">
+                    <Button severity="success"
+                            type="submit"
+                            aria-label="Save"
+                            :loading="isLoading"
+                            :disabled="isLoading"
+                            label="Save"
+                            icon="pi pi-save"
+                            class="mx-auto my-4"
+                    />
+                </div>
+            </form>
+
+            <form @submit.prevent="updateEmployeeId" autocomplete="off" v-if="permissions.employee_id">
+                <Wrapper>
+                    <template #text>
+                        <label for="employee_id">
+                            Employee ID
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md w-full sm:w-60"
+                                   maxlength="255"
+                                   @input="debouncedEmployeeId"
+                                   id="employee_id"
+                                   placeholder="Employee ID"
+                                   v-model="user.employee_id"
+                                   :invalid="errorFields.includes('employee_id')"
+                        />
+                        <div v-if="employeeIdExists" class="text-red-600 pt-1 text-sm">Employee ID is already in use</div>
+                    </template>
+                </Wrapper>
+
+                <div class="flex mb-4">
+                    <Button severity="success"
+                            type="submit"
+                            aria-label="Save"
+                            :loading="isLoading"
+                            :disabled="isLoading"
+                            label="Save"
+                            icon="pi pi-save"
+                            class="mx-auto my-4"
+                    />
+                </div>
+            </form>
+
+            <form @submit.prevent="updateProtectedInfo" autocomplete="off" v-if="permissions.protected_info">
+                <Wrapper required>
+                    <template #text>
+                        <label>
+                            Role
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <Select v-model="user.role_id"
+                                :options="roles"
+                                option-label="name"
+                                option-value="id"
+                                placeholder="Select a Role"
+                                :invalid="errorFields.includes('role_id')"
+                                class="w-full sm:w-60"
+                                filter
                         />
                     </template>
                 </Wrapper>
@@ -442,7 +660,7 @@ const handleClick = text => {
                     <template #input>
                         <Datepicker v-model="user.joined_at"
                                     dropdown
-                                    placeholder="Date Joined"
+                                    class="w-full sm:w-60"
                                     id="joined_at"
                                     :invalid="errorFields.includes('joined_at')"
                                     :placeholder="dateSettings.display"
@@ -456,17 +674,96 @@ const handleClick = text => {
 
                 <Wrapper>
                     <template #text>
-                        <label for="employee_id">
-                            Employee ID
+                        <label for="left_at">
+                            Date Left
                         </label>
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md"
+                        <Datepicker v-model="user.left_at"
+                                    dropdown
+                                    class="w-full sm:w-60"
+                                    id="left_at"
+                                    :invalid="errorFields.includes('left_at')"
+                                    :placeholder="dateSettings.display"
+                                    :display-format="dateSettings.display"
+                                    :format="dateSettings.format"
+                                    :regex="dateSettings.regex"
+                                    :separator="dateSettings.separator"
+                        />
+                    </template>
+                </Wrapper>
+
+                <div class="flex">
+                    <Button severity="success"
+                            type="submit"
+                            aria-label="Save"
+                            :loading="isLoading"
+                            :disabled="isLoading"
+                            label="Save"
+                            icon="pi pi-save"
+                            class="mx-auto my-4"
+                    />
+                </div>
+            </form>
+        </div>
+        <div v-if="activeTab.key === 'password'">
+            <form @submit.prevent="updatePassword" autocomplete="off">
+                <Wrapper v-if="!permissions.override_password" required>
+                    <template #text>
+                        <label for="current_password">
+                            Current Password
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md w-full sm:w-60"
                                    maxlength="255"
-                                   id="employee_id"
-                                   placeholder="Employee ID"
-                                   v-model="user.employee_id"
+                                   type="password"
+                                   required
+                                   placeholder="••••••••"
+                                   id="current_password"
+                                   :invalid="errorFields.includes('current_password')"
+                                   v-model="user.current_password"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper required>
+                    <template #text>
+                        <label for="new_password">
+                            New Password
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <Password class="w-full sm:w-60"
+                                  maxlength="255"
+                                  id="new_password"
+                                  required
+                                  placeholder="••••••••"
+                                  v-model="user.new_password"
+                                  :invalid="errorFields.includes('new_password')"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper required>
+                    <template #text>
+                        <label for="new_password_confirmation">
+                            New Password Confirmation
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <InputText class="rounded-md w-full sm:w-60"
+                                   maxlength="255"
+                                   type="password"
+                                   placeholder="••••••••"
+                                   id="new_password_confirmation"
+                                   v-model="user.new_password_confirmation"
+                                   :invalid="errorFields.includes('new_password_confirmation')"
+                                   required
                         />
                     </template>
                 </Wrapper>
@@ -486,9 +783,3 @@ const handleClick = text => {
         </div>
     </div>
 </template>
-
-<style scoped lang="postcss">
-label {
-    @apply font-bold;
-}
-</style>

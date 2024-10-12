@@ -122,7 +122,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md" maxlength="255"
+                    <InputText class="rounded-md w-full sm:w-60" maxlength="255"
                                id="username"
                                placeholder="Username"
                                required
@@ -145,12 +145,12 @@ watch(() => user.value.username, (newValue) => {
 
                 <template #input>
                     <Select v-model="user.role_id"
-                            :options="props.roles"
+                            :options="roles"
                             option-label="name"
                             option-value="id"
                             placeholder="Select a Role"
                             :invalid="errorFields.includes('role_id')"
-                            class="w-56"
+                            class="w-full sm:w-60"
                             filter
                     />
                 </template>
@@ -166,6 +166,7 @@ watch(() => user.value.username, (newValue) => {
                 <template #input>
                     <Password v-model="user.password"
                               required
+                              class="w-full sm:w-60"
                               id="password"
                               maxlength="255"
                     />
@@ -186,7 +187,7 @@ watch(() => user.value.username, (newValue) => {
                                id="password_confirmation"
                                placeholder="••••••••"
                                type="password"
-                               class="rounded-md"
+                               class="rounded-md w-full sm:w-60"
                     />
                 </template>
             </Wrapper>
@@ -199,7 +200,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="85"
                                id="first_name"
                                placeholder="First Name"
@@ -217,7 +218,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="85"
                                id="middle_names"
                                placeholder="Middles Names"
@@ -234,7 +235,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="85"
                                id="last_name"
                                placeholder="Last Name"
@@ -251,7 +252,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="employee_id"
                                placeholder="Employee ID / Clock Number"
@@ -273,6 +274,7 @@ watch(() => user.value.username, (newValue) => {
                                 dropdown
                                 placeholder="Date Joined"
                                 id="joined_at"
+                                class="w-full sm:w-60"
                                 :invalid="errorFields.includes('joined_at')"
                                 :placeholder="dateSettings.display"
                                 :display-format="dateSettings.display"
@@ -293,7 +295,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="address_line_1"
                                placeholder="Line 1"
@@ -310,7 +312,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="address_line_2"
                                placeholder="Line 2"
@@ -327,7 +329,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="address_line_3"
                                placeholder="Line 3"
@@ -344,7 +346,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="10"
                                id="postcode"
                                placeholder="Postcode"
@@ -387,7 +389,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="company_number"
                                type="tel"
@@ -410,7 +412,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="company_ext"
                                placeholder="Company Extension"
@@ -432,7 +434,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="home_number"
                                type="tel"
@@ -455,7 +457,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="mobile_number"
                                type="tel"
@@ -474,7 +476,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="email"
                                type="email"
@@ -492,7 +494,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="home_email"
                                type="email"
@@ -512,7 +514,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="emergency_name"
                                placeholder="Emergency Contact Name"
@@ -533,7 +535,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <InputText class="rounded-md"
+                    <InputText class="rounded-md w-full sm:w-60"
                                maxlength="255"
                                id="emergency_number"
                                placeholder="Emergency Contact Number"
@@ -558,9 +560,3 @@ watch(() => user.value.username, (newValue) => {
         </form>
     </div>
 </template>
-
-<style scoped lang="postcss">
-label {
-    @apply font-bold;
-}
-</style>

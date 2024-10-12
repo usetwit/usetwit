@@ -64,23 +64,38 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
         /* Users Update */
         Route::group(['prefix' => 'update', 'as' => 'update.'], function () {
 
+            Route::patch('employee-id/{user}', [
+                'uses' => 'UsersUpdateController@updateEmployeeId',
+                'as' => 'employee-id',
+            ])->withTrashed()->can('updateEmployeeId', 'user');
+
+            Route::patch('username/{user}', [
+                'uses' => 'UsersUpdateController@updateUsername',
+                'as' => 'username',
+            ])->withTrashed()->can('updateUsername', 'user');
+
             Route::patch('company-profile/{user}', [
-                'uses' => 'UsersUpdateController@companyProfile',
+                'uses' => 'UsersUpdateController@updateCompanyProfile',
                 'as' => 'company-profile',
             ])->withTrashed()->can('updateCompanyProfile', 'user');
 
             Route::patch('personal-profile/{user}', [
-                'uses' => 'UsersUpdateController@personalProfile',
+                'uses' => 'UsersUpdateController@updatePersonalProfile',
                 'as' => 'personal-profile',
             ])->withTrashed()->can('updatePersonalProfile', 'user');
 
             Route::patch('address/{user}', [
-                'uses' => 'UsersUpdateController@address',
+                'uses' => 'UsersUpdateController@updateAddress',
                 'as' => 'address',
             ])->withTrashed()->can('updateAddress', 'user');
 
+            Route::patch('password/{user}', [
+                'uses' => 'UsersUpdateController@updatePassword',
+                'as' => 'password',
+            ])->withTrashed();
+
             Route::patch('protected-info/{user}', [
-                'uses' => 'UsersUpdateController@protectedInfo',
+                'uses' => 'UsersUpdateController@updateProtectedInfo',
                 'as' => 'protected-info',
             ])->withTrashed()->can('updateProtectedInfo', User::class);
 
@@ -89,7 +104,12 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
         Route::post('check-username', [
             'uses' => 'UsersController@checkUsername',
             'as' => 'check-username',
-        ])->can('updateProfileProtectedInfo', User::class);
+        ])->can('updateUsername', User::class);
+
+        Route::post('check-employee-id', [
+            'uses' => 'UsersController@checkEmployeeId',
+            'as' => 'check-employee-id',
+        ])->can('updateEmployeeId', User::class);
 
         Route::post('', [
             'uses' => 'UsersController@store',

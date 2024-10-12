@@ -20,7 +20,7 @@ class FilterServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->builder = Mockery::mock(Builder::class);
+        $this->builder = $this->mock(Builder::class);
         $this->filter = new FilterService();
 
         $this->app->instance(BuilderContract::class, $this->builder);
@@ -122,7 +122,7 @@ class FilterServiceTest extends TestCase
     /**
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function test_get_valid_number_match_modes_lowercase_array(): void
+    public function test_get_valid_number_match_modes_array(): void
     {
         $expected = ['contains', 'starts_with', 'ends_with', 'equals', 'not_equals', 'gt', 'gte', 'lt', 'lte'];
 
@@ -134,7 +134,7 @@ class FilterServiceTest extends TestCase
     /**
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function test_get_valid_boolean_match_modes_lowercase_array(): void
+    public function test_get_valid_boolean_match_modes_array(): void
     {
         $expected = ['equals'];
 

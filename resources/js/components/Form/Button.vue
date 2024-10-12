@@ -74,11 +74,10 @@ const setSizeClasses = computed(() => {
 </script>
 
 <template>
-    <button
-        class="leading-5 border rounded-lg inline-flex justify-center items-center align-middle"
-        :class="[setClasses, setSizeClasses]"
-        :disabled="disabled || loading"
-        :aria-disabled="disabled || loading"
+    <button class="leading-5 border rounded-lg inline-flex justify-center items-center align-middle"
+            :class="[setClasses, setSizeClasses]"
+            :disabled="disabled || loading"
+            :aria-disabled="disabled || loading"
     >
         <i v-if="loading" class="pi pi-spin pi-spinner mr-2"></i>
         <i v-if="icon && !loading" :class="icon" class="mr-2"></i>

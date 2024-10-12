@@ -4,10 +4,14 @@ namespace Tests\Unit;
 
 use App\Http\Requests\Users\UsersStoreRequest;
 use App\Models\User;
+use App\Rules\HasMultipleConstraints;
+use App\Rules\PasswordStrength;
 use App\Settings\GeneralSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\MockObject\Exception;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -34,6 +38,46 @@ class UsersStoreRequestTest extends TestCase
     {
         $request = new UsersStoreRequest();
         return Validator::make($data, $request->rules());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function test_password_must_meet_required_strength()
+    {
+        $settings = $this->createMock(GeneralSettings::class);
+        $settings->password_strength = 3;
+
+        $this->app->instance(GeneralSettings::class, $settings);
+
+        $rule = new PasswordStrength();
+        $errorMessage = '';
+        $fail = $this->failClosure($errorMessage);
+
+        $password = 'a';
+        $rule->validate('password', $password, $fail);
+
+        $this->assertEquals('The :attribute field is not a strong enough password.', $errorMessage);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function test_password_meets_required_strength()
+    {
+        $settings = $this->createMock(GeneralSettings::class);
+        $settings->password_strength = 3;
+
+        $this->app->instance(GeneralSettings::class, $settings);
+
+        $rule = new PasswordStrength();
+        $errorMessage = '';
+        $fail = $this->failClosure($errorMessage);
+
+        $password = 'aHtY&^39LOhg';
+        $rule->validate('password', $password, $fail);
+
+        $this->assertEmpty($errorMessage);
     }
 
     public function test_valid_role_id()

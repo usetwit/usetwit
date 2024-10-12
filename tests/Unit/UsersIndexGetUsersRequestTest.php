@@ -41,7 +41,7 @@ class UsersIndexGetUsersRequestTest extends TestCase
 
         $rule->validate('filters.username.operator', '', $fail);
 
-        $this->assertTrue($errorMessage === 'The :attribute field is required when there is more than one constraint.');
+        $this->assertEquals($errorMessage, 'The :attribute field is required when there is more than one constraint.');
     }
 
     /**

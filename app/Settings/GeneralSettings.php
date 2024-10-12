@@ -19,6 +19,7 @@ class GeneralSettings extends Settings
     public array $date_validation_regex;
     public string $date_validation_separator_default;
     public string $date_validation_default;
+    public int $password_strength;
 
     /**
      * @return string
@@ -28,21 +29,6 @@ class GeneralSettings extends Settings
         return 'general';
     }
 
-    /**
-     * Returns either the default country or country specified
-     *
-     * @param string|null $code
-     *
-     * @return array
-     */
-    public function countryAsObjectForJson(?string $code = null): array
-    {
-        if ($code === null) {
-            return ['code' => $this->default_country, 'name' => $this->countries[$this->default_country]];
-        }
-
-        return ['code' => $code, 'name' => $this->countries[$code]];
-    }
 
     /**
      * Replace hyphens with default separator

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Requests\Users\UsersCreateCheckUsernameRequest;
+use App\Http\Requests\Users\UsersCheckUsernameRequest;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
@@ -10,7 +10,7 @@ class UsersCheckUsernameRequestTest extends TestCase
 {
     private function validate(array $data)
     {
-        $request = new UsersCreateCheckUsernameRequest();
+        $request = new UsersCheckUsernameRequest();
         return Validator::make($data, $request->rules());
     }
 

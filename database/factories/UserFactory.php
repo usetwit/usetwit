@@ -27,7 +27,6 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'slug' => $this->faker->unique()->slug(2, 2),
             'username' => $this->faker->unique()->numerify("{$this->faker->domainWord}###"),
             'first_name' => $this->faker->firstName,
             'middle_names' => $this->faker->optional()->firstName,
@@ -36,6 +35,9 @@ class UserFactory extends Factory
                 $fullName = "{$attributes['first_name']} {$attributes['middle_names']} {$attributes['last_name']}";
 
                 return preg_replace('/\s+/', ' ', trim($fullName));
+            },
+            'slug' => function (array $attributes) {
+                Str::slug($attributes['full_name']);
             },
             'company_number' => $this->faker->optional()->phoneNumber,
             'company_mobile_number' => $this->faker->optional()->phoneNumber,
@@ -49,7 +51,8 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'emergency_name' => $this->faker->optional()->firstName,
             'emergency_number' => $this->faker->phoneNumber,
-            'joined_at' => $this->faker->boolean(80) ? Carbon::parse('2024-01-01')->addDays(rand(0, 7000)) : null,
+            'joined_at' => $this->faker->boolean(80) ? Carbon::parse('2024-01-01')->addDays(rand(0, 365)) : null,
+            'left_at' => $this->faker->boolean(80) ? Carbon::parse('2024-01-01')->addDays(rand(365, 700)) : null,
             'active' => true,
             'deleted_at' => null,
             'created_at' => now(),

@@ -98,6 +98,54 @@ class UserPolicy
     /**
      * Determine whether the user can update the model profile image.
      */
+    public function updatePassword(User $user, User $model): bool
+    {
+        if ($user->can('users.update')) {
+            return true;
+        }
+
+        return $user->id === $model->id;
+    }
+
+    /**
+     * Determine whether the user can update the model profile image.
+     */
+    public function overridePassword(User $user): bool
+    {
+        if ($user->can('users.update')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the model Username.
+     */
+    public function updateUsername(User $user): bool
+    {
+        if ($user->can('users.update')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the model Employee ID.
+     */
+    public function updateEmployeeId(User $user): bool
+    {
+        if ($user->can('users.update')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the model profile image.
+     */
     public function updateProtectedInfo(User $user): bool
     {
         return $user->can('users.update');

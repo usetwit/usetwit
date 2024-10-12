@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
@@ -51,11 +52,10 @@ Breadcrumbs::for('users.create', function (BreadcrumbTrail $trail) {
     $trail->push('Create New User');
 });
 
-Breadcrumbs::for('users.edit', function (BreadcrumbTrail $trail) {
+Breadcrumbs::for('users.edit', function (BreadcrumbTrail $trail, User $user) {
     $trail->parent('users.index');
-    $trail->push('Edit User');
+    $trail->push('Edit User: ' . $user->full_name);
 });
-
 
 /* Company */
 Breadcrumbs::for('company.edit', function (BreadcrumbTrail $trail) {

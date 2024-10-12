@@ -31,8 +31,8 @@ class UsersFeatureTest extends TestCase
             'country' => $this->faker->countryCode,
             'role_id' => $role->id,
             'joined_at' => optional($user->joined_at)->format('Y-m-d'),
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'xiTh&£$5678HjnN',
+            'password_confirmation' => 'xiTh&£$5678HjnN',
         ]);
 
         $response = $this->post(route('users.store'), $payload);

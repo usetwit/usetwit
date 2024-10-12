@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Users;
 
-use App\Settings\GeneralSettings;
+use App\Rules\PasswordStrength;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -27,7 +27,13 @@ class UsersStoreRequest extends FormRequest
     {
         return [
             'username' => 'required|string|unique:users,username|max:255|regex:/^[a-z0-9]+$/',
-            'password' => 'required|string|confirmed|max:255',
+            'password' => [
+                'required',
+                'string',
+                'confirmed',
+                'max:255',
+                new PasswordStrength(),
+            ],
             'email' => 'nullable|email:strict|max:255',
             'personal_email' => 'nullable|email:strict|max:255',
             'first_name' => 'required|string|max:85',
