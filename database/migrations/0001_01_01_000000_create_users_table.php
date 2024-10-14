@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('middle_names', 85)->nullable();
             $table->string('last_name', 85)->nullable();
             $table->string('full_name')->nullable();
+            $table->timestamp('dob')->nullable();
             $table->string('company_number')->nullable();
             $table->string('company_mobile_number')->nullable();
             $table->string('company_ext')->nullable();

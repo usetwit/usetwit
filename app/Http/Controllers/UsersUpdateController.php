@@ -40,6 +40,7 @@ class UsersUpdateController extends Controller
             'first_name',
             'middle_names',
             'last_name',
+            'dob',
             'personal_number',
             'personal_mobile_number',
             'personal_email',

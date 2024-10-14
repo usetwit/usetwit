@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, useTemplateRef, watch } from "vue";
 import Tab from "./Tab.vue";
 import Wrapper from "./Form/Wrapper.vue";
 import InputText from "./Form/InputText.vue";
@@ -11,6 +11,8 @@ import Password from "./Form/Password.vue";
 import useAxios from "../composables/useAxios.js";
 import { debounce, pick } from "lodash";
 import { toast } from "vue3-toastify";
+import Csrf from "./Form/Csrf.vue";
+import Modal from "./Modal.vue";
 
 const props = defineProps({
     roles: { type: Array, required: true },
@@ -35,6 +37,7 @@ const user = ref({
     personal_number: props.user.personal_number,
     personal_mobile_number: props.user.personal_mobile_number,
     personal_email: props.user.personal_email,
+    dob: props.user.dob,
 
     // Company Profile
     company_mobile_number: props.user.company_mobile_number,
@@ -55,6 +58,7 @@ const user = ref({
     username: props.user.username,
     employee_id: props.user.employee_id,
     role_id: props.user.roles[0]?.id,
+    active: props.user.active,
 
     // Password
     new_password_confirmation: '',
@@ -100,7 +104,7 @@ const update = async (route, fields) => {
 
     if (status.value === 200) {
         toast.success(data.value)
-    } else{
+    } else {
         errorFields.value = errors.value.fields
     }
 
@@ -120,6 +124,7 @@ const updatePersonalProfile = async () => {
         'first_name',
         'middle_names',
         'last_name',
+        'dob',
         'personal_number',
         'personal_mobile_number',
         'personal_email',
@@ -128,11 +133,11 @@ const updatePersonalProfile = async () => {
 
 const updateCompanyProfile = async () => {
     update(props.routes.company_profile, [
-            'email',
-            'company_number',
-            'company_ext',
-            'company_mobile_number',
-        ])
+        'email',
+        'company_number',
+        'company_ext',
+        'company_mobile_number',
+    ])
 }
 
 const updateAddress = async () => {
@@ -160,6 +165,12 @@ const updateUsername = async () => {
 
 const updateEmployeeId = async () => {
     await update(props.routes.employee_id, ['employee_id',])
+}
+
+const deleteModalIsVisible = ref(false)
+const deleteUserForm = useTemplateRef('deleteUserForm')
+const deleteUser = () => {
+    deleteUserForm.submit()
 }
 
 const checkUsername = async () => {
@@ -274,6 +285,28 @@ watch(() => user.value.username, (newValue) => {
                                    maxlength="85"
                                    placeholder="Last Name"
                                    v-model="user.last_name"
+                        />
+                    </template>
+                </Wrapper>
+
+                <Wrapper>
+                    <template #text>
+                        <label for="dob">
+                            Date of Birth
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <Datepicker v-model="user.dob"
+                                    dropdown
+                                    class="w-full sm:w-60"
+                                    id="dob"
+                                    :invalid="errorFields.includes('dob')"
+                                    :placeholder="dateSettings.display"
+                                    :display-format="dateSettings.display"
+                                    :format="dateSettings.format"
+                                    :regex="dateSettings.regex"
+                                    :separator="dateSettings.separator"
                         />
                     </template>
                 </Wrapper>
@@ -561,6 +594,9 @@ watch(() => user.value.username, (newValue) => {
         </div>
         <div v-if="activeTab.key === 'protected_info'">
             <form @submit.prevent="updateUsername" autocomplete="off" v-if="permissions.username">
+
+                <h3 class="mt-2">Edit Username</h3>
+
                 <Wrapper required>
                     <template #text>
                         <label for="username">
@@ -596,6 +632,9 @@ watch(() => user.value.username, (newValue) => {
             </form>
 
             <form @submit.prevent="updateEmployeeId" autocomplete="off" v-if="permissions.employee_id">
+
+                <h3>Edit Employee ID</h3>
+
                 <Wrapper>
                     <template #text>
                         <label for="employee_id">
@@ -612,7 +651,8 @@ watch(() => user.value.username, (newValue) => {
                                    v-model="user.employee_id"
                                    :invalid="errorFields.includes('employee_id')"
                         />
-                        <div v-if="employeeIdExists" class="text-red-600 pt-1 text-sm">Employee ID is already in use</div>
+                        <div v-if="employeeIdExists" class="text-red-600 pt-1 text-sm">Employee ID is already in use
+                        </div>
                     </template>
                 </Wrapper>
 
@@ -630,6 +670,9 @@ watch(() => user.value.username, (newValue) => {
             </form>
 
             <form @submit.prevent="updateProtectedInfo" autocomplete="off" v-if="permissions.protected_info">
+
+                <h3>Edit Protected Info</h3>
+
                 <Wrapper required>
                     <template #text>
                         <label>
@@ -705,6 +748,61 @@ watch(() => user.value.username, (newValue) => {
                             class="mx-auto my-4"
                     />
                 </div>
+            </form>
+
+            <form v-if="user.active && permissions.delete" :action="routes.delete" autocomplete="off" method="post"
+                  ref="deleteUserForm">
+                <input type="hidden" name="_method" value="delete"/>
+                <Csrf/>
+
+                <div class="text-xl border-t border-red-200 text-red-700 p-4 bg-red-200 uppercase flex items-center">
+                    <span class="text-red-500"><i class="pi pi-exclamation-triangle mr-2"></i>Delete User</span>
+                </div>
+
+                <Wrapper class="bg-red-50">
+                    <template #text>
+                        <label>
+                            <span class="text-red-500">Delete User?</span>
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <Button type="button"
+                                variant="danger"
+                                label="Delete User"
+                                @click="deleteModalIsVisible = true"
+                        />
+                        <Modal v-if="deleteModalIsVisible"
+                               v-model="deleteModalIsVisible"
+                               @accepted="deleteUserForm.submit()"
+                               title="Are you sure?"
+                               label="Delete"
+                               icon="pi pi-times"
+                               variant="danger"
+                        >
+                            Please confirm that you would like to delete this user.
+                        </Modal>
+                    </template>
+                </Wrapper>
+            </form>
+
+            <form v-if="!user.active && permissions.restore" :action="routes.restore" autocomplete="off" method="post">
+                <input type="hidden" name="_method" value="patch"/>
+                <Csrf/>
+
+                <h3>Restore User</h3>
+
+                <Wrapper>
+                    <template #text>
+                        <label>
+                            Restore User?
+                        </label>
+                    </template>
+
+                    <template #input>
+                        <Button type="submit" label="Restore User"/>
+                    </template>
+                </Wrapper>
             </form>
         </div>
         <div v-if="activeTab.key === 'password'">

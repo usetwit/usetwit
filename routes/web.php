@@ -44,7 +44,7 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
         Route::delete('{user}', [
             'uses' => 'UsersController@destroy',
             'as' => 'destroy',
-        ])->can('destroy', 'user');
+        ])->can('delete', 'user');
 
         Route::patch('{user}/restore', [
             'uses' => 'UsersController@restore',

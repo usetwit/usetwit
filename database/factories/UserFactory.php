@@ -39,6 +39,7 @@ class UserFactory extends Factory
             'slug' => function (array $attributes) {
                 Str::slug($attributes['full_name']);
             },
+            'dob' => $this->faker->boolean(80) ? Carbon::parse('2002-01-01')->addDays(rand(-5000, -1000)) : null,
             'company_number' => $this->faker->optional()->phoneNumber,
             'company_mobile_number' => $this->faker->optional()->phoneNumber,
             'company_ext' => $this->faker->optional()->numerify,

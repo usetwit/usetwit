@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\Intl\Countries;
-use Illuminate\Database\Eloquent\Builder;
 use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 
 class UsersController extends Controller
@@ -211,5 +210,19 @@ class UsersController extends Controller
         $newUser->syncRoles($role);
 
         return ['message' => 'User Created', 'redirect' => route('users.edit', $newUser)];
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted');
+    }
+
+    public function restore(User $user)
+    {
+        $user->restore();
+
+        return redirect()->back()->with('success', 'User restored');
     }
 }

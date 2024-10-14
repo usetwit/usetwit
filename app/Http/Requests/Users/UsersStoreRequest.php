@@ -40,6 +40,7 @@ class UsersStoreRequest extends FormRequest
             'middle_names' => 'nullable|string|max:85',
             'last_name' => 'nullable|string|max:85',
             'employee_id' => 'nullable|string|max:255|unique:users,employee_id',
+            'dob' => 'nullable|date_format:Y-m-d|after_or_equal:1900-01-01|before_or_equal:2050-12-31',
             'joined_at' => 'nullable|date_format:Y-m-d|after_or_equal:2024-01-01|before_or_equal:2050-12-31',
             'address_line1' => 'nullable|string|max:255',
             'address_line2' => 'nullable|string|max:255',

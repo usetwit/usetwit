@@ -27,6 +27,7 @@ class UpdatePersonalProfileRequest extends FormRequest
             'first_name' => 'required|string|max:85',
             'middle_names' => 'nullable|string|max:85',
             'last_name' => 'nullable|string|max:85',
+            'dob' => 'nullable|date_format:Y-m-d|after_or_equal:1900-01-01|before_or_equal:2050-12-31',
             'personal_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
             'personal_mobile_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
         ];

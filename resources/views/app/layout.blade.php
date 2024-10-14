@@ -38,7 +38,7 @@
 
     <div class="flex-1 pb-4 overflow-x-auto">
 
-        <header class="mx-2 mt-4 lg:mx-4 lg:mt-6 font-bold text-2xl text-slate-700 dark:text-white">
+        <header class="mx-2 mt-4 lg:mx-4 lg:mt-6 font-bold text-2xl text-slate-700 dark:text-white flex align-middle">
             @yield('heading')
         </header>
 

@@ -41,7 +41,7 @@ class UsersFeatureTest extends TestCase
 
         $newUser = User::where('username', $payload['username'])->first();
 
-        $this->assertTrue(Hash::check($payload['password'], $newUser->password));
+        $this->assertTrue(Hash::check($payload['password'], $newUser->fresh()->password));
 
         $this->assertDatabaseHas('users', [
             'full_name' => $user->full_name,
@@ -99,5 +99,119 @@ class UsersFeatureTest extends TestCase
         $response = $this->post(route('users.store'));
 
         $response->assertStatus(302);
+    }
+
+    public function test_user_cannot_see_edit_user_if_not_authenticated(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->get(route('users.edit', $user));
+
+        $response->assertStatus(302);
+    }
+
+    public function test_admin_with_users_update_permission_user_can_see_edit_user(): void
+    {
+        $admin = $this->setUserWithPermissions('users.update');
+
+        $user = User::factory()->create();
+
+        $response = $this->get(route('users.edit', $user));
+
+        $response->assertStatus(200);
+    }
+
+    public function test_user_can_update_own_personal_profile(): void
+    {
+        $user = $this->setUserWithPermissions('users.update.self.personal-profile');
+
+        $payload = [
+            'first_name' => $this->faker->firstName,
+            'middle_names' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'dob' => $this->faker->date('Y-m-d', '2001-01-01'),
+            'personal_number' => $this->faker->phoneNumber,
+            'personal_mobile_number' => $this->faker->phoneNumber,
+            'personal_email' => $this->faker->email,
+        ];
+
+        $response = $this->patch(route('users.update.personal-profile', $user), $payload);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('users', array_merge(['id' => $user->id], $payload));
+    }
+
+    public function test_admin_can_update_other_personal_profile(): void
+    {
+        $this->setUserWithPermissions('users.update');
+
+        $user = User::factory()->create();
+
+        $payload = [
+            'first_name' => $this->faker->firstName,
+            'middle_names' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'dob' => $this->faker->date('Y-m-d', '2001-01-01'),
+            'personal_number' => $this->faker->phoneNumber,
+            'personal_mobile_number' => $this->faker->phoneNumber,
+            'personal_email' => $this->faker->email,
+        ];
+
+        $response = $this->patch(route('users.update.personal-profile', $user), $payload);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('users', array_merge(['id' => $user->id], $payload));
+    }
+
+    public function test_admin_can_override_password(): void
+    {
+        $admin = $this->setUserWithPermissions('users.update');
+
+        $currentPassword = $this->faker->password(20, 40);
+        $newPassword = $this->faker->password(20, 40);
+
+        $user = User::factory()->create(['password' => Hash::make($currentPassword)]);
+
+        $payload = [
+            'new_password' => $newPassword,
+            'new_password_confirmation' => $newPassword,
+        ];
+
+        $response = $this->patch(route('users.update.password', $user), $payload);
+
+        $response->assertStatus(200);
+
+        $this->assertTrue(Hash::check($payload['new_password'], $user->fresh()->password));
+    }
+
+    public function test_user_must_provide_current_password_when_updating_password(): void
+    {
+        $currentPassword = $this->faker->password(20, 40);
+        $newPassword = $this->faker->password(20, 40);
+
+        $user = User::factory()->create(['password' => Hash::make($currentPassword)]);
+        $this->actingAs($user);
+
+        $payload = [
+            'new_password' => $newPassword,
+            'new_password_confirmation' => $newPassword,
+        ];
+
+        $response = $this->patch(route('users.update.password', $user), $payload);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(['current_password' => 'The current password field is required.']);
+
+        $payload = array_merge($payload, [
+            'current_password' => $currentPassword,
+        ]);
+
+        $response = $this->patch(route('users.update.password', $user), $payload);
+
+        $response->assertStatus(200);
+
+        $this->assertTrue(Hash::check($payload['new_password'], $user->fresh()->password));
     }
 }

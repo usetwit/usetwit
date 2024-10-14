@@ -2,6 +2,11 @@
 
 @section('heading')
     Edit User: {{ $user->full_name }}
+    @if($user->active)
+        <span class="inline-flex items-center text-green-500 text-sm ml-2"><i class="pi pi-check-circle mr-1"></i> Active</span>
+    @else
+        <span class="inline-flex items-center text-red-500 text-sm ml-2"><i class="pi pi-times-circle mr-1"></i> Inactive</span>
+    @endif
 @endsection
 
 @section('breadcrumbs')
