@@ -85,7 +85,9 @@ tabs.value.push({
     text: `<span class="text-red-500"><i class="pi pi-key hidden md:inline-block mr-2"></i>Password</span>`,
 })
 
-activeTab.value = tabs.value[0]
+const currentHash = window.location.hash.slice(1);
+const activeTabFromHash = tabs.value.find(tab => tab.key === currentHash)
+activeTab.value = activeTabFromHash || tabs.value[0]
 
 const handleClick = text => {
     activeTab.value = text
@@ -169,9 +171,6 @@ const updateEmployeeId = async () => {
 
 const deleteModalIsVisible = ref(false)
 const deleteUserForm = useTemplateRef('deleteUserForm')
-const deleteUser = () => {
-    deleteUserForm.submit()
-}
 
 const checkUsername = async () => {
     if (user.value.username) {
@@ -227,7 +226,7 @@ watch(() => user.value.username, (newValue) => {
     <ul v-if="tabs.length" class="flex mx-0 lg:mx-4 overflow-x-auto -mb-[1px]">
         <Tab v-for="tab in tabs"
              :tab="tab"
-             :key="tab.field"
+             :key="tab.key"
              :active="tab.key === activeTab.key"
              @clicked="handleClick"
              :important="tab.key === 'password'"
@@ -759,31 +758,25 @@ watch(() => user.value.username, (newValue) => {
                     <span class="text-red-500"><i class="pi pi-exclamation-triangle mr-2"></i>Delete User</span>
                 </div>
 
-                <Wrapper class="bg-red-50">
-                    <template #text>
-                        <label>
-                            <span class="text-red-500">Delete User?</span>
-                        </label>
-                    </template>
-
-                    <template #input>
-                        <Button type="button"
-                                variant="danger"
-                                label="Delete User"
-                                @click="deleteModalIsVisible = true"
-                        />
-                        <Modal v-if="deleteModalIsVisible"
-                               v-model="deleteModalIsVisible"
-                               @accepted="deleteUserForm.submit()"
-                               title="Are you sure?"
-                               label="Delete"
-                               icon="pi pi-times"
-                               variant="danger"
-                        >
-                            Please confirm that you would like to delete this user.
-                        </Modal>
-                    </template>
-                </Wrapper>
+                <div class="flex bg-red-100">
+                    <Button type="button"
+                            variant="danger"
+                            label="Delete User"
+                            @click="deleteModalIsVisible = true"
+                            class="mx-auto my-4"
+                            icon="pi pi-times"
+                    />
+                    <Modal v-if="deleteModalIsVisible"
+                           v-model="deleteModalIsVisible"
+                           @accepted="deleteUserForm.submit()"
+                           title="Are you sure?"
+                           label="Delete"
+                           icon="pi pi-times"
+                           variant="danger"
+                    >
+                        Please confirm that you would like to delete this user.
+                    </Modal>
+                </div>
             </form>
 
             <form v-if="!user.active && permissions.restore" :action="routes.restore" autocomplete="off" method="post">
@@ -792,17 +785,9 @@ watch(() => user.value.username, (newValue) => {
 
                 <h3>Restore User</h3>
 
-                <Wrapper>
-                    <template #text>
-                        <label>
-                            Restore User?
-                        </label>
-                    </template>
-
-                    <template #input>
-                        <Button type="submit" label="Restore User"/>
-                    </template>
-                </Wrapper>
+                <div class="flex">
+                    <Button type="submit" label="Restore User" icon="pi pi-user-plus" class="mx-auto my-4"/>
+                </div>
             </form>
         </div>
         <div v-if="activeTab.key === 'password'">
