@@ -133,7 +133,7 @@ const batchTotal = (item) => {
                 <td>
                     <div class="flex">
                         <div>
-                            <div v-for="(_, batchIndex) in item.batches"
+                            <div v-for="({}, batchIndex) in item.batches"
                                  :key="batchIndex"
                                  class="flex items-start"
                                  :class="{'mt-1': batchIndex > 0}"
