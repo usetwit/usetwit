@@ -14,7 +14,7 @@ const handleClick = () => {
 </script>
 
 <template>
-    <li class="p-2 ml-1 text-sm lg:text-base z-[25] flex items-center select-none"
+    <li class="p-2 ml-1 text-sm lg:text-base z-25 flex items-center select-none"
         @click="handleClick"
         :class="{'active': active, 'inactive': !active, 'border-t-red-500': active && important, 'border-t-sky-600': active && !important}"
         v-html="tab.text"

@@ -5,6 +5,8 @@
 </template>
 
 <style scoped lang="postcss">
+@reference "../../../css/app.css";
+
 .input-group > :deep(div:first-child) {
     @apply rounded-l-md border-l border-y border-gray-300;
 }

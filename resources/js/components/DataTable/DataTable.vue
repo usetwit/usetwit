@@ -105,7 +105,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
     <div class="my-3 overflow-x-auto relative">
 
         <Teleport to="body" v-if="resizeLeftStyle">
-            <div class="absolute w-[2px] bg-slate-500 z-[999]" :style="[resizeLeftStyle, style]"></div>
+            <div class="absolute w-[2px] bg-slate-500 z-999" :style="[resizeLeftStyle, style]"></div>
         </Teleport>
 
         <table ref="tableRef">
@@ -145,7 +145,7 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
             </tbody>
         </table>
         <div v-if="isLoading"
-             class="bg-opacity-50 bg-slate-100 z-[150] w-full h-full left-0 top-0 absolute text-[4rem] text-slate-700 flex items-center justify-center"
+             class="bg-opacity-50 bg-slate-100 z-150 w-full h-full left-0 top-0 absolute text-[4rem] text-slate-700 flex items-center justify-center"
         >
             <i class="pi pi-spinner pi-spin"></i>
         </div>
@@ -155,6 +155,8 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
 </template>
 
 <style scoped lang="postcss">
+@reference "../../../css/app.css";
+
 .even td {
     @apply bg-gray-50
 }

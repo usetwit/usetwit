@@ -47,14 +47,14 @@ const {
         <span class="rounded-full bg-emerald-500">
             <img :src="userProfileImage ? userProfileImage : defaultProfileImage"
                  :alt="name"
-                 class="object-cover w-10 h-10 rounded-full shadow"
+                 class="object-cover w-10 h-10 rounded-full shadow-sm"
             />
         </span>
     </button>
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-[350] min-w-48"
+             class="dropdown z-350 min-w-48"
              :style="dropdownStyle"
         >
             <ul>

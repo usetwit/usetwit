@@ -58,7 +58,7 @@ const modified = computed(() => getModifiedFields(filters.value, props.filtered)
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-[250] w-64 max-h-80"
+             class="dropdown z-250 w-64 max-h-80"
              :style="dropdownStyle"
         >
             <FilterDropdown v-if="column.type === 'string'"

@@ -103,6 +103,8 @@ const selectPage = number => {
 </template>
 
 <style scoped lang="postcss">
+@reference "../../../css/app.css";
+
 .base {
     @apply mx-[0.5px] text-sm inline-flex items-center justify-center rounded-full w-8 h-8;
 

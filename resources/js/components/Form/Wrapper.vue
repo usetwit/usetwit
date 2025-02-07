@@ -9,7 +9,7 @@ const props = defineProps({
         <div class="text-slate-700 pt-1.5">
             <slot name="text"></slot>
 
-            <sup v-if="required" class="text-red-500">*required</sup>
+            <sup v-if="required" class="text-red-500">required</sup>
 
             <div v-if="$slots.help" class="text-xs sm:text-sm text-gray-500">
                 <slot name="help"/>
@@ -22,6 +22,8 @@ const props = defineProps({
 </template>
 
 <style scoped lang="postcss">
+@reference "../../../css/app.css";
+
 :deep(label) {
     @apply font-bold text-sm lg:text-base;
 }

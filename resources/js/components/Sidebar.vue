@@ -127,13 +127,13 @@ window.addEventListener('resize', checkScreenSize)
 
 <template>
     <div v-if="store.isMenuVisible && !store.isLargeScreen"
-         class="bg-opacity-50 bg-gray-900 z-[150] w-full h-full left-0 top-0 fixed"
+         class="bg-opacity-50 bg-gray-900 z-150 w-full h-full left-0 top-0 fixed"
          @click="closeMenu"
     ></div>
 
     <nav v-if="store.isMenuVisible && !store.isLargeScreen || store.isLargeScreen"
          class="bg-white border-r w-[280px] border-gray-200 overflow-y-auto"
-         :class="{'z-[200] fixed h-full top-0 left-0': !store.isLargeScreen && store.isMenuVisible}"
+         :class="{'z-200 fixed h-full top-0 left-0': !store.isLargeScreen && store.isMenuVisible}"
     >
         <div v-if="store.isMenuVisible && !store.isLargeScreen"
              class="flex pt-2 pr-4"
@@ -146,7 +146,7 @@ window.addEventListener('resize', checkScreenSize)
             <li v-for="item in items" class="mb-4">
                 <button @click="toggleExpanded(item)" type="button" class="flex items-center w-full text-slate-700">
                     <span
-                        class="rounded h-8 w-8 mr-3 justify-center inline-flex items-center border border-gray-200">
+                        class="rounded-sm h-8 w-8 mr-3 justify-center inline-flex items-center border border-gray-200">
                         <i :class="item.icon"></i>
                     </span>
                     <span class="text-sm font-bold">{{ item.text }}</span>

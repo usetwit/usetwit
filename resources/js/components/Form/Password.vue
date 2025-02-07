@@ -4,7 +4,6 @@ import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import InputText from './InputText.vue'
 import zxcvbn from 'zxcvbn'
 import InputGroup from "./InputGroup.vue";
-import InputGroupAddon from "./InputGroupAddon.vue";
 
 defineOptions({
     inheritAttrs: false,
@@ -55,7 +54,7 @@ const strengthText = computed(() => !model.value ? 'Enter a password' : texts[st
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-[350] max-h-60"
+             class="dropdown z-350 max-h-60"
              :style="dropdownStyle"
         >
             <div class="bg-gray-200 rounded-full h-4 m-2">

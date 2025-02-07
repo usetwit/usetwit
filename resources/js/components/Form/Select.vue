@@ -86,14 +86,14 @@ const setClasses = computed(() => {
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-[350] max-h-60"
+             class="dropdown z-350 max-h-60"
              :class="dropdownClass"
              :style="dropdownStyle"
         >
             <ul v-if="options.length">
                 <li v-for="option in options"
                     @click.stop="optionSelected(option)"
-                    class="select-none flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded text-nowrap"
+                    class="select-none flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded-sm text-nowrap"
                 >
                     <slot name="option" :option="option">
                         {{ option[optionLabel] }}

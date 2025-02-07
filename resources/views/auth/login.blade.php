@@ -7,7 +7,7 @@
 </head>
 <body class="bg-gradient h-full flex items-center justify-center">
 <section class="flex flex-col items-center justify-center w-full max-w-md mx-1 md:mx-auto">
-    <div class="w-full bg-white rounded-lg shadow">
+    <div class="w-full bg-white rounded-lg shadow-sm">
         <div class="space-y-4 p-4">
             <h1 class="flex items-center text-xl font-bold text-gray-800">
                 <a href="#" class="flex items-center">
@@ -55,14 +55,14 @@
                     >
                 </div>
                 <button type="submit"
-                        class="w-full text-white bg-teal-600 hover:bg-teal-700 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                        class="w-full text-white bg-teal-600 hover:bg-teal-700 focus:ring-4 focus:outline-hidden focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
                     Sign in
                 </button>
             </form>
         </div>
     </div>
-    <div class="text-gray-800 mt-4 text-sm drop-shadow">&copy; 2024 useTwit v{{ config('app.version') }}</div>
+    <div class="text-gray-800 mt-4 text-sm drop-shadow-sm">&copy; 2024 useTwit v{{ config('app.version') }}</div>
 </section>
 </body>
 

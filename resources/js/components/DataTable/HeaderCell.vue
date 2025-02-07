@@ -106,8 +106,8 @@ const resizeDblclick = () => {
 <template>
     <th class="border-y p-0 select-none border-gray"
         :class="{
-            'sticky left-0 z-[25]': column.sticky,
-            'relative z-[24]': !column.sticky,
+            'sticky left-0 z-25': column.sticky,
+            'relative z-24': !column.sticky,
             'bg-white text-gray-800': !sortObj,
             'hover:bg-gray-100': !sortObj && column.sortable,
             'bg-slate-800 text-white hover:bg-slate-700': sortObj,

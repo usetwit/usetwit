@@ -149,7 +149,7 @@ watch(inputModel, (newValue) => {
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-[250] min-w-[250px]"
+             class="dropdown z-250 min-w-[250px]"
              :style="dropdownStyle"
         >
             <div v-if="mode === 'year'">
@@ -160,7 +160,7 @@ watch(inputModel, (newValue) => {
                 <div class="grid grid-cols-2 w-full gap-1">
                     <button v-for="i in 10"
                             :key="i"
-                            class="px-1.5 py-0.5 text-sm rounded hover:bg-gray-100 text-gray-800"
+                            class="px-1.5 py-0.5 text-sm rounded-sm hover:bg-gray-100 text-gray-800"
                             @click.stop="selectYear(yearRounded + i - 1)"
                     >
                         {{ yearRounded + i - 1 }}
@@ -170,7 +170,7 @@ watch(inputModel, (newValue) => {
 
             <div v-if="mode === 'month'">
                 <DatepickerHeader @change="direction => changeYear(direction)">
-                    <button type="button" class="p-1 hover:bg-gray-100 rounded" @click.stop="changeMode('year')">
+                    <button type="button" class="p-1 hover:bg-gray-100 rounded-sm" @click.stop="changeMode('year')">
                         {{ year }}
                     </button>
                 </DatepickerHeader>
@@ -178,7 +178,7 @@ watch(inputModel, (newValue) => {
                 <div class="grid grid-cols-3 w-full gap-1">
                     <button v-for="i in 12"
                             :key="i"
-                            class="px-1.5 py-0.5 text-sm rounded hover:bg-gray-100 text-gray-800"
+                            class="px-1.5 py-0.5 text-sm rounded-sm hover:bg-gray-100 text-gray-800"
                             @click.stop="selectMonth(i)"
                     >
                         {{ monthTexts[i - 1].substring(0, 3) }}
@@ -191,11 +191,11 @@ watch(inputModel, (newValue) => {
 
                     <DatepickerHeader v-if="monthIndex === 0" @change="direction => changeMonth(direction)">
                         <div>
-                            <button type="button" class="mr-2 p-1 rounded hover:bg-gray-100"
+                            <button type="button" class="mr-2 p-1 rounded-sm hover:bg-gray-100"
                                     @click.stop="changeMode('month')">
                                 {{ monthTexts[month.month - 1] }}
                             </button>
-                            <button type="button" class="p-1 rounded hover:bg-gray-100"
+                            <button type="button" class="p-1 rounded-sm hover:bg-gray-100"
                                     @click.stop="changeMode('year')">
                                 {{ year }}
                             </button>
@@ -235,6 +235,8 @@ watch(inputModel, (newValue) => {
 </template>
 
 <style scoped lang="postcss">
+@reference "../../../css/app.css";
+
 .month-wrapper {
     @apply w-full;
 

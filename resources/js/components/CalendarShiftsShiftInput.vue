@@ -204,7 +204,7 @@ const setTo24Hours = () => {
 
 
             <div
-                class="p-2 bg-gray-50 rounded border border-gray-200 text-sm text-center items-center flex justify-between"
+                class="p-2 bg-gray-50 rounded-sm border border-gray-200 text-sm text-center items-center flex justify-between"
             >
                 <label for="nwd">Non-Working Day</label>
                 <div class="checkbox-wrapper">
@@ -213,7 +213,7 @@ const setTo24Hours = () => {
             </div>
 
             <div
-                class="p-2 bg-gray-50 rounded border border-gray-200 flex mt-2"
+                class="p-2 bg-gray-50 rounded-sm border border-gray-200 flex mt-2"
             >
                 <Button @click="setTo24Hours"
                         label="Set to 24 hours"
@@ -225,7 +225,7 @@ const setTo24Hours = () => {
             </div>
 
 
-            <div class="p-2 bg-gray-50 rounded border border-gray-200 text-sm text-center mt-2 text-gray-800">
+            <div class="p-2 bg-gray-50 rounded-sm border border-gray-200 text-sm text-center mt-2 text-gray-800">
                 Shift 1
 
                 <div class="flex items-center justify-center">
@@ -233,7 +233,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift1 !== null"
                                v-model="localDate.shift1_start"
                                :disabled="localDate.nwd"
@@ -252,7 +252,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift1 !== null"
                                v-model="localDate.shift1_end"
                                :disabled="localDate.nwd"
@@ -270,7 +270,7 @@ const setTo24Hours = () => {
                 <span v-if="errors.shift1" class="text-red-500 text-xs">{{ errors.shift1 }}</span>
             </div>
 
-            <div class="p-2 bg-gray-50 rounded border border-gray-200 text-sm text-center mt-2 text-gray-800">
+            <div class="p-2 bg-gray-50 rounded-sm border border-gray-200 text-sm text-center mt-2 text-gray-800">
                 <span>Shift 2</span>
 
                 <div class="flex items-center justify-center">
@@ -278,7 +278,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift2 !== null"
                                v-model="localDate.shift2_start"
                                :disabled="localDate.nwd"
@@ -293,7 +293,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift2 !== null"
                                v-model="localDate.shift2_end"
                                :disabled="localDate.nwd"
@@ -308,7 +308,7 @@ const setTo24Hours = () => {
                 <span v-if="errors.shift2" class="text-red-500 text-xs">{{ errors.shift2 }}</span>
             </div>
 
-            <div class="p-2 bg-gray-50 rounded border border-gray-200 text-sm text-center mt-2 text-gray-800">
+            <div class="p-2 bg-gray-50 rounded-sm border border-gray-200 text-sm text-center mt-2 text-gray-800">
                 <span>Shift 3</span>
 
                 <div class="flex items-center justify-center">
@@ -316,7 +316,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift3 !== null"
                                v-model="localDate.shift3_start"
                                :disabled="localDate.nwd"
@@ -329,7 +329,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift3 !== null"
                                v-model="localDate.shift3_end"
                                :disabled="localDate.nwd"
@@ -342,7 +342,7 @@ const setTo24Hours = () => {
                 <span v-if="errors.shift3" class="text-red-500 text-xs">{{ errors.shift3 }}</span>
             </div>
 
-            <div class="p-2 bg-gray-50 rounded border border-gray-200 text-sm text-center mt-2 text-gray-800">
+            <div class="p-2 bg-gray-50 rounded-sm border border-gray-200 text-sm text-center mt-2 text-gray-800">
                 <span>Shift 4</span>
 
                 <div class="flex items-center justify-center">
@@ -350,7 +350,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift4 !== null"
                                v-model="localDate.shift4_start"
                                :disabled="localDate.nwd"
@@ -361,7 +361,7 @@ const setTo24Hours = () => {
                                pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
                                minlength="5"
                                maxlength="5"
-                               class="w-[60px] !p-1 text-center rounded-md"
+                               class="w-[60px] p-1! text-center rounded-md"
                                :invalid="errors.shift4 !== null"
                                v-model="localDate.shift4_end"
                                :disabled="localDate.nwd"

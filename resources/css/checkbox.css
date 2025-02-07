@@ -3,7 +3,7 @@
 
     .checkbox-toggle {
         appearance: none;
-        background-color: theme('colors.gray.400');
+        background-color: var(--color-gray-400);
         border-radius: 72px;
         border: none;
         cursor: pointer;
@@ -36,16 +36,16 @@
         }
 
         &:hover {
-            background-color: theme('colors.gray.300');
+            background-color: var(--color-gray-300);
             transition-duration: 0s;
 
             &:checked {
-                background-color: theme('colors.green.400');
+                background-color: var(--color-green-400);
             }
         }
 
         &:checked {
-            background-color: theme('colors.green.500');
+            background-color: var(--color-green-500);
 
             &::after {
                 left: 13px;

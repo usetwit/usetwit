@@ -76,7 +76,7 @@ const handleInput = () => {
             <ul v-if="!optionGroupLabel && items.length">
                 <li v-for="item in items"
                     @click="itemSelected(item)"
-                    class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded text-nowrap"
+                    class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded-sm text-nowrap"
                 >
                     <slot name="item" v-bind="item">{{ item[optionLabel] }}</slot>
                 </li>
@@ -84,7 +84,7 @@ const handleInput = () => {
             <ul v-else-if="optionGroupLabel && items.length">
                 <li v-for="item in items">
                     <slot name="optiongroup" v-bind="item">
-                        <div class="font-bold px-2 py-1.5 mx-1 rounded">{{
+                        <div class="font-bold px-2 py-1.5 mx-1 rounded-sm">{{
                                 item[optionGroupLabel]
                             }}
                         </div>
@@ -92,7 +92,7 @@ const handleInput = () => {
                     <ul v-if="item[optionGroupItems] && item[optionGroupItems].length">
                         <li v-for="subitem in item[optionGroupItems]"
                             @click="itemSelected(subitem)"
-                            class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded text-nowrap"
+                            class="flex cursor-pointer hover:bg-gray-100 text-gray-700 items-center px-2 py-1.5 rounded-sm text-nowrap"
                         >
                             <slot name="item" v-bind="subitem">{{ subitem[optionLabel] }}</slot>
                         </li>

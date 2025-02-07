@@ -266,6 +266,8 @@ const batchTotal = (item) => {
 </template>
 
 <style scoped lang="postcss">
+@reference "../../css/app.css";
+
 .item-row td {
     @apply border-b border-gray-200 pb-2 align-top pt-2 px-1;
 }

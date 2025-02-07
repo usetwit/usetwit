@@ -42,7 +42,7 @@ const preDates = computed(() => {
 </script>
 
 <template>
-    <div class="border-gray-300 border bg-gray-200 rounded">
+    <div class="border-gray-300 border bg-gray-200 rounded-sm">
         <div class="text-center text-lg bg-slate-900 text-white p-1 rounded-t">
             {{ monthTexts[monthNumber] }}
         </div>

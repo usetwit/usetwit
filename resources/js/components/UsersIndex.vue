@@ -102,7 +102,7 @@ provide('tableInstance', tableInstance)
         <Column sticky class="w-16" options>
             <template #body="{ row }">
                 <a :href="row.edit_user_route"
-                   class="bg-amber-500 p-1.5 rounded text-white inline-flex"
+                   class="bg-amber-500 p-1.5 rounded-sm text-white inline-flex"
                    title="Edit"
                 >
                     <i class="pi pi-pen-to-square"></i>

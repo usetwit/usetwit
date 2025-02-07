@@ -30,7 +30,7 @@ const {
 <template>
     <button type="button"
             ref="inputRef"
-            class="p-1.5 rounded inline-flex items-center bg-emerald-500 text-white hover:bg-emerald-400"
+            class="p-1.5 rounded-sm inline-flex items-center bg-emerald-500 text-white hover:bg-emerald-400"
             @click="toggleDropdown"
             title="Select Columns"
     >
