@@ -10,15 +10,16 @@ use App\Settings\GeneralSettings;
 
 class SalesOrdersController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
     }
 
     public function create(GeneralSettings $settings)
     {
-        $date_format = $settings->date_format_input;
+        $dateSettings = $settings->dateSettings();
 
-        return view('sales-orders.sales-order-create', compact('date_format'));
+        return view('sales-orders.sales-orders-create', compact('dateSettings'));
     }
 
     public function store(SalesOrdersStoreRequest $request)
@@ -28,41 +29,26 @@ class SalesOrdersController extends Controller
 
     public function stockBomSearch(StockBomSearchByNameRequest $request)
     {
-        $name = $request->input('name');
+        $long_id = $request->input('long_id');
 
-        $bomItemsResults = Bom::select(['name', 'description'])
-            ->where('name', 'like', $name . '%')
-            ->limit(3)
-            ->orderBy('name')
-            ->get();
+        $bomItemsResults = Bom::select(['long_id', 'description'])->where('long_id', 'like', $long_id . '%')->limit(3)
+                              ->orderBy('long_id')->get();
 
-        foreach ($bomItemsResults as $key => $value) {
-            $bomItemsResults[$key]['value'] = $value->name . 'value';
-        }
-
-        $stockItemsResults = StockItem::select(['name', 'description'])
-            ->where('name', 'like', $name . '%')
-            ->whereNull('bom_id')
-            ->limit(3)
-            ->orderBy('name')
-            ->get();
-
-        foreach ($stockItemsResults as $key => $value) {
-            $stockItemsResults[$key]['value'] = $value->name . 'value';
-        }
+        $stockItemsResults = StockItem::select(['long_id', 'description'])->where('long_id', 'like', $long_id . '%')
+                                      ->limit(3)->orderBy('long_id')->get();
 
         $array = [];
-        if(count($bomItemsResults)) {
+        if (count($bomItemsResults)) {
             $array[] = [
                 'label' => 'BOM Items',
-                'items' => $bomItemsResults
+                'items' => $bomItemsResults,
             ];
         }
 
-        if(count($stockItemsResults)) {
+        if (count($stockItemsResults)) {
             $array[] = [
                 'label' => 'Stock Items',
-                'items' => $stockItemsResults
+                'items' => $stockItemsResults,
             ];
         }
 

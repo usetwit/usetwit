@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\Intl\Countries;
-use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 
 class UsersController extends Controller
 {

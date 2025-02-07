@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\SalesOrders;
 
+use App\Rules\StockOrBom;
 use Exception;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,24 +17,7 @@ class SalesOrdersStoreRequest extends FormRequest
     {
         return true;
     }
-    protected function prepareForValidation(): void
-    {
-        $items = $this->input('items');
 
-        if (is_array($items)) {
-            foreach ($items as &$item) {
-                if (isset($item['due_date'])) {
-                    try {
-                        $item['due_date'] = Carbon::parse($item['due_date'])->format('Y-m-d');
-                    } catch (Exception $e) {
-                        $item['due_date'] = null;
-                    }
-                }
-            }
-
-            $this->merge(['items' => $items]);
-        }
-    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -43,7 +27,7 @@ class SalesOrdersStoreRequest extends FormRequest
     {
         return [
             'items' => 'required|array',
-            'items.*.item_name' => 'required|string|exists:stock_items,name|max:255',
+            'items.*.long_id' => ['required', 'string', 'max:255', new StockOrBom()],
             'items.*.price' => 'required|decimal:0,3|min:0|max:1000000000',
             'items.*.discount' => 'required|decimal:0,2|min:0|max:100',
             'items.*.batches' => 'required|array',

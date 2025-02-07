@@ -7,7 +7,7 @@ const props = defineProps({
     icon: { type: String },
     label: { type: String },
     variant: {
-        type: String, default: 'primary', validator(value, props) {
+        type: String, default: 'primary', validator(value) {
             return ['primary', 'secondary', 'success', 'warning', 'danger'].includes(value)
         }
     },
@@ -69,18 +69,18 @@ const setClasses = computed(() => {
 })
 
 const setSizeClasses = computed(() => {
-    return props.size === 'sm' ? 'text-sm px-2 py-1' : 'px-3 py-2'
+    return props.size === 'sm' ? 'text-sm px-2 py-2' : 'px-3 py-1.5'
 })
 </script>
 
 <template>
-    <button class="leading-5 border rounded-lg inline-flex justify-center items-center align-middle"
+    <button class="border rounded-lg inline-flex justify-center items-center align-middle"
             :class="[setClasses, setSizeClasses]"
             :disabled="disabled || loading"
             :aria-disabled="disabled || loading"
     >
-        <i v-if="loading" class="pi pi-spin pi-spinner mr-2"></i>
-        <i v-if="icon && !loading" :class="icon" class="mr-2"></i>
+        <i v-if="loading" class="pi pi-spin pi-spinner" :class="{'mr-2': label || $slots.default}"></i>
+        <i v-if="icon && !loading" :class="[{'mr-2': label || $slots.default}, icon]"></i>
         <span v-if="label || $slots.default">{{ label }}<slot/></span>
         <span v-if="badge"
               class="ml-2 flex items-center justify-center h-4 p-1 min-w-4 bg-slate-500 text-white text-xs rounded-full"

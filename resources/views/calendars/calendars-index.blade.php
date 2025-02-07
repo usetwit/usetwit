@@ -9,13 +9,16 @@
 @endsection
 
 @section('content')
-    <h3>Select Calendar</h3>
+    <div id="content">
+        <h3>Select Calendar</h3>
 
-    <ul>
-        @foreach ($calendars as $calendar)
-            <li class="py-1 ml-2">
-                <a href="{{ route('calendars.calendar-shifts.edit', $calendar) }}" class="text-slate-800 hover:text-orange-700">{{ $calendar->name }}</a>
-            </li>
-        @endforeach
-    </ul>
+        <ul>
+            @foreach ($calendars as $calendar)
+                <li class="py-1 ml-2">
+                    <a href="{{ route('calendars.calendar-shifts.edit', $calendar) }}"
+                       class="text-slate-500 hover:text-orange-500">{{ $calendar->name }}</a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
 @endsection

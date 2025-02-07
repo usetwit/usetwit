@@ -1,5 +1,5 @@
 <script setup>
-import Button from "@/components/Form/Button.vue";
+import Button from '@/components/Form/Button.vue'
 
 const props = defineProps({
     title: { type: String, default: null },

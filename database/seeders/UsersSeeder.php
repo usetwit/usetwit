@@ -17,15 +17,14 @@ class UsersSeeder extends Seeder
     {
         $role['admin'] = Role::findByName('admin');
 
-        $lee = User::create([
-            'username' => 'lee',
+        $mike = User::create([
+            'username' => 'mike',
             'password' => Hash::make('x'),
-            'first_name' => 'Lee',
-            'middle_names' => 'Craig',
-            'last_name' => 'Jeffries',
-            'full_name' => 'Lee Craig Jeffries',
+            'first_name' => 'Michael',
+            'last_name' => 'Maynard',
+            'full_name' => 'Michael Maynard',
             'employee_id' => 'E00002',
-            'email' => 'leecjeffries@gmail.com',
+            'email' => 'mike@usetwit.com',
             'active' => true,
             'joined_at' => '2024-01-01',
         ])->assignRole($role['admin']);
@@ -47,7 +46,7 @@ class UsersSeeder extends Seeder
                 'width' => $img->width(),
                 'height' => $img->height(),
                 'default_image' => true,
-                'imageable_id' => $lee->id,
+                'imageable_id' => $mike->id,
                 'imageable_type' => User::class,
             ];
         } else {
@@ -55,7 +54,7 @@ class UsersSeeder extends Seeder
         }
 
         if ($img) {
-            $lee->uploadedImages()->create($img);
+            $mike->uploadedImages()->create($img);
         }
 
         User::create([

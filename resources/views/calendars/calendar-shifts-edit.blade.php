@@ -11,14 +11,14 @@
 @section('javascript')
     @parent
 
-    @vite(['resources/js/calendar-shifts-edit.js'])
+    @vite(['resources/js/app/calendar-shifts-edit.js'])
 @endsection
 
 @section('content')
-    <div id="calendar-shifts">
-        <calendar-shifts route="{{ route('calendars.calendar-shifts.get-calendar-shifts', $calendar) }}"
+    <div id="app">
+        <calendar-shifts-edit route="{{ route('calendars.calendar-shifts.get-calendar-shifts', $calendar) }}"
                          route-update="{{ route('calendars.calendar-shifts.update', $calendar) }}"
                          :calendar-list="{{ Js::from($calendars) }}"
-        ></calendar-shifts>
+        ></calendar-shifts-edit>
     </div>
 @endsection

@@ -1,6 +1,5 @@
-import '../app.js';
-import CalendarShifts from './components/CalendarShifts.vue'
-import vueConfig from '../vue-config.js'
+import CalendarShiftsEdit from '@/components/CalendarShiftsEdit.vue'
+import vueConfig from '@/vue-config.js'
 
 Date.prototype.addDays = function (days) {
     const date = new Date(this.valueOf())
@@ -8,7 +7,7 @@ Date.prototype.addDays = function (days) {
     return date
 }
 
-const {app} = vueConfig()
+const { app } = vueConfig()
 
-app.component('CalendarShifts', CalendarShifts)
-    .mount('#calendar-shifts')
+app.component('CalendarShiftsEdit', CalendarShiftsEdit)
+    .mount('#app')

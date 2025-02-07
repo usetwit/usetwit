@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             UsersSeeder::class,
             CalendarSeeder::class,
+            BomSeeder::class,
+            StockItemSeeder::class,
         ]);
     }
 }

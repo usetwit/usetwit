@@ -8,6 +8,7 @@ const props = defineProps({
     items: { type: Array, default: [] },
     dropdown: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
+    invalid: { type: Boolean, default: false },
     optionLabel: { type: String, required: true },
     optionGroupLabel: { type: String, default: '' },
     optionGroupItems: { type: String, default: '' },
@@ -32,11 +33,17 @@ onMounted(() => {
 const itemSelected = (item) => {
     model.value = item[props.optionLabel]
     showDropdown.value = false
+
+    emit('completed')
 }
+
+const emit = defineEmits(['completed'])
 
 const handleInput = () => {
     nextTick(() => {
         showDropdown.value = model.value.length > 0
+
+        emit('completed')
     })
 }
 </script>
@@ -44,9 +51,14 @@ const handleInput = () => {
 <template>
     <div class="inline-block">
         <InputGroup>
-            <InputText ref="inputTextComp" v-model="model" :disabled="disabled" @input="handleInput"/>
+            <InputText ref="inputTextComp"
+                       v-model="model"
+                       :disabled="disabled"
+                       @input="handleInput"
+                       :invalid="invalid"
+            />
             <button v-if="dropdown"
-                    class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center py-2.5 px-3 align-middle"
+                    class="inline-flex bg-gray-200 hover:bg-gray-100 text-gray-700 items-center py-2.5 px-2 align-middle"
                     @click="toggleDropdown"
                     type="button"
                     ref="buttonRef"

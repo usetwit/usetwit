@@ -15,6 +15,8 @@ export default defineConfig({
                 'resources/js/app/users-index.js',
                 'resources/js/app/users-edit.js',
                 'resources/js/app/users-create.js',
+                'resources/js/app/calendar-shifts-edit.js',
+                'resources/js/app/sales-orders-create.js',
             ],
             refresh: true,
         }),

@@ -1,18 +1,18 @@
 <script setup>
-import { ref, useTemplateRef, watch } from "vue";
-import Tab from "./Tab.vue";
-import Wrapper from "./Form/Wrapper.vue";
-import InputText from "./Form/InputText.vue";
-import Button from "./Form/Button.vue";
-import FormWrapper from "./Form/Wrapper.vue";
-import Select from "./Form/Select.vue";
-import Datepicker from "./Form/Datepicker.vue";
-import Password from "./Form/Password.vue";
-import useAxios from "../composables/useAxios.js";
-import { debounce, pick } from "lodash";
-import { toast } from "vue3-toastify";
-import Csrf from "./Form/Csrf.vue";
-import Modal from "./Modal.vue";
+import { ref, useTemplateRef, watch } from 'vue'
+import Tab from '@/components/Tab.vue'
+import Wrapper from '@/components/Form/Wrapper.vue'
+import InputText from '@/components/Form/InputText.vue'
+import Button from '@/components/Form/Button.vue'
+import FormWrapper from '@/components/Form/Wrapper.vue'
+import Select from '@/components/Form/Select.vue'
+import Datepicker from '@/components/Form/Datepicker.vue'
+import Password from '@/components/Form/Password.vue'
+import useAxios from '@/composables/useAxios.js'
+import { debounce, pick } from 'lodash'
+import { toast } from 'vue3-toastify'
+import Csrf from '@/components/Form/Csrf.vue'
+import Modal from '@/components/Modal.vue'
 
 const props = defineProps({
     roles: { type: Array, required: true },

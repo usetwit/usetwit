@@ -10,7 +10,6 @@ use App\Http\Requests\Users\UpdatePersonalProfileRequest;
 use App\Http\Requests\Users\UpdateProtectedInfoRequest;
 use App\Http\Requests\Users\UpdateUsernameRequest;
 use App\Models\User;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
 class UsersUpdateController extends Controller
