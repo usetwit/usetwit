@@ -12,7 +12,7 @@ use Symfony\Component\Intl\Countries;
 
 class CompanyController extends Controller
 {
-    public function edit(GeneralSettings $settings): View
+    public function edit(): View
     {
         $countries = Countries::getNames();
         $address = Address::whereType('hq')->first();
