@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\CompanyUpdateRequest;
 use App\Models\Address;
-use App\Settings\CompanySettings;
 use App\Settings\GeneralSettings;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Symfony\Component\Intl\Countries;
 
 class CompanyController extends Controller
 {
-    public function edit(CompanySettings $company, GeneralSettings $generalSettings): View
+    public function edit(GeneralSettings $settings): View
     {
-        $countries = $generalSettings->countries;
+        $countries = Countries::getNames();
         $address = Address::whereType('hq')->first();
 
-        return view('company.company-edit', compact('countries', 'address', 'company'));
+        return view('company.company-edit', compact('countries', 'address'));
     }
 
-    public function update(CompanyUpdateRequest $request, CompanySettings $companySettings)
+    public function update(CompanyUpdateRequest $request, GeneralSettings $settings): RedirectResponse
     {
         Address::whereType('hq')->first()->update($request->only([
             'address_line_1',
@@ -29,7 +30,7 @@ class CompanyController extends Controller
             'country'
         ]));
 
-        $companySettings->name = $request->input('name');
+        $settings->name = $request->input('name');
 
         return back()->with('success', 'Company has been updated');
     }

@@ -24,11 +24,11 @@ const props = defineProps({
 const usernameExists = ref(false)
 const isLoading = ref(false)
 const user = ref({
-    username: 'a',
+    username: '',
     employee_id: props.suggestedId,
-    password: 'a',
-    password_confirmation: 'a',
-    first_name: 'a',
+    password: '',
+    password_confirmation: '',
+    first_name: '',
     middle_names: '',
     last_name: '',
     address_line_1: '',

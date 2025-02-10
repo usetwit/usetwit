@@ -35,7 +35,7 @@ class UsersFeatureTest extends TestCase
             'password_confirmation' => 'xiTh&£$5678HjnN',
         ]);
 
-        $response = $this->post(route('users.store'), $payload);
+        $response = $this->post(route('admin.users.store'), $payload);
 
         $response->assertStatus(200);
 
@@ -89,14 +89,14 @@ class UsersFeatureTest extends TestCase
     {
         $this->setUserWithPermissions();
 
-        $response = $this->post(route('users.store'));
+        $response = $this->post(route('admin.users.store'));
 
         $response->assertStatus(403);
     }
 
     public function test_user_cannot_see_create_user_if_not_authenticated(): void
     {
-        $response = $this->post(route('users.store'));
+        $response = $this->post(route('admin.users.store'));
 
         $response->assertStatus(302);
     }
@@ -105,7 +105,7 @@ class UsersFeatureTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->get(route('users.edit', $user));
+        $response = $this->get(route('admin.users.edit', $user));
 
         $response->assertStatus(302);
     }
@@ -116,7 +116,7 @@ class UsersFeatureTest extends TestCase
 
         $user = User::factory()->create();
 
-        $response = $this->get(route('users.edit', $user));
+        $response = $this->get(route('admin.users.edit', $user));
 
         $response->assertStatus(200);
     }
@@ -135,7 +135,7 @@ class UsersFeatureTest extends TestCase
             'personal_email' => $this->faker->email,
         ];
 
-        $response = $this->patch(route('users.update.personal-profile', $user), $payload);
+        $response = $this->patch(route('admin.users.update.personal-profile', $user), $payload);
 
         $response->assertStatus(200);
 
@@ -158,7 +158,7 @@ class UsersFeatureTest extends TestCase
             'personal_email' => $this->faker->email,
         ];
 
-        $response = $this->patch(route('users.update.personal-profile', $user), $payload);
+        $response = $this->patch(route('admin.users.update.personal-profile', $user), $payload);
 
         $response->assertStatus(200);
 
@@ -179,7 +179,7 @@ class UsersFeatureTest extends TestCase
             'new_password_confirmation' => $newPassword,
         ];
 
-        $response = $this->patch(route('users.update.password', $user), $payload);
+        $response = $this->patch(route('admin.users.update.password', $user), $payload);
 
         $response->assertStatus(200);
 
@@ -199,7 +199,7 @@ class UsersFeatureTest extends TestCase
             'new_password_confirmation' => $newPassword,
         ];
 
-        $response = $this->patch(route('users.update.password', $user), $payload);
+        $response = $this->patch(route('admin.users.update.password', $user), $payload);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(['current_password' => 'The current password field is required.']);
@@ -208,7 +208,7 @@ class UsersFeatureTest extends TestCase
             'current_password' => $currentPassword,
         ]);
 
-        $response = $this->patch(route('users.update.password', $user), $payload);
+        $response = $this->patch(route('admin.users.update.password', $user), $payload);
 
         $response->assertStatus(200);
 

@@ -24,20 +24,26 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'users.update.self.personal-profile']);
         Permission::create(['name' => 'users.update.self.company-profile']);
         Permission::create(['name' => 'users.update.self.profile-image']);
+        Permission::create(['name' => 'users.update.address']);
+        Permission::create(['name' => 'users.update.personal-profile']);
+        Permission::create(['name' => 'users.update.company-profile']);
+        Permission::create(['name' => 'users.update.profile-image']);
         Permission::create(['name' => 'users.delete']);
         Permission::create(['name' => 'users.restore']);
         Permission::create(['name' => 'sales-orders.create']);
         Permission::create(['name' => 'sales-orders.update']);
         Permission::create(['name' => 'sales-orders.delete']);
         Permission::create(['name' => 'calendars.update']);
+        Permission::create(['name' => 'company.update']);
 
-        Role::create(['name' => 'Admin'])->givePermissionTo(Permission::all());
-        Role::create(['name' => 'Design']);
-        Role::create(['name' => 'Sales']);
-        Role::create(['name' => 'Purchasing']);
-        Role::create(['name' => 'Finance']);
-        Role::create(['name' => 'Operator']);
-        Role::create(['name' => 'Supervisor']);
-        Role::create(['name' => 'Manager']);
+        Role::create(['name' => 'admin'])->givePermissionTo(Permission::all());
+        Role::create(['name' => 'customer']);
+        Role::create(['name' => 'design']);
+        Role::create(['name' => 'sales']);
+        Role::create(['name' => 'purchasing']);
+        Role::create(['name' => 'finance']);
+        Role::create(['name' => 'operator']);
+        Role::create(['name' => 'supervisor']);
+        Role::create(['name' => 'manager']);
     }
 }

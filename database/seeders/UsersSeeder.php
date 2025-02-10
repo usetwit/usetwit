@@ -21,6 +21,7 @@ class UsersSeeder extends Seeder
             'username' => 'mike',
             'password' => Hash::make('x'),
             'first_name' => 'Michael',
+            'middle_names' => 'James',
             'last_name' => 'Maynard',
             'full_name' => 'Michael Maynard',
             'employee_id' => 'E00002',

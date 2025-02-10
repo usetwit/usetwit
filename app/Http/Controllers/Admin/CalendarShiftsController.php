@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\EndLessThanOrEqualToStartException;
 use App\Exceptions\HoursUsedException;
-use App\Exceptions\TimeNotSetException;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Calendars\CalendarShiftsEditRequest;
 use App\Http\Requests\Calendars\CalendarShiftsUpdateRequest;
 use App\Models\Calendar;
@@ -23,7 +23,7 @@ class CalendarShiftsController extends Controller
         $calendars = Calendar::all(['id', 'name'])->toArray();
 
         foreach ($calendars as &$cal) {
-            $cal['route'] = route('calendars.calendar-shifts.edit', $cal['id']);
+            $cal['route'] = route('admin.calendars.calendar-shifts.edit', $cal['id']);
         }
 
         return view('calendars.calendar-shifts-edit', compact('calendars', 'calendar'));
@@ -56,7 +56,6 @@ class CalendarShiftsController extends Controller
     }
 
     /**
-     * @throws TimeNotSetException
      * @throws EndLessThanOrEqualToStartException
      * @throws HoursUsedException
      */

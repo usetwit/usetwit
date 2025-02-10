@@ -108,7 +108,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model profile image.
+     * Determine whether the user can override a user's password.
      */
     public function overridePassword(User $user): bool
     {
@@ -144,7 +144,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model profile image.
+     * Determine whether the user can update the model protected info.
      */
     public function updateProtectedInfo(User $user): bool
     {
@@ -152,7 +152,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model profile image.
+     * Determine whether the user can update the model address.
      */
     public function updateAddress(User $user, User $model): bool
     {

@@ -1,11 +1,11 @@
-@extends('app.layout')
+@extends('admin.layout')
 
 @section('heading')
     Create New User
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('users.create') }}
+    {{ Breadcrumbs::render('admin.users.create') }}
 @endsection
 
 @section('javascript')

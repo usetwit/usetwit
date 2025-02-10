@@ -1,11 +1,11 @@
-@extends('app.layout')
+@extends('admin.layout')
 
 @section('heading')
     Create New Sales Order
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('sales-orders.create') }}
+    {{ Breadcrumbs::render('admin.sales-orders.create') }}
 @endsection
 
 @section('javascript')
@@ -16,9 +16,9 @@
 
 @section('content')
     <div id="app">
-        <sales-orders-create route-store="{{ route('sales-orders.store') }}"
-                             route-stock-bom-search="{{ route('sales-orders.stock-bom-search') }}"
-                             route-redirect="{{ route('sales-orders.index') }}"
+        <sales-orders-create route-store="{{ route('admin.sales-orders.store') }}"
+                             route-stock-bom-search="{{ route('admin.sales-orders.stock-bom-search') }}"
+                             route-redirect="{{ route('admin.sales-orders.index') }}"
                              :date-settings="{{ Js::from($dateSettings) }}"
         ></sales-orders-create>
     </div>

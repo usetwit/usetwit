@@ -22,6 +22,8 @@ const handleClick = () => {
 </template>
 
 <style scoped lang="postcss">
+@reference "../../css/app.css";
+
 .active {
     @apply border-x border-b border-t-4 border-x-gray-200 border-b-white text-sky-600 bg-white;
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\SalesOrders\SalesOrdersStoreRequest;
 use App\Http\Requests\SalesOrders\StockBomSearchByNameRequest;
 use App\Models\Bom;

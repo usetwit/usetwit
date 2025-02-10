@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\UsersCheckEmployeeIdRequest;
 use App\Http\Requests\Users\UsersCheckUsernameRequest;
 use App\Http\Requests\Users\UsersIndexGetUsersRequest;
@@ -9,7 +10,6 @@ use App\Http\Requests\Users\UsersStoreRequest;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -27,7 +27,7 @@ class UsersController extends Controller
         $dateSettings = $settings->dateSettings();
         $paginationSettings = $settings->paginationSettings();
 
-        $routeGetUsers = route('users.get-users');
+        $routeGetUsers = route('admin.users.get-users');
 
         return view('users.users-index', compact('paginationSettings', 'routeGetUsers', 'dateSettings'));
     }
@@ -73,7 +73,7 @@ class UsersController extends Controller
         $users = $query->getCollection()->map(function ($user) {
 
             return array_merge((array) $user, [
-                'edit_user_route' => route('users.edit', $user->slug),
+                'edit_user_route' => route('admin.users.edit', $user->slug),
                 'created_at' => Carbon::parse($user->created_at)->format('Y-m-d'),
                 'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d'),
                 'joined_at' => $user->joined_at === null ? null : Carbon::parse($user->joined_at)->format('Y-m-d'),
@@ -101,17 +101,17 @@ class UsersController extends Controller
         ];
 
         $routes = [
-            'delete' => route('users.destroy', $user),
-            'restore' => route('users.restore', $user),
-            'protected_info' => route('users.update.protected-info', $user),
-            'address' => route('users.update.address', $user),
-            'personal_profile' => route('users.update.personal-profile', $user),
-            'company_profile' => route('users.update.company-profile', $user),
-            'password' => route('users.update.password', $user),
-            'username' => route('users.update.username', $user),
-            'employee_id' => route('users.update.employee-id', $user),
-            'check_employee_id' => route('users.check-employee-id'),
-            'check_username'=>route('users.check-username'),
+            'delete' => route('admin.users.destroy', $user),
+            'restore' => route('admin.users.restore', $user),
+            'protected_info' => route('admin.users.update.protected-info', $user),
+            'address' => route('admin.users.update.address', $user),
+            'personal_profile' => route('admin.users.update.personal-profile', $user),
+            'company_profile' => route('admin.users.update.company-profile', $user),
+            'password' => route('admin.users.update.password', $user),
+            'username' => route('admin.users.update.username', $user),
+            'employee_id' => route('admin.users.update.employee-id', $user),
+            'check_employee_id' => route('admin.users.check-employee-id'),
+            'check_username'=>route('admin.users.check-username'),
         ];
 
         $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
@@ -133,15 +133,18 @@ class UsersController extends Controller
 
     public function create(GeneralSettings $settings)
     {
-        $routeCheckUsername = route('users.check-username');
-        $routeStore = route('users.store');
-        $routeRedirect = route('users.index');
+        $routeCheckUsername = route('admin.users.check-username');
+        $routeStore = route('admin.users.store');
+        $routeRedirect = route('admin.users.index');
         $dateSettings = $settings->dateSettings();
 
         $maxIdPlusOne = User::max('id') + 1;
         $paddedId = str_pad($maxIdPlusOne, $settings->employee_id_padding, '0', STR_PAD_LEFT);
         $suggestedId = $settings->employee_id_prefix . $paddedId;
-        $roles = Role::all(['id', 'name']);
+        $roles = Role::all(['id', 'name'])->map(function ($role) {
+            $role->name = ucwords($role->name);
+            return $role;
+        });
         $selectedCountry = $settings->default_country;
         $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
             return ['code' => $code, 'name' => $name];
@@ -208,7 +211,7 @@ class UsersController extends Controller
         $role = Role::find($request->input('role_id'));
         $newUser->syncRoles($role);
 
-        return ['message' => 'User Created', 'redirect' => route('users.edit', $newUser)];
+        return ['message' => 'User Created', 'redirect' => route('admin.users.edit', $newUser)];
     }
 
     public function destroy(User $user)

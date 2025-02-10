@@ -14,7 +14,9 @@ const props = defineProps({
 
 const makeMenuVisible = () => {
     store.isMenuVisible = true
-    document.body.classList.add('overflow-hidden')
+    document.documentElement.classList.add('overflow-hidden');
+    document.body.classList.add('overflow-hidden');
+
 }
 </script>
 

@@ -25,7 +25,7 @@ const accept = () => {
 <template>
     <Teleport to="body">
         <div @click.self="isVisible = false"
-             class="bg-opacity-50 bg-gray-900 z-950 w-full h-full left-0 top-0 fixed flex items-center justify-center"
+             class="opacity-50 bg-gray-900 z-950 w-full h-full left-0 top-0 fixed flex items-center justify-center"
         >
             <div
                 class="rounded-lg bg-white shadow-sm border-gray-200 border flex flex-col overflow-y-auto p-2 md:p-4 max-w-full max-h-full md:max-w-lg md:max-h-[90vh]">

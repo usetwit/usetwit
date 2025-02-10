@@ -30,12 +30,12 @@ const items = ref([
             {
                 type: 'link',
                 text: 'Company Settings',
-                route: 'company.index',
+                route: 'admin.company.edit',
             },
             {
                 type: 'link',
                 text: 'Application Settings',
-                route: 'application.index',
+                route: 'admin.application.index',
             },
         ],
     },
@@ -47,12 +47,12 @@ const items = ref([
             {
                 type: 'link',
                 text: 'Create Calendar',
-                route: 'calendars.create',
+                route: 'admin.calendars.create',
             },
             {
                 type: 'link',
                 text: 'Edit Calendars',
-                route: 'calendars.index',
+                route: 'admin.calendars.index',
             },
         ],
     },
@@ -68,12 +68,12 @@ const items = ref([
             {
                 type: 'link',
                 text: 'All Users',
-                route: 'users.index'
+                route: 'admin.users.index'
             },
             {
                 type: 'link',
                 text: 'Create User',
-                route: 'users.create'
+                route: 'admin.users.create'
             },
         ],
     },
@@ -85,12 +85,12 @@ const items = ref([
             {
                 type: 'link',
                 text: 'All Sales Orders',
-                route: 'sales-orders.index'
+                route: 'admin.sales-orders.index'
             },
             {
                 type: 'link',
                 text: 'Create Sales Order',
-                route: 'sales-orders.create'
+                route: 'admin.sales-orders.create'
             },
         ],
     },
@@ -110,6 +110,7 @@ const store = useMenuStore()
 
 const closeMenu = () => {
     store.isMenuVisible = false
+    document.documentElement.classList.remove('overflow-hidden');
     document.body.classList.remove('overflow-hidden')
 }
 
@@ -127,7 +128,7 @@ window.addEventListener('resize', checkScreenSize)
 
 <template>
     <div v-if="store.isMenuVisible && !store.isLargeScreen"
-         class="bg-opacity-50 bg-gray-900 z-150 w-full h-full left-0 top-0 fixed"
+         class="opacity-50 bg-gray-900 z-150 w-full h-full left-0 top-0 fixed"
          @click="closeMenu"
     ></div>
 

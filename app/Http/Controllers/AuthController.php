@@ -22,11 +22,18 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $request->session()->flash('success', 'Login successful!');
 
-            return redirect()->intended(route('home'));
+            $user = auth()->user();
+
+            if ($user->hasRole('customer')) {
+                return redirect()->intended(route('home'));
+            } else {
+                return redirect()->intended(route('admin.home'));
+            }
         }
 
         return redirect()->back()->withErrors(['username' => 'Incorrect username or password.']);
     }
+
 
     public function logout(): RedirectResponse
     {

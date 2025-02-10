@@ -24,7 +24,7 @@ class CalendarShiftsFeatureTest extends TestCase
         $calendar = Calendar::factory()
                             ->create();
 
-        $response = $this->get(route('calendars.calendar-shifts.edit', $calendar));
+        $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
 
         $response->assertStatus(200)
                  ->assertSee($calendar->name);
@@ -37,7 +37,7 @@ class CalendarShiftsFeatureTest extends TestCase
         $calendar = Calendar::factory()
                             ->create();
 
-        $response = $this->get(route('calendars.calendar-shifts.edit', $calendar));
+        $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
 
         $response->assertStatus(403);
     }
@@ -47,7 +47,7 @@ class CalendarShiftsFeatureTest extends TestCase
         $calendar = Calendar::factory()
                             ->create();
 
-        $response = $this->get(route('calendars.calendar-shifts.edit', $calendar));
+        $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
 
         $response->assertStatus(302);
     }
@@ -63,7 +63,7 @@ class CalendarShiftsFeatureTest extends TestCase
             'year' => $calendarShift->shift_date->year,
         ];
 
-        $response = $this->post(route('calendars.calendar-shifts.get-calendar-shifts', $calendarShift->calendar_id),
+        $response = $this->post(route('admin.calendars.calendar-shifts.get-calendar-shifts', $calendarShift->calendar_id),
             $postData);
 
         $response->assertStatus(200);
@@ -104,7 +104,7 @@ class CalendarShiftsFeatureTest extends TestCase
             'dates' => [$dates],
         ];
 
-        $response = $this->patch(route('calendars.calendar-shifts.update', $calendar), $updateData);
+        $response = $this->patch(route('admin.calendars.calendar-shifts.update', $calendar), $updateData);
 
         $response->assertStatus(200);
 
@@ -140,7 +140,7 @@ class CalendarShiftsFeatureTest extends TestCase
             'dates' => [$dates],
         ];
 
-        $response = $this->patch(route('calendars.calendar-shifts.update', $calendar), $updateData);
+        $response = $this->patch(route('admin.calendars.calendar-shifts.update', $calendar), $updateData);
 
         $response->assertStatus(200);
 
@@ -183,7 +183,7 @@ class CalendarShiftsFeatureTest extends TestCase
             'dates' => [$dates],
         ];
 
-        $response = $this->patch(route('calendars.calendar-shifts.update', $calendarShift->calendar_id), $updateData);
+        $response = $this->patch(route('admin.calendars.calendar-shifts.update', $calendarShift->calendar_id), $updateData);
 
         $response->assertStatus(200);
 

@@ -1,4 +1,4 @@
-@extends('app.layout')
+@extends('admin.layout')
 
 @section('heading')
     Edit User: {{ $user->full_name }}
@@ -10,7 +10,7 @@
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('users.edit', $user) }}
+    {{ Breadcrumbs::render('admin.users.edit', $user) }}
 @endsection
 
 @section('javascript')

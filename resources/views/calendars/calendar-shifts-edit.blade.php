@@ -1,11 +1,11 @@
-@extends('app.layout')
+@extends('admin.layout')
 
 @section('heading')
     Edit Calendar: {{ $calendar->name }}
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('calendars.calendar-shifts.edit', $calendar) }}
+    {{ Breadcrumbs::render('admin.calendars.calendar-shifts.edit', $calendar) }}
 @endsection
 
 @section('javascript')
@@ -16,8 +16,8 @@
 
 @section('content')
     <div id="app">
-        <calendar-shifts-edit route="{{ route('calendars.calendar-shifts.get-calendar-shifts', $calendar) }}"
-                         route-update="{{ route('calendars.calendar-shifts.update', $calendar) }}"
+        <calendar-shifts-edit route="{{ route('admin.calendars.calendar-shifts.get-calendar-shifts', $calendar) }}"
+                         route-update="{{ route('admin.calendars.calendar-shifts.update', $calendar) }}"
                          :calendar-list="{{ Js::from($calendars) }}"
         ></calendar-shifts-edit>
     </div>

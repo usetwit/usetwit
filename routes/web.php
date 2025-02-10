@@ -9,10 +9,12 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['guest']],
 });
 
 Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], function () {
-    Route::get('', ['uses' => 'App\Http\Controllers\HomeController@index', 'as' => 'home']);
-
     Route::post('logout', ['uses' => 'AuthController@logout', 'as' => 'auth.logout']);
+});
 
+/* Admin */
+Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 'middleware' => ['auth'], 'as' => 'admin.'], function () {
+    Route::get('', ['uses' => 'HomeController@index', 'as' => 'home']);
 
     /* Application Settings */
     Route::group(['prefix' => 'application', 'as' => 'application.'], function () {
@@ -24,7 +26,6 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
     /* Company */
     Route::group(['prefix' => 'company', 'as' => 'company.', 'middleware' => ['permission:company.update']],
         function () {
-            Route::get('', ['uses' => 'CompanyController@index', 'as' => 'index']);
             Route::get('edit', ['uses' => 'CompanyController@edit', 'as' => 'edit']);
             Route::patch('', ['uses' => 'CompanyController@update', 'as' => 'update']);
         });

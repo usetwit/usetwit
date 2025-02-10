@@ -1,11 +1,11 @@
-@extends('app.layout')
+@extends('admin.layout')
 
 @section('heading')
     All Users
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('users.index') }}
+    {{ Breadcrumbs::render('admin.users.index') }}
 @endsection
 
 @section('javascript')
