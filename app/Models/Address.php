@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Address extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -17,7 +18,7 @@ class Address extends Model
         'default_address' => 'boolean',
     ];
 
-    protected array $validAddressables = [
+    public array $validAddressables = [
         Company::class,
         Customer::class,
         User::class,
@@ -26,10 +27,5 @@ class Address extends Model
     public function addressable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function getValidAddressables(): array
-    {
-        return $this->validAddressables;
     }
 }

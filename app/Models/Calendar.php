@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Calendar extends Model
 {
@@ -13,5 +14,15 @@ class Calendar extends Model
     public function calendarShifts(): HasMany
     {
         return $this->hasMany(CalendarShift::class);
+    }
+
+    public array $validCalendarables = [
+        Location::class,
+        Shift::class,
+    ];
+
+    public function calendarable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

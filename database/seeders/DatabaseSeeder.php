@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             CalendarSeeder::class,
             BomSeeder::class,
             StockItemSeeder::class,
+            LocationsSeeder::class,
         ]);
     }
 }

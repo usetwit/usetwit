@@ -3,9 +3,10 @@
 namespace Database\Factories;
 
 use App\Exceptions\EndLessThanOrEqualToStartException;
-use App\Exceptions\KeyMismatchException;
 use App\Exceptions\HoursUsedException;
-use App\Exceptions\TimeNotSetException;
+use App\Exceptions\IncorrectTimeFormatException;
+use App\Exceptions\KeyMismatchException;
+use App\Exceptions\StartLessThanOrEqualToPrevEndException;
 use App\Models\Calendar;
 use App\Models\CalendarShift;
 use App\Services\CalendarService;
@@ -17,10 +18,11 @@ class CalendarShiftFactory extends Factory
     protected $model = CalendarShift::class;
 
     /**
-     * @throws KeyMismatchException
-     * @throws TimeNotSetException
      * @throws EndLessThanOrEqualToStartException
      * @throws HoursUsedException
+     * @throws KeyMismatchException
+     * @throws IncorrectTimeFormatException
+     * @throws StartLessThanOrEqualToPrevEndException
      */
     public function definition(): array
     {
@@ -36,7 +38,6 @@ class CalendarShiftFactory extends Factory
             'shift_date' => $shiftDate,
         ], $times, $durations);
     }
-
 
     private function generateValidShiftTimes(): array
     {

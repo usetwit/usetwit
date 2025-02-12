@@ -83,7 +83,7 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     });
 
     /* Opening Hours */
-    Route::prefix('opening-hours')->name('opening-hours.')->middleware('permission:opening-hours.update')->group(function () {
+    Route::prefix('locations')->name('locations.')->middleware('permission:locations.update')->group(function () {
         // Add routes here if needed
     });
 });

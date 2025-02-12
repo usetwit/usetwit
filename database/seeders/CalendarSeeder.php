@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Calendar;
+use App\Models\Shift;
 use Illuminate\Database\Seeder;
 
 class CalendarSeeder extends Seeder
@@ -12,13 +13,10 @@ class CalendarSeeder extends Seeder
      */
     public function run(): void
     {
-        Calendar::insert([
-            [
-                'name' => '24 Hours',
-            ],
-            [
-                'name' => 'RGB Shifts',
-            ],
-        ]);
+        $shift1 = Shift::factory()->create(['name' => '24 Hours']);
+        $shift1->calendar()->create();
+
+        $shift2 = Shift::factory()->create(['name' => 'RGB']);
+        $shift2->calendar()->create();
     }
 }

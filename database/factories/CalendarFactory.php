@@ -11,8 +11,6 @@ class CalendarFactory extends Factory
 
     public function definition(): array
     {
-        return [
-            'name' => $this->faker->name,
-        ];
+        return [];
     }
 }

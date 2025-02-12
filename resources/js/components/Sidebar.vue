@@ -19,6 +19,18 @@ const props = defineProps({
 
 const items = ref([
     {
+        text: 'Locations',
+        icon: 'pi pi-map-marker',
+        expanded: false,
+        links: [
+            {
+                type: 'link',
+                text: 'All Locations',
+                route: 'admin.application.index',
+            },
+        ],
+    },
+    {
         text: 'Settings',
         icon: 'pi pi-cog',
         expanded: false,
@@ -51,7 +63,7 @@ const items = ref([
             },
             {
                 type: 'link',
-                text: 'Edit Calendars',
+                text: 'All Calendars',
                 route: 'admin.calendars.index',
             },
         ],
@@ -117,7 +129,7 @@ const closeMenu = () => {
 const checkScreenSize = () => {
     store.isLargeScreen = window.innerWidth >= 1024
 
-    if(store.isLargeScreen) {
+    if (store.isLargeScreen) {
         closeMenu()
     }
 }
