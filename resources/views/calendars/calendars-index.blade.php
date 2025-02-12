@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('heading')
-    Edit Calendar
+    All Calendars
 @endsection
 
 @section('breadcrumbs')

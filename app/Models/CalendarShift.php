@@ -6,7 +6,6 @@ use App\Casts\TimeCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 class CalendarShift extends Model
 {
@@ -14,7 +13,7 @@ class CalendarShift extends Model
 
     public $casts = [
         'shift_date' => 'date',
-        'nwd' => 'boolean'
+        'nwd' => 'boolean',
     ];
 
     public $timestamps = false;

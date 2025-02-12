@@ -16,8 +16,8 @@ class AddressFactory extends Factory
 
     public function definition(): array
     {
-        $addressableTypes = Address::getValidAddressables();
-        $addressableType = Arr::random($addressableTypes);
+        $address = app(Address::class);
+        $addressableType = Arr::random($address->validAddressables);
 
         return [
             'address_line_1' => $this->faker->streetAddress,

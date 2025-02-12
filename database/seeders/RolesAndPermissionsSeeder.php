@@ -35,6 +35,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'sales-orders.delete']);
         Permission::create(['name' => 'calendars.update']);
         Permission::create(['name' => 'company.update']);
+        Permission::create(['name' => 'locations.update']);
 
         Role::create(['name' => 'admin'])->givePermissionTo(Permission::all());
         Role::create(['name' => 'customer']);

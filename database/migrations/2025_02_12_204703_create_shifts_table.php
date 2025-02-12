@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('calendars', function (Blueprint $table) {
+        Schema::create('shifts', function (Blueprint $table) {
             $table->id();
-            $table->morphs('calendarable');
-            $table->index(['calendarable_id', 'calendarable_type'], 'model_has_calendars_calendarable_id_calendarable_type_index');
+            $table->string('name')->unique();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('calendars');
+        Schema::dropIfExists('shifts');
     }
 };
