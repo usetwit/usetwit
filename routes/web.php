@@ -88,7 +88,7 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         Route::get('', 'index')->name('index')->can('viewAny', Location::class);
         Route::get('create', 'create')->name('create')->can('create', Location::class);
         Route::patch('edit/{location}', 'update')->name('update')->can('update', Location::class);
-        Route::post('{location}', 'getLocations')->name('get-locations')->can('viewAny', Location::class);
+        Route::post('', 'getLocations')->name('get-locations')->can('viewAny', Location::class);
         Route::get('{location}', 'edit')->name('edit')->can('update', Location::class);
     });
 });

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Requests\Users\UsersStoreRequest;
+use App\Http\Requests\Users\StoreRequest;
 use App\Models\User;
 use App\Rules\HasMultipleConstraints;
 use App\Rules\PasswordStrength;
@@ -36,7 +36,7 @@ class UsersStoreRequestTest extends TestCase
 
     protected function validate(array $data)
     {
-        $request = new UsersStoreRequest();
+        $request = new StoreRequest();
         return Validator::make($data, $request->rules());
     }
 

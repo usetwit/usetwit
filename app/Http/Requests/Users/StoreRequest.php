@@ -8,14 +8,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Symfony\Component\Intl\Countries;
 
-class UsersStoreRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user() && $this->user()->can('users.create');
+        return $this->user()->can('users.create');
     }
 
     /**

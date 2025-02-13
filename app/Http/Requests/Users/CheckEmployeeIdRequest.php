@@ -6,14 +6,14 @@ use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UsersCheckUsernameRequest extends FormRequest
+class CheckEmployeeIdRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', User::class) || $this->user()->can('updateUsername', User::class);
+        return $this->user()->can('create', User::class) || $this->user()->can('updateEmployeeId', User::class);
     }
 
     /**
@@ -24,7 +24,7 @@ class UsersCheckUsernameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|string|max:85',
+            'employee_id' => 'required|string|max:255',
         ];
     }
 }

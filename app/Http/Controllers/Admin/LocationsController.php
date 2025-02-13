@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Users\UsersIndexGetUsersRequest;
+use App\Http\Requests\Locations\GetLocationsRequest;
 use App\Models\Location;
-use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -30,12 +30,13 @@ class LocationsController extends Controller
         return view('locations.locations-index', compact('paginationSettings', 'routeGetLocations', 'dateSettings'));
     }
 
-    public function getLocations(LocationsIndexGetLocationsRequest $request, FilterService $service, GeneralSettings $settings)
+    public function getLocations(GetLocationsRequest $request, FilterService $service, GeneralSettings $settings): JsonResponse
     {
         $perPage = $request->input('per_page', $settings->per_page_default);
         $filters = $request->input('filters', []);
         $sort = $request->input('sort', []);
         $visible = $request->input('visible', []);
+        $substitutions = ['address_id' => 'address.id', 'id' => 'users.id'];
 
         $substitutions = ['id' => 'locations.id'];
         $global = [
@@ -43,33 +44,47 @@ class LocationsController extends Controller
             'address_line_1',
         ];
 
-        $cols = Cache::remember('location_columns', 24 * 60 * 60 * 7, function () {
-            $cols = Schema::getColumnListing('locations');
+        //        $location_cols = Cache::remember('location_columns', 24 * 60 * 60 * 7, function () {
+        $cols = Schema::getColumnListing('locations');
+        $cols = array_diff($cols, ['description']);
 
-            return $cols;
-        });
+        $location_cols = array_map(fn ($value) => 'locations.'.$value, $cols);
+        //            return array_map(fn ($value) => 'locations.'.$value, $cols);
+        //        });
 
-        $query = DB::table('locations')->select($cols)->leftJoin('addresses', function (Builder $join) {
-            $join->on('addresses.addressable_id', 'location.id')->where('addresses.addressable_type', Location::class);
-        });
+        //        $address_cols = Cache::remember('address_columns', 24 * 60 * 60 * 7, function () {
+        $cols = Schema::getColumnListing('addresses');
+        $cols = array_diff($cols, ['id']);
+
+        $address_cols = array_map(fn ($value) => 'addresses.'.$value, $cols);
+
+        //            return array_map(fn ($value) => 'addresses.'.$value, $cols);
+        //        });
+
+        $cols = array_merge($location_cols, $address_cols);
+
+        $query = DB::table('locations')
+            ->select($cols)
+            ->leftJoin('addresses', function (Builder $join) {
+                $join->on('addresses.addressable_id', 'locations.id')->where('addresses.addressable_type', Location::class);
+            });
 
         $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
-            ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
+            ->filter($query, $filters, ['global'], $substitutions)
+            ->sort($query, $sort, ['global'], $substitutions);
 
         $query = $query->paginate($perPage);
         $total = $query->total();
 
         $locations = $query->getCollection()->map(function ($location) {
-
             return array_merge((array) $location, [
                 'edit_location_route' => route('admin.locations.edit', $location->slug),
                 'created_at' => Carbon::parse($location->created_at)->format('Y-m-d'),
                 'updated_at' => Carbon::parse($location->updated_at)->format('Y-m-d'),
-                'joined_at' => $location->joined_at === null ? null : Carbon::parse($location->joined_at)->format('Y-m-d'),
             ]);
         });
 
-        return compact('locations', 'total');
+        return response()->json(compact('locations', 'total'));
     }
 
     /**

@@ -1,4 +1,1 @@
-change format acceptable for new user telephone numbers to include . and - on users store view
-Zxcvbn - validate password strengths via setting on backend
-add filter to select
-Add check employee ID to user create
+update getUsers in users controller to use Arr::prependKeysWith()

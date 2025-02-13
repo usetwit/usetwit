@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Exceptions\FilterServiceGetTypeInvalidException;
 use App\Rules\HasMultipleConstraints;
+use App\Settings\GeneralSettings;
+use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Database\Query\Builder;
 
 class FilterService
 {
@@ -51,6 +53,8 @@ class FilterService
 
     protected array $validTypes = ['string', 'number', 'date', 'boolean'];
 
+    public function __construct(private GeneralSettings $settings) {}
+
     /**
      * @throws FilterServiceGetTypeInvalidException
      */
@@ -78,10 +82,6 @@ class FilterService
     }
 
     /**
-     * @param array  $fields
-     * @param string $type
-     *
-     * @return array
      * @throws FilterServiceGetTypeInvalidException
      */
     private function makeValidationRulesForField(array $fields, string $type): array
@@ -125,12 +125,7 @@ class FilterService
         return $rules;
     }
 
-
     /**
-     * @param bool   $asString
-     * @param string $separator
-     *
-     * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
     public function getValidDateMatchModes(bool $asString = false, string $separator = ','): array|string
@@ -139,10 +134,6 @@ class FilterService
     }
 
     /**
-     * @param bool   $asString
-     * @param string $separator
-     *
-     * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
     public function getValidStringMatchModes(bool $asString = false, string $separator = ','): array|string
@@ -151,10 +142,6 @@ class FilterService
     }
 
     /**
-     * @param bool   $asString
-     * @param string $separator
-     *
-     * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
     public function getValidNumberMatchModes(bool $asString = false, string $separator = ','): array|string
@@ -163,10 +150,6 @@ class FilterService
     }
 
     /**
-     * @param bool   $asString
-     * @param string $separator
-     *
-     * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
     public function getValidBooleanMatchModes(bool $asString = false, string $separator = ','): array|string
@@ -179,17 +162,12 @@ class FilterService
      */
     private function validateType(string $type): void
     {
-        if (!in_array($type, $this->validTypes)) {
+        if (! in_array($type, $this->validTypes)) {
             throw new FilterServiceGetTypeInvalidException("Invalid type '$type' provided");
         }
     }
 
     /**
-     * @param string $type
-     * @param bool   $asString
-     * @param string $separator
-     *
-     * @return array|string
      * @throws FilterServiceGetTypeInvalidException
      */
     public function getMatchModes(string $type, bool $asString = false, string $separator = ','): array|string
@@ -199,7 +177,7 @@ class FilterService
         $type = ucwords(strtolower($type));
         $type = "valid{$type}MatchModes";
 
-        if (!$asString) {
+        if (! $asString) {
             return $this->$type;
         }
 
@@ -207,13 +185,6 @@ class FilterService
     }
 
     /**
-     * @param Builder    $query
-     * @param string     $field
-     * @param string|int $value
-     * @param string     $matchMode
-     * @param string     $operator
-     *
-     * @return void
      * @throws FilterServiceGetTypeInvalidException
      */
     public function queryFilter(Builder $query, string $field, string|int $value, string $matchMode, string $operator): void
@@ -262,14 +233,6 @@ class FilterService
         }
     }
 
-    /**
-     * @param Builder $query
-     * @param array   $filters
-     * @param array   $exceptions
-     * @param array   $substitutes
-     *
-     * @return FilterService
-     */
     public function filter(Builder $query, array $filters, array $exceptions = [], array $substitutes = []): FilterService
     {
         foreach ($filters as $field => $props) {
@@ -296,15 +259,6 @@ class FilterService
         return $this;
     }
 
-    /**
-     * @param Builder     $query
-     * @param string|null $value
-     * @param array       $global
-     * @param array       $visible
-     * @param array       $substitutions
-     *
-     * @return FilterService
-     */
     public function globalFilter(Builder $query, ?string $value, array $global = [], array $visible = [], array $substitutions = []): FilterService
     {
         if ($value === '' || $value === null) {
@@ -328,14 +282,6 @@ class FilterService
         return $this;
     }
 
-    /**
-     * @param Builder $query
-     * @param array   $sorts
-     * @param array   $exceptions
-     * @param array   $substitutes
-     *
-     * @return FilterService
-     */
     public function sort(Builder $query, array $sorts, array $exceptions = [], array $substitutes = []): FilterService
     {
         foreach ($sorts as $sort) {
@@ -351,11 +297,6 @@ class FilterService
         return $this;
     }
 
-    /**
-     * @param array $fields
-     *
-     * @return array
-     */
     public function makeValidationSortRules(array $fields): array
     {
         return [
@@ -365,6 +306,41 @@ class FilterService
                 Rule::in($fields),
             ],
             'sort.*.order' => 'required_with:sort.*.field|in:asc,desc',
+        ];
+    }
+
+    /**
+     * @throws FilterServiceGetTypeInvalidException
+     */
+    public function makeValidationRules(array $filterRules): array
+    {
+
+        $filters = $this->makeValidationFilterRules($filterRules);
+        $sort = $this->makeValidationSortRules(array_diff(Arr::flatten($filterRules), ['global']));
+        $perPage = $this->makePerPageRules();
+        $visible = $this->makeVisibleRules($filterRules);
+
+        return array_merge($filters, $sort, $perPage, $visible);
+    }
+
+    public function makePerPageRules(): array
+    {
+        return [
+            'per_page' => [
+                'integer',
+                Rule::in($this->settings->per_page_options),
+            ],
+        ];
+    }
+
+    public function makeVisibleRules(array $filterRules): array
+    {
+        return [
+            'visible' => 'array',
+            'visible.*' => [
+                'string',
+                Rule::in(array_diff(Arr::flatten($filterRules), ['global'])),
+            ],
         ];
     }
 }

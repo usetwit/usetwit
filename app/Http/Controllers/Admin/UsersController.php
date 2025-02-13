@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Users\UsersCheckEmployeeIdRequest;
-use App\Http\Requests\Users\UsersCheckUsernameRequest;
-use App\Http\Requests\Users\UsersIndexGetUsersRequest;
-use App\Http\Requests\Users\UsersStoreRequest;
+use App\Http\Requests\Users\CheckEmployeeIdRequest;
+use App\Http\Requests\Users\CheckUsernameRequest;
+use App\Http\Requests\Users\GetUsersRequest;
+use App\Http\Requests\Users\StoreRequest;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
@@ -32,7 +32,7 @@ class UsersController extends Controller
         return view('users.users-index', compact('paginationSettings', 'routeGetUsers', 'dateSettings'));
     }
 
-    public function getUsers(UsersIndexGetUsersRequest $request, FilterService $service, GeneralSettings $settings)
+    public function getUsers(GetUsersRequest $request, FilterService $service, GeneralSettings $settings)
     {
         $perPage = $request->input('per_page', $settings->per_page_default);
         $filters = $request->input('filters', []);
@@ -156,7 +156,7 @@ class UsersController extends Controller
                 'countries', 'selectedCountry'));
     }
 
-    public function checkUsername(UsersCheckUsernameRequest $request)
+    public function checkUsername(CheckUsernameRequest $request)
     {
         $username = $request->input('username');
 
@@ -167,7 +167,7 @@ class UsersController extends Controller
         return User::withTrashed()->where('username', $username)->get(['username']);
     }
 
-    public function checkEmployeeId(UsersCheckEmployeeIdRequest $request)
+    public function checkEmployeeId(CheckEmployeeIdRequest $request)
     {
         $employee_id = $request->input('employee_id');
 
@@ -178,7 +178,7 @@ class UsersController extends Controller
         return User::withTrashed()->where('employee_id', $employee_id)->get(['employee_id']);
     }
 
-    public function store(UsersStoreRequest $request)
+    public function store(StoreRequest $request)
     {
         $userFields = $request->only([
             'username',

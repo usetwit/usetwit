@@ -16,26 +16,11 @@ use Spatie\Sluggable\SlugOptions;
 
 class User extends Authenticatable implements Authorizable
 {
-    use HasFactory, Notifiable, HasRoles, SoftDeletes, HasSlug;
-
-    /**
-     * Get the options for generating the slug.
-     */
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()->generateSlugsFrom(['first_name', 'middle_names', 'last_name'])
-                          ->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(50);
-    }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
+    use HasFactory;
+    use HasRoles;
+    use HasSlug;
+    use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -52,6 +37,25 @@ class User extends Authenticatable implements Authorizable
      * @var array<int, string>
      */
     protected $guarded = [];
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(['first_name', 'middle_names', 'last_name'])
+            ->saveSlugsTo('slug')
+            ->slugsShouldBeNoLongerThan(50);
+    }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     protected static function booted(): void
     {
@@ -89,25 +93,16 @@ class User extends Authenticatable implements Authorizable
         ];
     }
 
-    /**
-     * @return MorphOne
-     */
     public function address(): MorphOne
     {
         return $this->morphOne(Address::class, 'addressable');
     }
 
-    /**
-     * @return MorphMany
-     */
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable');
     }
 
-    /**
-     * @return MorphMany
-     */
     public function profileImages(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable')->whereType('user_profile');

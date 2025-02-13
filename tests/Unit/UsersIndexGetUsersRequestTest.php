@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Exceptions\FilterServiceGetTypeInvalidException;
-use App\Http\Requests\Users\UsersIndexGetUsersRequest;
+use App\Http\Requests\Users\GetUsersRequest;
 use App\Rules\HasMultipleConstraints;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
@@ -23,7 +23,7 @@ class UsersIndexGetUsersRequestTest extends TestCase
         $settings = $this->createMock(GeneralSettings::class);
         $settings->per_page_options = [10, 25, 50];
 
-        $request = new UsersIndexGetUsersRequest();
+        $request = new GetUsersRequest();
 
         return Validator::make($data, $request->rules($filterService, $settings));
     }
