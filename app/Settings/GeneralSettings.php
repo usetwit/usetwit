@@ -7,33 +7,40 @@ use Spatie\LaravelSettings\Settings;
 class GeneralSettings extends Settings
 {
     public string $locale;
+
     public array $locales;
+
     public string $currency;
+
     public array $currencies;
+
     public int $employee_id_padding;
+
     public string $employee_id_prefix;
+
     public string $default_country;
+
     public int $per_page_default;
+
     public array $per_page_options;
+
     public array $date_validation_separators;
+
     public array $date_validation_regex;
+
     public string $date_validation_separator_default;
+
     public string $date_validation_default;
+
     public int $password_strength;
 
-    /**
-     * @return string
-     */
     public static function group(): string
     {
         return 'general';
     }
 
-
     /**
      * Replace hyphens with default separator
-     *
-     * @return string
      */
     public function dateFormatForDisplay(): string
     {
@@ -42,9 +49,6 @@ class GeneralSettings extends Settings
         return strtolower($format);
     }
 
-    /**
-     * @return array
-     */
     public function dateFormats(): array
     {
         return array_keys(array_change_key_case($this->date_validation_regex));

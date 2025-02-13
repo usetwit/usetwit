@@ -9,10 +9,6 @@ class AdminSidebarComposer
 {
     /**
      * Bind data to the view.
-     *
-     * @param View $view
-     *
-     * @return void
      */
     public function compose(View $view): void
     {
@@ -20,29 +16,35 @@ class AdminSidebarComposer
             'admin.calendars.index' => [
                 'admin.calendars.index',
                 'admin.calendars.show',
-                'admin.calendars.calendar-shifts.edit'
+                'admin.calendars.calendar-shifts.edit',
             ],
             'admin.calendars.create' => [
-                'admin.calendars.create'
+                'admin.calendars.create',
             ],
             'admin.sales-orders.index' => [
-                'admin.sales-orders.index'
+                'admin.sales-orders.index',
             ],
             'admin.sales-orders.create' => [
-                'admin.sales-orders.create'
+                'admin.sales-orders.create',
             ],
             'admin.company.edit' => [
-                'admin.company.edit'
+                'admin.company.edit',
             ],
             'admin.application.index' => [
                 'admin.application.index',
                 'admin.application.edit',
             ],
             'admin.users.index' => [
-                'admin.users.index'
+                'admin.users.index',
             ],
             'admin.users.create' => [
-                'admin.users.create'
+                'admin.users.create',
+            ],
+            'admin.locations.index' => [
+                'admin.locations.index',
+            ],
+            'admin.locations.create' => [
+                'admin.locations.create',
             ],
         ];
 

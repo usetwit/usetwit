@@ -55,7 +55,7 @@ class UsersController extends Controller
         $cols = Cache::remember('user_columns', 24 * 60 * 60 * 7, function () {
             $cols = Schema::getColumnListing('users');
             $cols = array_diff($cols, ['password', 'remember_token']);
-            $cols = array_map(fn($value) => 'users.' . $value, $cols);
+            $cols = array_map(fn ($value) => 'users.'.$value, $cols);
 
             return array_merge($cols, ['roles.name as role_name']);
         });
@@ -65,7 +65,7 @@ class UsersController extends Controller
         })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id');
 
         $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
-                ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
+            ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
 
         $query = $query->paginate($perPage);
         $total = $query->total();
@@ -111,7 +111,7 @@ class UsersController extends Controller
             'username' => route('admin.users.update.username', $user),
             'employee_id' => route('admin.users.update.employee-id', $user),
             'check_employee_id' => route('admin.users.check-employee-id'),
-            'check_username'=>route('admin.users.check-username'),
+            'check_username' => route('admin.users.check-username'),
         ];
 
         $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
@@ -140,9 +140,10 @@ class UsersController extends Controller
 
         $maxIdPlusOne = User::max('id') + 1;
         $paddedId = str_pad($maxIdPlusOne, $settings->employee_id_padding, '0', STR_PAD_LEFT);
-        $suggestedId = $settings->employee_id_prefix . $paddedId;
+        $suggestedId = $settings->employee_id_prefix.$paddedId;
         $roles = Role::all(['id', 'name'])->map(function ($role) {
             $role->name = ucwords($role->name);
+
             return $role;
         });
         $selectedCountry = $settings->default_country;
@@ -159,7 +160,7 @@ class UsersController extends Controller
     {
         $username = $request->input('username');
 
-        if (!$username) {
+        if (! $username) {
             return [];
         }
 
@@ -170,7 +171,7 @@ class UsersController extends Controller
     {
         $employee_id = $request->input('employee_id');
 
-        if (!$employee_id) {
+        if (! $employee_id) {
             return [];
         }
 

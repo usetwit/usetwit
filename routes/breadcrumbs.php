@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Location;
 use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
@@ -54,7 +55,23 @@ Breadcrumbs::for('admin.users.create', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('admin.users.edit', function (BreadcrumbTrail $trail, User $user) {
     $trail->parent('admin.users.index');
-    $trail->push('Edit User: ' . $user->full_name);
+    $trail->push('Edit User: '.$user->full_name);
+});
+
+/* Locations */
+Breadcrumbs::for('admin.locations.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('admin.home');
+    $trail->push('All Locations', route('admin.locations.index'));
+});
+
+Breadcrumbs::for('admin.locations.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('admin.locations.index');
+    $trail->push('Create New Location');
+});
+
+Breadcrumbs::for('admin.locations.edit', function (BreadcrumbTrail $trail, Location $location) {
+    $trail->parent('admin.locations.index');
+    $trail->push('Edit Location: '.$location->name);
 });
 
 /* Company */

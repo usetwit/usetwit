@@ -26,7 +26,12 @@ const items = ref([
             {
                 type: 'link',
                 text: 'All Locations',
-                route: 'admin.application.index',
+                route: 'admin.locations.index',
+            },
+            {
+                type: 'link',
+                text: 'Create Location',
+                route: 'admin.locations.create',
             },
         ],
     },

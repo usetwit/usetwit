@@ -16,9 +16,6 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Permission::create(['name' => 'users.create']);
-        Permission::create(['name' => 'users.update']);
-        Permission::create(['name' => 'users.view']);
         Permission::create(['name' => 'users.view.self']);
         Permission::create(['name' => 'users.update.self.address']);
         Permission::create(['name' => 'users.update.self.personal-profile']);
@@ -28,14 +25,16 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'users.update.personal-profile']);
         Permission::create(['name' => 'users.update.company-profile']);
         Permission::create(['name' => 'users.update.profile-image']);
-        Permission::create(['name' => 'users.delete']);
-        Permission::create(['name' => 'users.restore']);
-        Permission::create(['name' => 'sales-orders.create']);
-        Permission::create(['name' => 'sales-orders.update']);
-        Permission::create(['name' => 'sales-orders.delete']);
-        Permission::create(['name' => 'calendars.update']);
         Permission::create(['name' => 'company.update']);
-        Permission::create(['name' => 'locations.update']);
+
+        $methods = ['create', 'update', 'view', 'delete', 'restore'];
+        $modules = ['users', 'roles', 'locations', 'calendars', 'sales-orders', 'invoices'];
+
+        foreach ($modules as $module) {
+            foreach ($methods as $method) {
+                Permission::create(['name' => $module.'.'.$method]);
+            }
+        }
 
         Role::create(['name' => 'admin'])->givePermissionTo(Permission::all());
         Role::create(['name' => 'customer']);

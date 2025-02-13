@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Location;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -29,10 +30,10 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         Route::patch('', 'update')->name('update');
     });
 
-    /* Roles and Permissions */
-    Route::prefix('roles')->name('roles.')->middleware('permission:roles.update')->controller('RolesController')->group(function () {
-        Route::get('{role}/edit', 'edit')->name('edit');
-    });
+//    /* Roles and Permissions */
+//    Route::prefix('roles')->name('roles.')->middleware('permission:roles.update')->controller('RolesController')->group(function () {
+//        Route::get('{role}/edit', 'edit')->name('edit');
+//    });
 
     /* Users */
     Route::prefix('users')->name('users.')->controller('UsersController')->group(function () {
@@ -82,8 +83,12 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         });
     });
 
-    /* Opening Hours */
-    Route::prefix('locations')->name('locations.')->middleware('permission:locations.update')->group(function () {
-        // Add routes here if needed
+    /* Locations */
+    Route::prefix('locations')->name('locations.')->controller('LocationsController')->group(function () {
+        Route::get('', 'index')->name('index')->can('viewAny', Location::class);
+        Route::get('create', 'create')->name('create')->can('create', Location::class);
+        Route::patch('edit/{location}', 'update')->name('update')->can('update', Location::class);
+        Route::post('{location}', 'getLocations')->name('get-locations')->can('viewAny', Location::class);
+        Route::get('{location}', 'edit')->name('edit')->can('update', Location::class);
     });
 });
