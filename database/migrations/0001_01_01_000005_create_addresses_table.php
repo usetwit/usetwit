@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('address_line_2', 50)->nullable();
             $table->string('address_line_3', 50)->nullable();
             $table->string('postcode', 10)->nullable();
-            $table->string('country', 2)->collation('utf8mb4_bin')->nullable();
+            $table->string('country_code', 2)->collation('utf8mb4_bin')->nullable();
+            $table->string('country_name')->nullable();
             $table->geography('coords')->nullable();
             $table->boolean('default_address')->default(false);
             $table->string('addressable_type')->collation('utf8mb4_bin');

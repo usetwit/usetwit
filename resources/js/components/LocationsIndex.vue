@@ -3,11 +3,9 @@ import {provide, ref} from 'vue'
 import useAxios from '@/composables/useAxios.js'
 import DataTable from '@/components/DataTable/DataTable.vue'
 import Column from '@/components/DataTable/Column.vue'
-import Button from '@/components/Form/Button.vue'
 import useTable from '@/composables/useTable.js'
 import {formatDate, applyFilterRegex} from '@/app/helpers.js'
 import useStorage from '@/composables/useStorage.js'
-import {startCase} from 'lodash'
 
 const props = defineProps({
     paginationSettings: {type: Object, required: true},
@@ -27,7 +25,8 @@ const defaultData = {
         address_line_2: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
         address_line_3: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
         postcode: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
-        country: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        country_name: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        country_code: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
         created_at: {operator: 'or', constraints: [{value: null, mode: 'date_equals'}]},
         updated_at: {operator: 'or', constraints: [{value: null, mode: 'date_equals'}]},
     },
@@ -39,9 +38,10 @@ const defaultData = {
         {field: 'address_line_2', label: 'Line 2', visible: true, order: 4},
         {field: 'address_line_3', label: 'Line 3', visible: true, order: 5},
         {field: 'postcode', label: 'Postal Code', visible: true, order: 6},
-        {field: 'country', label: 'Country', visible: true, order: 7},
-        {field: 'created_at', label: 'Created Date', visible: false, order: 8},
-        {field: 'updated_at', label: 'Updated Date', visible: false, order: 9},
+        {field: 'country_name', label: 'Country', visible: true, order: 7},
+        {field: 'country_code', label: 'Country Code', visible: true, order: 8},
+        {field: 'created_at', label: 'Created Date', visible: false, order: 9},
+        {field: 'updated_at', label: 'Updated Date', visible: false, order: 10},
     ],
     sort: [{field: 'name', order: 'asc'}],
     pagination: {
@@ -133,9 +133,14 @@ provide('tableInstance', tableInstance)
                 <a :href="row.edit_location_route" title="Edit" v-html="r('postcode', row.postcode)"></a>
             </template>
         </Column>
-        <Column :column="getColumn('country')" v-if="isVisible('country')" sortable type="string">
+        <Column :column="getColumn('country_name')" v-if="isVisible('country_name')" sortable type="string">
             <template #body="{ row }">
-                <a :href="row.edit_location_route" title="Edit" v-html="r('country', row.country)"></a>
+                <a :href="row.edit_location_route" title="Edit" v-html="r('country_name', row.country_name)"></a>
+            </template>
+        </Column>
+        <Column :column="getColumn('country_code')" v-if="isVisible('country_code')" sortable type="string">
+            <template #body="{ row }">
+                <a :href="row.edit_location_route" title="Edit" v-html="r('country_code', row.country_code)"></a>
             </template>
         </Column>
         <Column :column="getColumn('created_at')" v-if="isVisible('created_at')" sortable type="date">

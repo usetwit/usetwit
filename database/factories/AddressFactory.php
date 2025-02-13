@@ -3,12 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\Address;
-use App\Models\Company;
-use App\Models\Customer;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Symfony\Component\Intl\Countries;
 
 class AddressFactory extends Factory
 {
@@ -18,13 +16,16 @@ class AddressFactory extends Factory
     {
         $address = app(Address::class);
         $addressableType = Arr::random($address->validAddressables);
+        $country_code = $this->faker->countryCode;
+        $country_name = Countries::getName($country_code, app()->getLocale());
 
         return [
             'address_line_1' => $this->faker->streetAddress,
             'address_line_2' => $this->faker->city,
             'address_line_3' => $this->faker->country,
             'postcode' => $this->faker->postcode,
-            'country' => $this->faker->countryCode,
+            'country_code' => $country_code,
+            'country_name' => $country_name,
             'addressable_type' => $addressableType,
             'addressable_id' => $addressableType::factory()->create()->id,
             'deleted_at' => null,

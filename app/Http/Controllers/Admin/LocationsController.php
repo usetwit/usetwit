@@ -36,12 +36,15 @@ class LocationsController extends Controller
         $filters = $request->input('filters', []);
         $sort = $request->input('sort', []);
         $visible = $request->input('visible', []);
-        $substitutions = ['address_id' => 'address.id', 'id' => 'users.id'];
-
         $substitutions = ['id' => 'locations.id'];
         $global = [
             'name',
             'address_line_1',
+            'address_line_2',
+            'address_line_3',
+            'postcode',
+            'country_code',
+            'country_name',
         ];
 
         //        $location_cols = Cache::remember('location_columns', 24 * 60 * 60 * 7, function () {
@@ -65,7 +68,7 @@ class LocationsController extends Controller
 
         $query = DB::table('locations')
             ->select($cols)
-            ->leftJoin('addresses', function (Builder $join) {
+            ->leftJoin('addresses', function ($join) {
                 $join->on('addresses.addressable_id', 'locations.id')->where('addresses.addressable_type', Location::class);
             });
 

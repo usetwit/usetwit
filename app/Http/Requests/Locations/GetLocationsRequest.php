@@ -33,7 +33,8 @@ class GetLocationsRequest extends FormRequest
                 'address_line_1',
                 'address_line_2',
                 'address_line_3',
-                'country',
+                'country_code',
+                'country_name',
                 'postcode',
             ],
             'date' => [

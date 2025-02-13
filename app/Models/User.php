@@ -57,23 +57,25 @@ class User extends Authenticatable implements Authorizable
         return 'slug';
     }
 
+    /**
+     * @return void
+     */
     protected static function booted(): void
     {
         parent::booted();
 
         static::saving(function ($user) {
-            $user->full_name = trim(preg_replace('/\s+/', ' ',
-                "{$user->first_name} {$user->middle_names} {$user->last_name}"));
+            if ($user->isDirty(['first_name', 'middle_names', 'last_name'])) {
+                $user->full_name = trim(preg_replace('/\s+/', ' ', "{$user->first_name} {$user->middle_names} {$user->last_name}"));
+            }
         });
 
         static::deleting(function ($model) {
-            $model->active = 0;
-            $model->save();
+            $model->update(['active' => 0]);
         });
 
         static::restoring(function ($model) {
-            $model->active = 1;
-            $model->save();
+            $model->update(['active' => 1]);
         });
     }
 

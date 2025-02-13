@@ -20,13 +20,11 @@ class Shift extends Model
         parent::booted();
 
         static::deleting(function ($model) {
-            $model->active = 0;
-            $model->save();
+            $model->update(['active' => 0]);
         });
 
         static::restoring(function ($model) {
-            $model->active = 1;
-            $model->save();
+            $model->update(['active' => 1]);
         });
     }
 
