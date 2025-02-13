@@ -36,6 +36,7 @@ class AdminSidebarComposer
             ],
             'admin.users.index' => [
                 'admin.users.index',
+                'admin.users.edit',
             ],
             'admin.users.create' => [
                 'admin.users.create',

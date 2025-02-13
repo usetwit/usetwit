@@ -1,55 +1,55 @@
 <script setup>
-import { provide, ref } from 'vue'
+import {provide, ref} from 'vue'
 import useAxios from '@/composables/useAxios.js'
 import DataTable from '@/components/DataTable/DataTable.vue'
 import Column from '@/components/DataTable/Column.vue'
 import Button from '@/components/Form/Button.vue'
 import useTable from '@/composables/useTable.js'
-import { formatDate, applyFilterRegex } from '@/app/helpers.js'
+import {formatDate, applyFilterRegex} from '@/app/helpers.js'
 import useStorage from '@/composables/useStorage.js'
-import { startCase } from 'lodash'
+import {startCase} from 'lodash'
 
 const props = defineProps({
-    paginationSettings: { type: Object, required: true },
-    dateSettings: { type: Object, required: true },
-    routeGetUsers: { type: String, required: true },
+    paginationSettings: {type: Object, required: true},
+    dateSettings: {type: Object, required: true},
+    routeGetUsers: {type: String, required: true},
 })
 
 const rows = ref([])
 const isLoading = ref(false)
 const defaultData = {
     filters: {
-        global: { constraints: [{ value: null, mode: 'contains' }] },
-        id: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        username: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        first_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        last_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        middle_names: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        full_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        employee_id: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        email: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        role_name: { operator: 'or', constraints: [{ value: null, mode: 'contains' }] },
-        joined_at: { operator: 'or', constraints: [{ value: null, mode: 'date_equals' }] },
-        created_at: { operator: 'or', constraints: [{ value: null, mode: 'date_equals' }] },
-        updated_at: { operator: 'or', constraints: [{ value: null, mode: 'date_equals' }] },
-        active: { constraints: [{ value: true, mode: 'equals' }] },
+        global: {constraints: [{value: null, mode: 'contains'}]},
+        id: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        username: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        first_name: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        last_name: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        middle_names: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        full_name: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        employee_id: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        email: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        role_name: {operator: 'or', constraints: [{value: null, mode: 'contains'}]},
+        joined_at: {operator: 'or', constraints: [{value: null, mode: 'date_equals'}]},
+        created_at: {operator: 'or', constraints: [{value: null, mode: 'date_equals'}]},
+        updated_at: {operator: 'or', constraints: [{value: null, mode: 'date_equals'}]},
+        active: {constraints: [{value: true, mode: 'equals'}]},
     },
     filtered: [],
     columns: [
-        { field: 'id', label: 'ID', visible: true, order: 1 },
-        { field: 'username', label: 'Username', visible: true, order: 2 },
-        { field: 'full_name', label: 'Full Name', visible: true, order: 3 },
-        { field: 'first_name', label: 'First Name', visible: false, order: 4 },
-        { field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 5 },
-        { field: 'last_name', label: 'Last Name', visible: false, order: 6 },
-        { field: 'email', label: 'Email', visible: false, order: 7 },
-        { field: 'role_name', label: 'Role', visible: true, order: 8 },
-        { field: 'joined_at', label: 'Join Date', visible: true, order: 9 },
-        { field: 'created_at', label: 'Created Date', visible: false, order: 8 },
-        { field: 'updated_at', label: 'Updated Date', visible: false, order: 9 },
-        { field: 'active', label: 'Active', visible: true, order: 10 },
+        {field: 'id', label: 'ID', visible: true, order: 1},
+        {field: 'username', label: 'Username', visible: true, order: 2},
+        {field: 'full_name', label: 'Full Name', visible: true, order: 3},
+        {field: 'first_name', label: 'First Name', visible: false, order: 4},
+        {field: 'middle_names', label: 'Middle Name(s)', visible: false, order: 5},
+        {field: 'last_name', label: 'Last Name', visible: false, order: 6},
+        {field: 'email', label: 'Email', visible: false, order: 7},
+        {field: 'role_name', label: 'Role', visible: true, order: 8},
+        {field: 'joined_at', label: 'Join Date', visible: true, order: 9},
+        {field: 'created_at', label: 'Created Date', visible: false, order: 8},
+        {field: 'updated_at', label: 'Updated Date', visible: false, order: 9},
+        {field: 'active', label: 'Active', visible: true, order: 10},
     ],
-    sort: [{ field: 'username', order: 'asc' }],
+    sort: [{field: 'username', order: 'asc'}],
     pagination: {
         page: 1,
         per_page: props.paginationSettings.per_page.default,
@@ -58,12 +58,12 @@ const defaultData = {
 }
 
 const storageInstance = useStorage('users-index', defaultData)
-const { activeData } = storageInstance
+const {activeData} = storageInstance
 
 const fetchUsers = async () => {
     isLoading.value = true
 
-    const { data, errors, getResponse } = useAxios(props.routeGetUsers, {
+    const {data, errors, getResponse} = useAxios(props.routeGetUsers, {
         filters: activeData.value.filters,
         page: activeData.value.pagination.page,
         per_page: activeData.value.pagination.per_page,
@@ -85,7 +85,7 @@ const fetchUsers = async () => {
 
 const tableInstance = useTable(defaultData, fetchUsers, storageInstance)
 
-const { getColumn, isVisible, getSearchGlobalValue, getSearchValues } = tableInstance
+const {getColumn, isVisible, getSearchGlobalValue, getSearchValues} = tableInstance
 
 const r = (field, string) => applyFilterRegex(string, getSearchGlobalValue(), getSearchValues(field))
 
@@ -144,10 +144,14 @@ provide('tableInstance', tableInstance)
                 <a :href="row.edit_user_route" title="Edit" v-html="r('email', row.email)"></a>
             </template>
         </Column>
-        <Column :column="getColumn('role_name')" v-if="isVisible('role_name')" sortable type="string"
-                class="text-center">
+        <Column :column="getColumn('role_name')"
+                v-if="isVisible('role_name')"
+                sortable type="string"
+                class="text-center"
+        >
             <template #body="{ row, setConstraintsCb }">
-                <Button size="sm" @click="setConstraintsCb(row.role_name)" v-html="r('role_name', startCase(row.role_name))"/>
+                <Button size="sm" @click="setConstraintsCb(row.role_name)"
+                        v-html="r('role_name', startCase(row.role_name))"/>
             </template>
         </Column>
         <Column :column="getColumn('joined_at')" v-if="isVisible('joined_at')" sortable type="date">

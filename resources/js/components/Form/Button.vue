@@ -1,18 +1,18 @@
 <script setup>
-import { computed } from 'vue'
+import {computed} from 'vue'
 
 const props = defineProps({
-    loading: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false },
-    icon: { type: String },
-    label: { type: String },
+    loading: {type: Boolean, default: false},
+    disabled: {type: Boolean, default: false},
+    icon: {type: String},
+    label: {type: String},
     variant: {
         type: String, default: 'primary', validator(value) {
             return ['primary', 'secondary', 'success', 'warning', 'danger'].includes(value)
         }
     },
-    border: { type: Boolean, default: false },
-    badge: { type: [String, Number] },
+    border: {type: Boolean, default: false},
+    badge: {type: [String, Number]},
     size: {
         type: String, default: 'md', validator(value) {
             return ['sm', 'md'].includes(value)
@@ -59,12 +59,12 @@ const variantClasses = {
 const setClasses = computed(() => {
     if (props.border) {
         return props.loading ?
-               `${variantClasses.border.loading[props.variant]} cursor-not-allowed` :
-               variantClasses.border.normal[props.variant]
+            `${variantClasses.border.loading[props.variant]} cursor-not-allowed` :
+            variantClasses.border.normal[props.variant]
     } else {
         return props.loading ?
-               `${variantClasses.normal.loading[props.variant]} cursor-not-allowed` :
-               variantClasses.normal.normal[props.variant]
+            `${variantClasses.normal.loading[props.variant]} cursor-not-allowed` :
+            variantClasses.normal.normal[props.variant]
     }
 })
 
@@ -81,7 +81,10 @@ const setSizeClasses = computed(() => {
     >
         <i v-if="loading" class="pi pi-spin pi-spinner" :class="{'mr-2': label || $slots.default}"></i>
         <i v-if="icon && !loading" :class="[{'mr-2': label || $slots.default}, icon]"></i>
-        <span v-if="label || $slots.default">{{ label }}<slot/></span>
+        <span v-if="label">{{ label }}</span>
+        <span v-if="$slots.default">
+            <slot/>
+        </span>
         <span v-if="badge"
               class="ml-2 flex items-center justify-center h-4 p-1 min-w-4 bg-slate-500 text-white text-xs rounded-full"
         >

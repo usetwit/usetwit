@@ -63,13 +63,13 @@ const items = ref([
         links: [
             {
                 type: 'link',
-                text: 'Create Calendar',
-                route: 'admin.calendars.create',
+                text: 'All Calendars',
+                route: 'admin.calendars.index',
             },
             {
                 type: 'link',
-                text: 'All Calendars',
-                route: 'admin.calendars.index',
+                text: 'Create Calendar',
+                route: 'admin.calendars.create',
             },
         ],
     },
