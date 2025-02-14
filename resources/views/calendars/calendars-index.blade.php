@@ -16,7 +16,7 @@
             @foreach ($calendars as $calendar)
                 <li class="py-1 ml-6">
                     <a href="{{ route('admin.calendars.calendar-shifts.edit', $calendar->id) }}"
-                       class="text-slate-500 hover:text-orange-500">{{ $calendar->name }}xxxxxxxx</a>
+                       class="text-slate-500 hover:text-orange-500">{{ $calendar->name }}</a>
                 </li>
             @endforeach
         </ul>
