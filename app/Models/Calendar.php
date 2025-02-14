@@ -16,7 +16,7 @@ class Calendar extends Model
         return $this->hasMany(CalendarShift::class);
     }
 
-    public array $validCalendarables = [
+    public static array $validCalendarables = [
         Location::class,
         Shift::class,
     ];

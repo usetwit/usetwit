@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('heading')
-    Edit Calendar: {{ $calendar->name }}
+    Edit Calendar: {{ $calendar->calendarable->name }}
 @endsection
 
 @section('breadcrumbs')

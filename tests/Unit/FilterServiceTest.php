@@ -21,7 +21,7 @@ class FilterServiceTest extends TestCase
     {
         parent::setUp();
         $this->builder = $this->mock(Builder::class);
-        $this->filter = new FilterService();
+        $this->filter = app(FilterService::class);
 
         $this->app->instance(BuilderContract::class, $this->builder);
     }

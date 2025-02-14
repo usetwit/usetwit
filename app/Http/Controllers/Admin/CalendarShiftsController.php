@@ -20,11 +20,15 @@ class CalendarShiftsController extends Controller
 
     public function edit(Calendar $calendar)
     {
-        $calendars = Calendar::all(['id', 'name'])->toArray();
+        $calendars = Calendar::with('calendarable')->get();
 
-        foreach ($calendars as &$cal) {
-            $cal['route'] = route('admin.calendars.calendar-shifts.edit', $cal['id']);
-        }
+        $calendars = $calendars->map(function ($cal) {
+            return [
+                'id' => $cal->id,
+                'name' => $cal->calendarable->name ?? 'N/A',  // Get the name from the related model
+                'route' => route('admin.calendars.calendar-shifts.edit', $cal->id),
+            ];
+        })->toArray();
 
         return view('calendars.calendar-shifts-edit', compact('calendars', 'calendar'));
     }

@@ -54,25 +54,6 @@ class GetUsersRequest extends FormRequest
             ],
         ];
 
-        $filters = $service->makeValidationFilterRules($filterRules);
-
-        $sort = $service->makeValidationSortRules(array_diff(Arr::flatten($filterRules), ['global']));
-
-        $perPage = [
-            'per_page' => [
-                'integer',
-                Rule::in($settings->per_page_options),
-            ],
-        ];
-
-        $visible = [
-            'visible' => 'array',
-            'visible.*' => [
-                'string',
-                Rule::in(array_diff(Arr::flatten($filterRules), ['global'])),
-            ],
-        ];
-
-        return array_merge($filters, $sort, $perPage, $visible);
+        return $service->makeValidationRules($filterRules);
     }
 }

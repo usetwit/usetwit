@@ -39,7 +39,7 @@ Breadcrumbs::for('admin.calendars.show', function (BreadcrumbTrail $trail, $cale
 
 Breadcrumbs::for('admin.calendars.calendar-shifts.edit', function (BreadcrumbTrail $trail, $calendar) {
     $trail->parent('admin.calendars.index');
-    $trail->push($calendar->name);
+    $trail->push($calendar->calendarable->name);
 });
 
 /* Users */

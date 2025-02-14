@@ -11,6 +11,22 @@ class CalendarFactory extends Factory
 
     public function definition(): array
     {
-        return [];
+        return [
+            'calendarable_id' => null,
+            'calendarable_type' => null,
+        ];
+    }
+
+    public function withCalendarable()
+    {
+        return $this->state(function () {
+            $calendarableClass = collect(Calendar::$validCalendarables)->random();
+            $calendarable = $calendarableClass::factory()->create();
+
+            return [
+                'calendarable_id' => $calendarable->id,
+                'calendarable_type' => $calendarableClass,
+            ];
+        });
     }
 }

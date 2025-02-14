@@ -11,7 +11,7 @@ class CalendarShiftsFeatureTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->artisan('migrate');
@@ -21,21 +21,21 @@ class CalendarShiftsFeatureTest extends TestCase
     {
         $this->setUserWithPermissions('calendars.update');
 
-        $calendar = Calendar::factory()
-                            ->create();
+        $calendar = Calendar::factory()->withCalendarable()->create();
 
-        $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
+        $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar->id));
 
         $response->assertStatus(200)
-                 ->assertSee($calendar->name);
+            ->assertSee($calendar->name);
     }
+
 
     public function test_calendar_shift_edit_inaccessible_to_user_without_permission()
     {
         $this->setUserWithPermissions();
 
         $calendar = Calendar::factory()
-                            ->create();
+            ->create();
 
         $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
 
@@ -45,7 +45,7 @@ class CalendarShiftsFeatureTest extends TestCase
     public function test_user_cannot_see_calendar_shifts_if_not_authenticated()
     {
         $calendar = Calendar::factory()
-                            ->create();
+            ->create();
 
         $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
 
@@ -57,7 +57,7 @@ class CalendarShiftsFeatureTest extends TestCase
         $this->setUserWithPermissions('calendars.update');
 
         $calendarShift = CalendarShift::factory()
-                                      ->create();
+            ->create();
 
         $postData = [
             'year' => $calendarShift->shift_date->year,
@@ -92,12 +92,12 @@ class CalendarShiftsFeatureTest extends TestCase
         $this->setUserWithPermissions('calendars.update');
 
         $calendar = Calendar::factory()
-                            ->create();
+            ->create();
         $calendarShift = CalendarShift::factory()
-                                      ->make(['calendar_id' => $calendar->id,]);
+            ->make(['calendar_id' => $calendar->id]);
 
         $dates = array_merge($calendarShift->attributesToArray(),
-            ['shift_date' => $calendarShift->shift_date->format('Y-m-d'),]);
+            ['shift_date' => $calendarShift->shift_date->format('Y-m-d')]);
 
         $updateData = [
             'year' => $calendarShift->shift_date->year,
@@ -108,7 +108,7 @@ class CalendarShiftsFeatureTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertDatabaseHas('calendar_shifts', $dates,);
+        $this->assertDatabaseHas('calendar_shifts', $dates);
     }
 
     public function test_calendar_shift_can_be_updated_via_patch_request_when_nwd_is_true_even_if_other_shifts_specified()
@@ -116,12 +116,12 @@ class CalendarShiftsFeatureTest extends TestCase
         $this->setUserWithPermissions('calendars.update');
 
         $calendar = Calendar::factory()
-                            ->create();
+            ->create();
         $calendarShift = CalendarShift::factory()
-                                      ->create([
-                                          'calendar_id' => $calendar->id,
-                                          'nwd' => true,
-                                      ]);
+            ->create([
+                'calendar_id' => $calendar->id,
+                'nwd' => true,
+            ]);
 
         $dates = array_merge($calendarShift->attributesToArray(), [
             'shift_date' => $calendarShift->shift_date->format('Y-m-d'),
@@ -164,7 +164,7 @@ class CalendarShiftsFeatureTest extends TestCase
         $this->setUserWithPermissions('calendars.update');
 
         $calendarShift = CalendarShift::factory()
-                                      ->create();
+            ->create();
 
         $dates = array_merge($calendarShift->attributesToArray(), [
             'shift_date' => $calendarShift->shift_date->format('Y-m-d'),

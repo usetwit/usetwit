@@ -98,7 +98,7 @@ class UsersIndexGetUsersRequestTest extends TestCase
      */
     public function test_per_page_must_be_in_allowed_options()
     {
-        $validator = $this->validate(['per_page' => 100]);
+        $validator = $this->validate(['per_page' => 101]);
         $this->assertTrue($validator->errors()->has('per_page'));
     }
 
@@ -107,7 +107,7 @@ class UsersIndexGetUsersRequestTest extends TestCase
      */
     public function test_valid_per_page_value_is_accepted()
     {
-        $validator = $this->validate(['per_page' => 25]);
+        $validator = $this->validate(['per_page' => 100]);
         $this->assertFalse($validator->errors()->has('per_page'));
     }
 

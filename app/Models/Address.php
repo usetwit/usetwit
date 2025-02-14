@@ -19,7 +19,7 @@ class Address extends Model
         'default_address' => 'boolean',
     ];
 
-    public array $validAddressables = [
+    public static array $validAddressables = [
         Company::class,
         Customer::class,
         User::class,
