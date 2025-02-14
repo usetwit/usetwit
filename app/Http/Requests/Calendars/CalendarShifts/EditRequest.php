@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Calendars\CalendarShifts;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class AuthLoginRequest extends FormRequest
+class EditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return !Auth::check();
+        return true;
     }
 
     /**
@@ -24,8 +23,7 @@ class AuthLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|string|max:255|regex:/^[a-z0-9]+$/',
-            'password' => 'required|string|max:255',
+            'year' => 'required|integer|min:2020|max:2050',
         ];
     }
 }

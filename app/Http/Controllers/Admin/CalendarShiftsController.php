@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\EndLessThanOrEqualToStartException;
 use App\Exceptions\HoursUsedException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Calendars\CalendarShiftsEditRequest;
-use App\Http\Requests\Calendars\CalendarShiftsUpdateRequest;
+use App\Http\Requests\Calendars\CalendarShifts\EditRequest;
+use App\Http\Requests\Calendars\CalendarShifts\UpdateRequest;
 use App\Models\Calendar;
 use App\Models\CalendarShift;
 use App\Services\CalendarService;
@@ -33,7 +33,7 @@ class CalendarShiftsController extends Controller
         return view('calendars.calendar-shifts-edit', compact('calendars', 'calendar'));
     }
 
-    public function getCalendarShifts(Calendar $calendar, CalendarShiftsEditRequest $request)
+    public function getCalendarShifts(Calendar $calendar, EditRequest $request)
     {
         $shifts = $calendar->calendarShifts()
             ->whereYear('shift_date', $request->input('year'))
@@ -63,7 +63,7 @@ class CalendarShiftsController extends Controller
      * @throws EndLessThanOrEqualToStartException
      * @throws HoursUsedException
      */
-    public function update(Calendar $calendar, CalendarShiftsUpdateRequest $request)
+    public function update(Calendar $calendar, UpdateRequest $request)
     {
         $dates = $request->input('dates');
         $year = $request->input('year');

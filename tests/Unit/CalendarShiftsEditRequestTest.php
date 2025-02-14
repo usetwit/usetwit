@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Requests\Calendars\CalendarShiftsEditRequest;
+use App\Http\Requests\Calendars\CalendarShifts\EditRequest;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
@@ -10,7 +10,7 @@ class CalendarShiftsEditRequestTest extends TestCase
 {
     private function validate(array $data)
     {
-        $request = new CalendarShiftsEditRequest();
+        $request = new EditRequest();
         return Validator::make($data, $request->rules());
     }
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Calendars;
+namespace App\Http\Requests\Calendars\CalendarShifts;
 
 use App\Rules\EndTimeGreaterThanStartTimeOrMidnight;
 use App\Rules\StartTimeGreaterThanPreviousShiftEndTime;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CalendarShiftsUpdateRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

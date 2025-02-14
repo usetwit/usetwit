@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Symfony\Component\Intl\Countries;
 use Tests\TestCase;
 
 class UsersFeatureTest extends TestCase
@@ -23,12 +24,16 @@ class UsersFeatureTest extends TestCase
         $role = Role::create(['name' => 'test-role-2']);
         $user = User::factory()->make();
 
+        $country_code = $this->faker->countryCode;
+        $country_name = Countries::getName($country_code);
+
         $payload = array_merge($user->toArray(), [
             'address_line_1' => $this->faker->streetAddress,
             'address_line_2' => $this->faker->city,
             'address_line_3' => $this->faker->city,
             'postcode' => $this->faker->postcode,
-            'country' => $this->faker->countryCode,
+            'country_code' => $country_code,
+            'country_name' => $country_name,
             'role_id' => $role->id,
             'joined_at' => optional($user->joined_at)->format('Y-m-d'),
             'password' => 'xiTh&£$5678HjnN',
@@ -68,7 +73,8 @@ class UsersFeatureTest extends TestCase
             'address_line_2' => $payload['address_line_2'],
             'address_line_3' => $payload['address_line_3'],
             'postcode' => $payload['postcode'],
-            'country' => $payload['country'],
+            'country_code' => $payload['country_code'],
+            'country_name' => $payload['country_name'],
             'default_address' => true,
             'addressable_type' => User::class,
             'addressable_id' => $newUser->id,

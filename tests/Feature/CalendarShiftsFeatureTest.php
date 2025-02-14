@@ -34,8 +34,7 @@ class CalendarShiftsFeatureTest extends TestCase
     {
         $this->setUserWithPermissions();
 
-        $calendar = Calendar::factory()
-            ->create();
+        $calendar = Calendar::factory()->withCalendarable()->create();
 
         $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
 
@@ -44,8 +43,7 @@ class CalendarShiftsFeatureTest extends TestCase
 
     public function test_user_cannot_see_calendar_shifts_if_not_authenticated()
     {
-        $calendar = Calendar::factory()
-            ->create();
+        $calendar = Calendar::factory()->withCalendarable()->create();
 
         $response = $this->get(route('admin.calendars.calendar-shifts.edit', $calendar));
 
@@ -91,8 +89,7 @@ class CalendarShiftsFeatureTest extends TestCase
     {
         $this->setUserWithPermissions('calendars.update');
 
-        $calendar = Calendar::factory()
-            ->create();
+        $calendar = Calendar::factory()->withCalendarable()->create();
         $calendarShift = CalendarShift::factory()
             ->make(['calendar_id' => $calendar->id]);
 
@@ -115,8 +112,7 @@ class CalendarShiftsFeatureTest extends TestCase
     {
         $this->setUserWithPermissions('calendars.update');
 
-        $calendar = Calendar::factory()
-            ->create();
+        $calendar = Calendar::factory()->withCalendarable()->create();
         $calendarShift = CalendarShift::factory()
             ->create([
                 'calendar_id' => $calendar->id,

@@ -36,7 +36,7 @@ class UsersController extends Controller
     {
         $perPage = $request->input('per_page', $settings->per_page_default);
         $filters = $request->input('filters', []);
-        $sort = $request->input('sort', []);
+        $sorts = $request->input('sort', []);
         $visible = $request->input('visible', []);
 
         $substitutions = ['role_name' => 'roles.name', 'id' => 'users.id'];
@@ -64,8 +64,7 @@ class UsersController extends Controller
             $join->on('model_has_roles.model_id', 'users.id')->where('model_has_roles.model_type', User::class);
         })->leftJoin('roles', 'roles.id', 'model_has_roles.role_id');
 
-        $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
-            ->filter($query, $filters, ['global'], $substitutions)->sort($query, $sort, ['global'], $substitutions);
+        $service->filterAndSort($query, $filters, $global, $visible, ['global'], $substitutions, $sorts);
 
         $query = $query->paginate($perPage);
         $total = $query->total();
@@ -202,7 +201,7 @@ class UsersController extends Controller
         $userFields['password'] = Hash::make($userFields['password']);
         $newUser = User::create($userFields);
 
-        $addressFields = $request->only(['address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'country']);
+        $addressFields = $request->only(['address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'country_code']);
 
         if (count(Arr::whereNotNull($addressFields)) > 0) {
             $addressFields['default_address'] = true;

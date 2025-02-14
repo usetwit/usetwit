@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Company\CompanyUpdateRequest;
+use App\Http\Requests\Company\UpdateRequest;
 use App\Models\Address;
 use App\Settings\GeneralSettings;
 use Illuminate\Http\RedirectResponse;
@@ -20,7 +20,7 @@ class CompanyController extends Controller
         return view('company.company-edit', compact('countries', 'address'));
     }
 
-    public function update(CompanyUpdateRequest $request, GeneralSettings $settings): RedirectResponse
+    public function update(UpdateRequest $request, GeneralSettings $settings): RedirectResponse
     {
         Address::whereType('hq')->first()->update($request->only([
             'address_line_1',

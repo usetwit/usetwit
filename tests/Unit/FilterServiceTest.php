@@ -420,7 +420,7 @@ class FilterServiceTest extends TestCase
         $this->builder->shouldNotReceive('orWhere')
             ->with('first_name', Mockery::any(), Mockery::any());
 
-        $global = ['users.username', 'email', 'first_name'];
+        $global = ['username', 'email', 'first_name'];
         $substitutions = ['username' => 'users.username'];
         $visible = ['username', 'email'];
 

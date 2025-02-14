@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SalesOrders\SalesOrdersStoreRequest;
+use App\Http\Requests\SalesOrders\StoreRequest;
 use App\Http\Requests\SalesOrders\StockBomSearchByNameRequest;
 use App\Models\Bom;
 use App\Models\StockItem;
@@ -23,7 +23,7 @@ class SalesOrdersController extends Controller
         return view('sales-orders.sales-orders-create', compact('dateSettings'));
     }
 
-    public function store(SalesOrdersStoreRequest $request)
+    public function store(StoreRequest $request)
     {
         return response('Sales Order Saved Successfully', 200);
     }

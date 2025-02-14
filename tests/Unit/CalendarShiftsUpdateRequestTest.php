@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Requests\Calendars\CalendarShiftsUpdateRequest;
+use App\Http\Requests\Calendars\CalendarShifts\UpdateRequest;
 use Faker\Generator;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Validator;
@@ -38,7 +38,7 @@ class CalendarShiftsUpdateRequestTest extends TestCase
 
     protected function validate(array $data)
     {
-        $request = new CalendarShiftsUpdateRequest();
+        $request = new UpdateRequest();
         return Validator::make($data, $request->rules());
     }
 

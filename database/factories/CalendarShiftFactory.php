@@ -33,7 +33,7 @@ class CalendarShiftFactory extends Factory
         $shiftDate = $this->faker->dateTimeBetween('2020-01-01', '2050-12-31');
 
         return array_merge([
-            'calendar_id' => Calendar::factory(),
+            'calendar_id' => Calendar::factory()->withCalendarable(),
             'nwd' => false,
             'shift_date' => $shiftDate,
         ], $times, $durations);

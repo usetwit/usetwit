@@ -45,7 +45,7 @@ const user = ref({
     home_email: '',
     joined_at: '',
     role_id: 0,
-    country: props.selectedCountry,
+    country_code: props.selectedCountry,
 })
 const submitDisabled = ref(false)
 const errorFields = ref([])
@@ -363,7 +363,7 @@ watch(() => user.value.username, (newValue) => {
                 </template>
 
                 <template #input>
-                    <Select v-model="user.country"
+                    <Select v-model="user.country_code"
                             :options="countries"
                             option-label="name"
                             option-value="code"

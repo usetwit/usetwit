@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\AuthLoginRequest;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -14,7 +14,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(AuthLoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request): RedirectResponse
     {
         $credentials = $request->only('username', 'password');
 
