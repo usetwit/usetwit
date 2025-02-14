@@ -198,12 +198,15 @@ class FilterService
 
         switch (strtolower($matchMode)) {
             case 'contains':
+                $value = addcslashes($value, '%_\\');
                 $query->$whereMethod($field, 'like', "%$value%");
                 break;
             case 'starts_with':
+                $value = addcslashes($value, '%_\\');
                 $query->$whereMethod($field, 'like', "$value%");
                 break;
             case 'ends_with':
+                $value = addcslashes($value, '%_\\');
                 $query->$whereMethod($field, 'like', "%$value");
                 break;
             case 'date_equals':
@@ -233,14 +236,14 @@ class FilterService
         }
     }
 
-    public function filter(Builder $query, array $filters, array $exceptions = [], array $substitutes = []): FilterService
+    public function filter(Builder $query, array $filters, array $exceptions = [], array $substitutions = []): FilterService
     {
         foreach ($filters as $field => $props) {
             if (in_array($field, $exceptions)) {
                 continue;
             }
 
-            $field = $substitutes[$field] ?? $field;
+            $field = $substitutions[$field] ?? $field;
 
             $operator = $props['operator'] ?? 'and';
             $constraints = $props['constraints'] ?? null;
@@ -259,21 +262,34 @@ class FilterService
         return $this;
     }
 
-    public function globalFilter(Builder $query, ?string $value, array $global = [], array $visible = [], array $substitutions = []): FilterService
+    public function filterAndSort(Builder $query, array $filters, array $globalFields = [], array $visible = [], array $exceptions = [], array $substitutions = [], array $sorts = []): FilterService
+    {
+        $globalFilter = $filters['global']['constraints'][0]['value'] ?? '';
+
+        $this->globalFilter($query, $globalFilter, $globalFields, $visible, $substitutions)
+            ->filter($query, $filters, $exceptions, $substitutions)
+            ->sort($query, $sorts, $exceptions, $substitutions);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function globalFilter(Builder $query, ?string $value, array $globalFields = [], array $visible = [], array $substitutions = []): FilterService
     {
         if ($value === '' || $value === null) {
             return $this;
         }
 
-        foreach ($visible as &$field) {
-            $field = $substitutions[$field] ?? $field;
-        }
+        $value = addcslashes($value, '%_\\');
 
-        $columns = array_intersect($visible, $global);
+        $columns = array_intersect($visible, $globalFields);
 
         if (count($columns)) {
-            $query->where(function (Builder $query) use ($columns, $value) {
+            $query->where(function (Builder $query) use ($columns, $value, $substitutions) {
                 foreach ($columns as $column) {
+                    $column = $substitutions[$column] ?? $column;
                     $query->orWhere($column, 'like', "%{$value}%");
                 }
             });
@@ -282,14 +298,17 @@ class FilterService
         return $this;
     }
 
-    public function sort(Builder $query, array $sorts, array $exceptions = [], array $substitutes = []): FilterService
+    /**
+     * @return $this
+     */
+    public function sort(Builder $query, array $sorts, array $exceptions = [], array $substitutions = []): FilterService
     {
         foreach ($sorts as $sort) {
             if (in_array(strtolower($sort['field']), $exceptions)) {
                 continue;
             }
 
-            $sort['field'] = $substitutes[$sort['field']] ?? $sort['field'];
+            $sort['field'] = $substitutions[$sort['field']] ?? $sort['field'];
 
             $query->orderBy($sort['field'], $sort['order'] === 'asc' ? 'asc' : 'desc');
         }

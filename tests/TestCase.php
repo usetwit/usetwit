@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\User;
 use Closure;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Schema;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -15,10 +16,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Generate a long string.
-     *
-     * @param int $length
-     * @param bool $isNumeric
-     * @return string
      */
     protected function longString(int $length = 256, bool $isNumeric = false): string
     {
@@ -36,9 +33,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Create a Closure for custom Rules
-     * @param string $errorMessage
-     *
-     * @return Closure
      */
     public function failClosure(string &$errorMessage): Closure
     {
@@ -49,9 +43,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Create a user with given permissions.
-     *
-     * @param array|string $permissions
-     * @return User
      */
     protected function createUserWithPermissions(array|string $permissions = []): User
     {
@@ -74,5 +65,14 @@ abstract class TestCase extends BaseTestCase
         $user->assignRole($role);
 
         return $user;
+    }
+
+    protected function createTestTable(): void
+    {
+        Schema::create('test_table', function ($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 }

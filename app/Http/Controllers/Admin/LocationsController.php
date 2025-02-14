@@ -7,7 +7,6 @@ use App\Http\Requests\Locations\GetLocationsRequest;
 use App\Models\Location;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -34,10 +33,11 @@ class LocationsController extends Controller
     {
         $perPage = $request->input('per_page', $settings->per_page_default);
         $filters = $request->input('filters', []);
-        $sort = $request->input('sort', []);
+        $sorts = $request->input('sort', []);
         $visible = $request->input('visible', []);
         $substitutions = ['id' => 'locations.id'];
         $global = [
+            'id',
             'name',
             'address_line_1',
             'address_line_2',
@@ -47,22 +47,19 @@ class LocationsController extends Controller
             'country_name',
         ];
 
-        //        $location_cols = Cache::remember('location_columns', 24 * 60 * 60 * 7, function () {
-        $cols = Schema::getColumnListing('locations');
-        $cols = array_diff($cols, ['description']);
+        $location_cols = Cache::rememberForever('location_columns', function () {
+            $cols = Schema::getColumnListing('locations');
+            $cols = array_diff($cols, ['description']);
 
-        $location_cols = array_map(fn ($value) => 'locations.'.$value, $cols);
-        //            return array_map(fn ($value) => 'locations.'.$value, $cols);
-        //        });
+            return array_map(fn ($value) => 'locations.'.$value, $cols);
+        });
 
-        //        $address_cols = Cache::remember('address_columns', 24 * 60 * 60 * 7, function () {
-        $cols = Schema::getColumnListing('addresses');
-        $cols = array_diff($cols, ['id']);
+        $address_cols = Cache::rememberForever('address_columns', function () {
+            $cols = Schema::getColumnListing('addresses');
+            $cols = array_diff($cols, ['id']);
 
-        $address_cols = array_map(fn ($value) => 'addresses.'.$value, $cols);
-
-        //            return array_map(fn ($value) => 'addresses.'.$value, $cols);
-        //        });
+            return array_map(fn ($value) => 'addresses.'.$value, $cols);
+        });
 
         $cols = array_merge($location_cols, $address_cols);
 
@@ -72,9 +69,7 @@ class LocationsController extends Controller
                 $join->on('addresses.addressable_id', 'locations.id')->where('addresses.addressable_type', Location::class);
             });
 
-        $service->globalFilter($query, $filters['global']['constraints'][0]['value'], $global, $visible, $substitutions)
-            ->filter($query, $filters, ['global'], $substitutions)
-            ->sort($query, $sort, ['global'], $substitutions);
+        $service->filterAndSort($query, $filters, $global, $visible, ['global'], $substitutions, $sorts);
 
         $query = $query->paginate($perPage);
         $total = $query->total();

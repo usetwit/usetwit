@@ -4,10 +4,9 @@ import useAxios from '@/composables/useAxios.js'
 import DataTable from '@/components/DataTable/DataTable.vue'
 import Column from '@/components/DataTable/Column.vue'
 import useTable from '@/composables/useTable.js'
-import {formatDate, applyFilterRegex} from '@/app/helpers.js'
+import {formatDate, applyFilterRegex, flagEmoji} from '@/app/helpers.js'
 import useStorage from '@/composables/useStorage.js'
 import Button from "@/components/Form/Button.vue";
-import {flagEmoji} from "@/helpers/helpers.js";
 
 const props = defineProps({
     paginationSettings: {type: Object, required: true},
@@ -145,6 +144,7 @@ provide('tableInstance', tableInstance)
             <template #body="{ row, setConstraintsCb }">
                 <Button size="sm"
                         @click="setConstraintsCb(row.country_code)"
+                        v-if="row.country_code"
                 >
                     <span v-html="r('country_code', row.country_code)"></span>
                     <span :title="row.country_code" class="ml-1">{{ flagEmoji(row.country_code) }}</span>

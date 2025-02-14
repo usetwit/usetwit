@@ -5,16 +5,21 @@ namespace Tests\Unit;
 use App\Exceptions\FilterServiceGetTypeInvalidException;
 use App\Rules\HasMultipleConstraints;
 use App\Services\FilterService;
+use Illuminate\Contracts\Database\Query\Builder as BuilderContract;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Mockery;
 use Mockery\LegacyMockInterface;
 use Tests\TestCase;
-use Illuminate\Contracts\Database\Query\Builder as BuilderContract;
-use Illuminate\Database\Eloquent\Builder;
 
 class FilterServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected Builder|LegacyMockInterface $builder;
+
     protected FilterService $filter;
 
     protected function setUp(): void
@@ -32,14 +37,65 @@ class FilterServiceTest extends TestCase
         parent::tearDown();
     }
 
+    public function test_global_filter_returns_no_results_for_literal_wildcards()
+    {
+        $this->createTestTable();
+
+        DB::table('test_table')->insert([
+            ['name' => 'Hello'],
+        ]);
+
+        $query = DB::table('test_table');
+        $this->filter->globalFilter($query, '%Hello%', ['name'], ['name']);
+        $results = $query->get();
+        $this->assertCount(0, $results);
+
+        $query = DB::table('test_table');
+        $this->filter->globalFilter($query, '_Hello_', ['name'], ['name']);
+        $results = $query->get();
+        $this->assertCount(0, $results);
+    }
+
+    public function test_global_filter_treats_wildcards_as_literals()
+    {
+        $this->createTestTable();
+
+        DB::table('test_table')->insert([
+            ['name' => 'Hello'],
+            ['name' => 'Hello%'],
+            ['name' => 'Hello_'],
+            ['name' => '\\'],
+        ]);
+
+        $query = DB::table('test_table');
+        $this->filter->globalFilter($query, 'Hello%', ['name'], ['name']);
+        $results = $query->get();
+        $this->assertCount(1, $results);
+        $this->assertEquals('Hello%', $results->first()->name);
+
+        $query = DB::table('test_table');
+        $this->filter->globalFilter($query, 'Hello_', ['name'], ['name']);
+        $results = $query->get();
+        $this->assertCount(1, $results);
+        $this->assertEquals('Hello_', $results->first()->name);
+
+        $query = DB::table('test_table');
+        $this->filter->globalFilter($query, '\\', ['name'], ['name']);
+
+        $results = $query->get();
+
+        $this->assertCount(1, $results);
+        $this->assertEquals('\\', $results->first()->name);
+    }
+
     public function test_sort_method_applies_order_by_correctly(): void
     {
         $this->builder->shouldReceive('orderBy')
-                      ->with('name', 'asc')
-                      ->once();
+            ->with('name', 'asc')
+            ->once();
         $this->builder->shouldReceive('orderBy')
-                      ->with('age', 'desc')
-                      ->times(2);
+            ->with('age', 'desc')
+            ->times(2);
 
         $sort = [
             ['field' => 'name', 'order' => 'asc'],
@@ -63,8 +119,8 @@ class FilterServiceTest extends TestCase
     public function test_sort_method_correctly_substitutes_column_names(): void
     {
         $this->builder->shouldReceive('orderBy')
-                      ->with('name.test', 'asc')
-                      ->once();
+            ->with('name.test', 'asc')
+            ->once();
 
         $sort = [['field' => 'name', 'order' => 'asc']];
         $substitutes = ['name' => 'name.test'];
@@ -149,8 +205,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_contains_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', 'like', '%john%')
-                      ->once();
+            ->with('name', 'like', '%john%')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'contains', 'and');
     }
@@ -161,8 +217,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_starts_with_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', 'like', 'john%')
-                      ->once();
+            ->with('name', 'like', 'john%')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'starts_with', 'and');
     }
@@ -173,8 +229,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_ends_with_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', 'like', '%john')
-                      ->once();
+            ->with('name', 'like', '%john')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'ends_with', 'and');
     }
@@ -185,8 +241,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_equals_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', '=', 'john')
-                      ->once();
+            ->with('name', '=', 'john')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'equals', 'and');
     }
@@ -197,8 +253,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_not_equals_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('name', '!=', 'john')
-                      ->once();
+            ->with('name', '!=', 'john')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'name', 'john', 'not_equals', 'and');
     }
@@ -209,8 +265,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_gt_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('age', '>', 30)
-                      ->once();
+            ->with('age', '>', 30)
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'age', 30, 'gt', 'and');
     }
@@ -221,8 +277,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_gte_mode(): void
     {
         $this->builder->shouldReceive('where')
-                      ->with('age', '>=', 30)
-                      ->once();
+            ->with('age', '>=', 30)
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'age', 30, 'gte', 'and');
     }
@@ -233,8 +289,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_date_equals_mode(): void
     {
         $this->builder->shouldReceive('whereDate')
-                      ->with('joined_at', '=', '2023-01-01')
-                      ->once();
+            ->with('joined_at', '=', '2023-01-01')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_equals', 'and');
     }
@@ -245,8 +301,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_date_not_equals_mode(): void
     {
         $this->builder->shouldReceive('whereDate')
-                      ->with('joined_at', '!=', '2023-01-01')
-                      ->once();
+            ->with('joined_at', '!=', '2023-01-01')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_not_equals', 'and');
     }
@@ -257,8 +313,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_date_gt_mode(): void
     {
         $this->builder->shouldReceive('whereDate')
-                      ->with('joined_at', '>', '2023-01-01')
-                      ->once();
+            ->with('joined_at', '>', '2023-01-01')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_gt', 'and');
     }
@@ -269,8 +325,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_date_gte_mode(): void
     {
         $this->builder->shouldReceive('whereDate')
-                      ->with('joined_at', '>=', '2023-01-01')
-                      ->once();
+            ->with('joined_at', '>=', '2023-01-01')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_gte', 'and');
     }
@@ -281,8 +337,8 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_date_lt_mode(): void
     {
         $this->builder->shouldReceive('whereDate')
-                      ->with('joined_at', '<', '2023-01-01')
-                      ->once();
+            ->with('joined_at', '<', '2023-01-01')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_lt', 'and');
     }
@@ -293,33 +349,35 @@ class FilterServiceTest extends TestCase
     public function test_query_filter_applies_date_lte_mode(): void
     {
         $this->builder->shouldReceive('whereDate')
-                      ->with('joined_at', '<=', '2023-01-01')
-                      ->once();
+            ->with('joined_at', '<=', '2023-01-01')
+            ->once();
 
         $this->filter->queryFilter($this->builder, 'joined_at', '2023-01-01', 'date_lte', 'and');
     }
 
-    public function test_filter_method_applies_nested_where_orWhere_correctly(): void
+    public function test_filter_method_applies_nested_where_or_where_correctly(): void
     {
         $this->builder->shouldReceive('where')
-                      ->times(2)
-                      ->with(Mockery::type('callable'))
-                      ->andReturnUsing(function (callable $callback) {
-                          $callback($this->builder);
-                      });
+            ->times(2)
+            ->with(Mockery::type('callable'))
+            ->andReturnUsing(function (callable $callback) {
+                $callback($this->builder);
+            });
 
         $this->builder->shouldReceive('orWhere')
-                      ->once()
-                      ->with('email', '>', 'john@example.com')
-                      ->andReturn($this->builder);
+            ->once()
+            ->with('email', '>', 'john@example.com')
+            ->andReturn($this->builder);
+
         $this->builder->shouldReceive('orWhere')
-                      ->once()
-                      ->with('email', 'like', '%lee@example.com%')
-                      ->andReturn($this->builder);
+            ->once()
+            ->with('email', 'like', '%lee@example.com%')
+            ->andReturn($this->builder);
+
         $this->builder->shouldReceive('orWhere')
-                      ->once()
-                      ->with('username', '=', 'john')
-                      ->andReturn($this->builder);
+            ->once()
+            ->with('username', '=', 'john')
+            ->andReturn($this->builder);
 
         $filters = [
             'username' => [
@@ -343,24 +401,24 @@ class FilterServiceTest extends TestCase
     public function test_global_filter_applies_correct_queries_based_on_visible_fields_and_substitutions(): void
     {
         $this->builder->shouldReceive('where')
-                      ->once()
-                      ->with(Mockery::type('callable'))
-                      ->andReturnUsing(function (callable $callback) {
-                          $callback($this->builder);
-                      });
+            ->once()
+            ->with(Mockery::type('callable'))
+            ->andReturnUsing(function (callable $callback) {
+                $callback($this->builder);
+            });
 
         $this->builder->shouldReceive('orWhere')
-                      ->once()
-                      ->with('users.username', 'like', '%john%')
-                      ->andReturn($this->builder);
+            ->once()
+            ->with('users.username', 'like', '%john%')
+            ->andReturn($this->builder);
 
         $this->builder->shouldReceive('orWhere')
-                      ->once()
-                      ->with('email', 'like', '%john%')
-                      ->andReturn($this->builder);
+            ->once()
+            ->with('email', 'like', '%john%')
+            ->andReturn($this->builder);
 
         $this->builder->shouldNotReceive('orWhere')
-                      ->with('first_name', Mockery::any(), Mockery::any());
+            ->with('first_name', Mockery::any(), Mockery::any());
 
         $global = ['users.username', 'email', 'first_name'];
         $substitutions = ['username' => 'users.username'];
@@ -437,7 +495,7 @@ class FilterServiceTest extends TestCase
             'filters.email.constraints.*.mode' => [
                 'nullable',
                 'string',
-                Rule::in($this->filter->getValidStringMatchModes()), // Adjust based on the actual method you have for valid string match modes
+                Rule::in($this->filter->getValidStringMatchModes()),
                 'required_with:filters.email.constraints.*.value',
             ],
             'filters.email.constraints.*.value' => [

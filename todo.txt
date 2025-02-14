@@ -1,1 +1,1 @@
-update getUsers in users controller to use Arr::prependKeysWith()
+test for \ in name

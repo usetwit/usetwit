@@ -73,3 +73,14 @@ export const applyFilterRegex = (string, global, self = []) => {
     return string.replace(new RegExp(regexParts.join('|'), 'gi'), `<span class="regex-result">$&</span>`)
 }
 
+export function flagEmoji(countryCode) {
+    if (typeof countryCode !== 'string'){
+        return ''
+    }
+
+    return countryCode
+        .toUpperCase()
+        .split('')
+        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+        .join('');
+}
