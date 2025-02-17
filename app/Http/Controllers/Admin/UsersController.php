@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -70,7 +71,6 @@ class UsersController extends Controller
         $total = $query->total();
 
         $users = $query->getCollection()->map(function ($user) {
-
             return array_merge((array) $user, [
                 'edit_user_route' => route('admin.users.edit', $user->slug),
                 'created_at' => Carbon::parse($user->created_at)->format('Y-m-d'),
@@ -113,9 +113,10 @@ class UsersController extends Controller
             'check_username' => route('admin.users.check-username'),
         ];
 
-        $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
-            return ['code' => $code, 'name' => $name];
-        })->values();
+        $countries = collect(Countries::getNames())
+            ->map(function (string $name, string $code) {
+                return ['code' => $code, 'name' => $name];
+            })->values();
 
         $user->load([
             'address',
@@ -146,38 +147,46 @@ class UsersController extends Controller
             return $role;
         });
         $selectedCountry = $settings->default_country;
-        $countries = collect(Countries::getNames())->map(function (string $name, string $code) {
-            return ['code' => $code, 'name' => $name];
-        })->values();
+        $countries = collect(Countries::getNames())
+            ->map(function (string $name, string $code) {
+                return ['code' => $code, 'name' => $name];
+            })->values();
 
-        return view('users.users-create',
-            compact('routeCheckUsername', 'routeStore', 'routeRedirect', 'dateSettings', 'suggestedId', 'roles',
-                'countries', 'selectedCountry'));
+        return view('users.users-create', compact(
+            'routeCheckUsername',
+            'routeStore',
+            'routeRedirect',
+            'dateSettings',
+            'suggestedId',
+            'roles',
+            'countries',
+            'selectedCountry'
+        ));
     }
 
-    public function checkUsername(CheckUsernameRequest $request)
+    public function checkUsername(CheckUsernameRequest $request): JsonResponse
     {
         $username = $request->input('username');
 
         if (! $username) {
-            return [];
+            return response()->json();
         }
 
-        return User::withTrashed()->where('username', $username)->get(['username']);
+        return response()->json(User::withTrashed()->where('username', $username)->get(['username']));
     }
 
-    public function checkEmployeeId(CheckEmployeeIdRequest $request)
+    public function checkEmployeeId(CheckEmployeeIdRequest $request): JsonResponse
     {
         $employee_id = $request->input('employee_id');
 
         if (! $employee_id) {
-            return [];
+            return response()->json();
         }
 
-        return User::withTrashed()->where('employee_id', $employee_id)->get(['employee_id']);
+        return response()->json(User::withTrashed()->where('employee_id', $employee_id)->get(['employee_id']));
     }
 
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): JsonResponse
     {
         $userFields = $request->only([
             'username',
@@ -211,7 +220,7 @@ class UsersController extends Controller
         $role = Role::find($request->input('role_id'));
         $newUser->syncRoles($role);
 
-        return ['message' => 'User Created', 'redirect' => route('admin.users.edit', $newUser)];
+        return response()->json(['message' => 'User Created', 'redirect' => route('admin.users.edit', $newUser)]);
     }
 
     public function destroy(User $user)

@@ -72,14 +72,14 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     Route::prefix('calendars')->name('calendars.')->middleware('permission:calendars.update')->controller('CalendarsController')->group(function () {
         Route::get('', 'index')->name('index');
         Route::get('create', 'create')->name('create');
-        Route::get('{calendar}', 'edit')->name('edit');
+        Route::get('{calendar}/edit', 'edit')->name('edit');
         Route::patch('{calendar}', 'update')->name('update');
 
         /* Calendar Shifts */
         Route::prefix('calendar-shifts')->name('calendar-shifts.')->controller('CalendarShiftsController')->group(function () {
-            Route::patch('edit/{calendar}', 'update')->name('update');
+            Route::patch('{calendar}', 'update')->name('update');
             Route::post('{calendar}', 'getCalendarShifts')->name('get-calendar-shifts');
-            Route::get('{calendar}', 'edit')->name('edit');
+            Route::get('{calendar}/edit', 'edit')->name('edit');
         });
     });
 
@@ -87,8 +87,8 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     Route::prefix('locations')->name('locations.')->controller('LocationsController')->group(function () {
         Route::get('', 'index')->name('index')->can('viewAny', Location::class);
         Route::get('create', 'create')->name('create')->can('create', Location::class);
-        Route::patch('edit/{location}', 'update')->name('update')->can('update', Location::class);
+        Route::patch('{location}', 'update')->name('update')->can('update', Location::class);
         Route::post('', 'getLocations')->name('get-locations')->can('viewAny', Location::class);
-        Route::get('{location}', 'edit')->name('edit')->can('update', Location::class);
+        Route::get('{location}/edit', 'edit')->name('edit')->can('update', Location::class);
     });
 });

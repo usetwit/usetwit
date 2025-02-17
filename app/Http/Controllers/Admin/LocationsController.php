@@ -5,14 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Locations\GetLocationsRequest;
 use App\Models\Location;
+use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
+use Symfony\Component\Intl\Countries;
 
 class LocationsController extends Controller
 {
@@ -26,7 +31,7 @@ class LocationsController extends Controller
 
         $routeGetLocations = route('admin.locations.get-locations');
 
-        return view('locations.locations-index', compact('paginationSettings', 'routeGetLocations', 'dateSettings'));
+        return view('admin.locations.index', compact('paginationSettings', 'routeGetLocations', 'dateSettings'));
     }
 
     public function getLocations(GetLocationsRequest $request, FilterService $service, GeneralSettings $settings): JsonResponse
@@ -88,9 +93,12 @@ class LocationsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(GeneralSettings $settings): View
     {
-        //
+        $dateSettings = $settings->dateSettings();
+        $routeCreate = route('admin.locations.create');
+
+        return view('admin.locations.create', compact('dateSettings', 'routeCreate'));
     }
 
     /**
@@ -112,9 +120,27 @@ class LocationsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Location $location, GeneralSettings $settings)
     {
-        //
+        $dateSettings = $settings->dateSettings();
+
+        $routes = [
+            'delete' => route('admin.locations.destroy', $location),
+            'restore' => route('admin.locations.restore', $location),
+            'update' => route('admin.locations.update', $location),
+        ];
+
+        $countries = collect(Countries::getNames())
+            ->map(function (string $name, string $code) {
+                return ['code' => $code, 'name' => $name];
+            })->values();
+
+        $location->load([
+            'address',
+            'calendar',
+        ]);
+
+        return view('admin.locations.edit', compact('routes', 'countries', 'dateSettings'));
     }
 
     /**
