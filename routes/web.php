@@ -87,8 +87,10 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     Route::prefix('locations')->name('locations.')->controller('LocationsController')->group(function () {
         Route::get('', 'index')->name('index')->can('viewAny', Location::class);
         Route::get('create', 'create')->name('create')->can('create', Location::class);
-        Route::patch('{location}', 'update')->name('update')->can('update', Location::class);
+        Route::patch('{location}', 'update')->name('update')->can('update', 'location');
         Route::post('', 'getLocations')->name('get-locations')->can('viewAny', Location::class);
-        Route::get('{location}/edit', 'edit')->name('edit')->can('update', Location::class);
+        Route::get('{location}/edit', 'edit')->name('edit')->can('update', 'location');
+        Route::delete('{location}', 'destroy')->name('destroy')->can('delete', 'location');
+        Route::patch('{location}/restore', 'restore')->name('restore')->withTrashed()->can('restore', 'location');
     });
 });
