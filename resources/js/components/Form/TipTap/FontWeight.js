@@ -24,7 +24,7 @@ export default Mark.create({
             'span',
             {
                 ...HTMLAttributes,
-                class: `font-${mark.attrs.weight}`,
+                class: mark.attrs.weight,
             },
             0
         ]
@@ -33,13 +33,16 @@ export default Mark.create({
     addAttributes() {
         return {
             weight: {
-                default: 'normal',
-                parseHTML: element => element.className.match(/font-(\w+)/)?.[1] || 'normal',
+                default: 'font-normal',
+                parseHTML: element => {
+                    const match = element.className.match(/font-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)/)
+                    return match ? `font-${match[1]}` : 'font-normal'
+                },
                 renderHTML: attributes => {
                     if (!attributes.weight) return {}
-                    return { class: `font-${attributes.weight}` }
+                    return { class: attributes.weight }
                 },
-            },
+            }
         }
     },
 

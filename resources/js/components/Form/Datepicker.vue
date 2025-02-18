@@ -1,24 +1,24 @@
 <script setup>
 import useDropdown from '@/composables/useDropdown'
 import useDates from '@/composables/useDates'
-import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import {onMounted, ref, useTemplateRef, watch} from 'vue'
 import InputGroup from '@/components/Form/InputGroup.vue'
 import InputText from '@/components/Form/InputText.vue'
 import DatepickerHeader from '@/components/Form/DatepickerHeader.vue'
-import { DateTime } from 'luxon'
+import {DateTime} from 'luxon'
 
 const props = defineProps({
-    disabled: { type: Boolean, default: false },
-    required: { type: Boolean, default: false },
-    dropdown: { type: Boolean, default: false },
-    numberOfMonths: { type: Number, default: 1 },
-    format: { type: String, required: true },
-    displayFormat: { type: String, required: true },
-    regex: { type: String, required: true },
-    separator: { type: String, required: true },
-    containerClass: { type: [String, Object] },
-    positionY: { type: String, default: 'bottom' },
-    positionX: { type: String, default: 'center' },
+    disabled: {type: Boolean, default: false},
+    required: {type: Boolean, default: false},
+    dropdown: {type: Boolean, default: false},
+    numberOfMonths: {type: Number, default: 1},
+    format: {type: String, required: true},
+    displayFormat: {type: String, required: true},
+    regex: {type: String, required: true},
+    separator: {type: String, required: true},
+    containerClass: {type: [String, Object]},
+    positionY: {type: String, default: 'bottom'},
+    positionX: {type: String, default: 'center'},
 })
 
 defineOptions({

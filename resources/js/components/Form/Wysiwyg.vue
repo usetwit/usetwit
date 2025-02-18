@@ -1,50 +1,3 @@
-<template>
-    <div :class="['border rounded-lg p-2', { 'border-red-500': invalid, 'opacity-50 pointer-events-none': disabled }]">
-        <div class="flex flex-wrap gap-4 mb-2 border-b pb-2">
-            <div v-for="group in toolbarGroups" :key="group.label" class="flex gap-2">
-                <button v-for="btn in group.buttons" :key="btn.label" type="button" @click="btn.action"
-                        :class="['p-1 rounded-md text-sm', { 'bg-blue-500 text-white': btn.active() }]">
-                    {{ btn.label }}
-                </button>
-            </div>
-            <button type="button" @click="toggleHtmlMode" class="p-1 rounded-md text-sm bg-gray-300">
-                {{ isHtmlMode ? "Back to Editor" : "View/Edit HTML" }}
-            </button>
-        </div>
-
-        <editor-content v-if="!isHtmlMode"
-                        :editor="editor"
-                        class="min-h-[150px] p-2 border rounded-md"
-        />
-        <Textarea v-else
-                  v-model="htmlContent"
-                  @input="updateEditor"
-                  class="w-full min-h-[150px] p-2 border rounded-md"
-        />
-    </div>
-</template>
-
-<style lang="postcss">
-@reference "../../../css/app.css";
-
-.tiptap ul {
-    @apply pl-6 my-5 ml-1 list-disc;
-}
-
-.tiptap ol {
-    @apply pl-6 my-5 ml-1 list-decimal;
-}
-
-.tiptap li {
-    @apply ml-4;
-}
-
-.tiptap li p {
-    @apply mt-1 mb-1;
-}
-</style>
-
-
 <script setup>
 import {ref, computed} from 'vue'
 import {useEditor, EditorContent} from '@tiptap/vue-3'
@@ -72,6 +25,7 @@ import TableCell from '@tiptap/extension-table-cell'
 import HardBreak from '@tiptap/extension-hard-break'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import History from '@tiptap/extension-history'
+import FontWeightButton from "@/components/Form/WysiwygButtons/FontWeightButton.vue";
 import FontWeight from "@/components/Form/TipTap/FontWeight.js";
 
 const props = defineProps({
@@ -161,3 +115,30 @@ const toolbarGroups = computed(() => editor.value ? [
     }
 ] : [])
 </script>
+
+<template>
+    <div v-if="editor" :class="['border rounded-lg p-2', { 'border-red-500': invalid, 'opacity-50 pointer-events-none': disabled }]">
+        <div class="flex flex-wrap gap-4 mb-2 border-b pb-2">
+            <div v-for="group in toolbarGroups" :key="group.label" class="flex gap-2">
+                <button v-for="btn in group.buttons" :key="btn.label" type="button" @click="btn.action"
+                        :class="['p-1 rounded-md text-sm', { 'bg-blue-500 text-white': btn.active() }]">
+                    {{ btn.label }}
+                </button>
+            </div>
+            <FontWeightButton :editor="editor" />
+            <button type="button" @click="toggleHtmlMode" class="p-1 rounded-md text-sm bg-gray-300">
+                {{ isHtmlMode ? "Back to Editor" : "View/Edit HTML" }}
+            </button>
+        </div>
+
+        <editor-content v-if="!isHtmlMode"
+                        :editor="editor"
+                        class="min-h-[150px] p-2 border rounded-md"
+        />
+        <Textarea v-else
+                  v-model="htmlContent"
+                  @input="updateEditor"
+                  class="w-full min-h-[150px] p-2 border rounded-md"
+        />
+    </div>
+</template>
