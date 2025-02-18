@@ -140,10 +140,17 @@ const debouncedCheckLocation = debounce(checkLocation, 300, {leading: true, trai
                     </template>
                 </Wrapper>
 
+                <Wrapper vertical>
+                    <template #text>
                         <label for="description">
                             Description
                         </label>
+                    </template>
+
+                    <template #input>
                         <Wysiwyg v-model="location.description"/>
+                    </template>
+                </Wrapper>
 
                 <div class="flex">
                     <Button severity="success"

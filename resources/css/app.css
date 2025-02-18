@@ -1,6 +1,7 @@
 @import './checkbox.css' layer(base);
 @import 'primeicons/primeicons.css';
 @import 'tailwindcss';
+@plugin "@tailwindcss/typography";
 
 @font-face {
     font-family: 'primeicons';

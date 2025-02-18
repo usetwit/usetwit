@@ -46,7 +46,7 @@
 
 
 <script setup>
-import {ref, computed, defineProps, defineModel} from 'vue'
+import {ref, computed} from 'vue'
 import {useEditor, EditorContent} from '@tiptap/vue-3'
 import Textarea from "@/components/Form/Textarea.vue";
 import Document from '@tiptap/extension-document'
@@ -63,8 +63,6 @@ import Paragraph from '@tiptap/extension-paragraph'
 import Heading from '@tiptap/extension-heading'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
 import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
 import Table from '@tiptap/extension-table'
@@ -74,6 +72,7 @@ import TableCell from '@tiptap/extension-table-cell'
 import HardBreak from '@tiptap/extension-hard-break'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import History from '@tiptap/extension-history'
+import FontWeight from "@/components/Form/TipTap/FontWeight.js";
 
 const props = defineProps({
     disabled: {type: Boolean, default: false},
@@ -90,10 +89,24 @@ const editor = useEditor({
     extensions: [
         Document, Text, Paragraph, Heading.configure({levels: [1, 2, 3]}),
         Bold, Italic, Underline, Strike, Blockquote, Code, CodeBlock,
-        BulletList, OrderedList, TaskList, TaskItem, ListItem, Link.configure({openOnClick: true}),
-        Image, Table.configure({resizable: true}), TableRow, TableHeader, TableCell,
-        HardBreak, HorizontalRule, History
+        BulletList, OrderedList,
+        ListItem,
+        Link.configure({openOnClick: true}),
+        Image,
+        Table.configure({resizable: true}),
+        TableRow,
+        TableHeader,
+        TableCell,
+        HardBreak,
+        HorizontalRule,
+        History,
+        FontWeight,
     ],
+    editorProps: {
+        attributes: {
+            class: 'prose focus:outline-none w-full max-w-none',
+        },
+    },
     onUpdate: ({editor}) => {
         model.value = editor.getHTML()
     }
@@ -116,76 +129,34 @@ const toolbarGroups = computed(() => editor.value ? [
     {
         label: 'Text Formatting',
         buttons: [
-            {
-                label: 'B',
-                action: () => editor.value.chain().focus().toggleBold().run(),
-                active: () => editor.value.isActive('bold')
-            },
-            {
-                label: 'I',
-                action: () => editor.value.chain().focus().toggleItalic().run(),
-                active: () => editor.value.isActive('italic')
-            },
-            {
-                label: 'U',
-                action: () => editor.value.chain().focus().toggleUnderline().run(),
-                active: () => editor.value.isActive('underline')
-            },
-            {
-                label: 'S',
-                action: () => editor.value.chain().focus().toggleStrike().run(),
-                active: () => editor.value.isActive('strike')
-            }
+            { label: 'B', action: () => editor.value.chain().focus().toggleBold().run(), active: () => editor.value.isActive('bold') },
+            { label: 'I', action: () => editor.value.chain().focus().toggleItalic().run(), active: () => editor.value.isActive('italic') },
+            { label: 'U', action: () => editor.value.chain().focus().toggleUnderline().run(), active: () => editor.value.isActive('underline') },
+            { label: 'S', action: () => editor.value.chain().focus().toggleStrike().run(), active: () => editor.value.isActive('strike') }
         ]
     },
     {
         label: 'Lists & Blocks',
         buttons: [
-            {
-                label: '• List',
-                action: () => editor.value.chain().focus().toggleBulletList().run(),
-                active: () => editor.value.isActive('bulletList')
-            },
-            {
-                label: '1. List',
-                action: () => editor.value.chain().focus().toggleOrderedList().run(),
-                active: () => editor.value.isActive('orderedList')
-            },
-            {
-                label: '☑ Task',
-                action: () => editor.value.chain().focus().toggleTaskList().run(),
-                active: () => editor.value.isActive('taskList')
-            }
+            { label: '• List', action: () => editor.value.chain().focus().toggleBulletList().run(), active: () => editor.value.isActive('bulletList') },
+            { label: '1. List', action: () => editor.value.chain().focus().toggleOrderedList().run(), active: () => editor.value.isActive('orderedList') },
+            { label: '↵ Split', action: () => editor.value.chain().focus().splitListItem('listItem').run(), active: () => false, disabled: () => !editor.value.can().splitListItem('listItem') },
+            { label: '⮋ Sink', action: () => editor.value.chain().focus().sinkListItem('listItem').run(), active: () => false, disabled: () => !editor.value.can().sinkListItem('listItem') },
+            { label: '⮉ Lift', action: () => editor.value.chain().focus().liftListItem('listItem').run(), active: () => false, disabled: () => !editor.value.can().liftListItem('listItem') }
         ]
     },
     {
         label: 'Code & Quotes',
         buttons: [
-            {
-                label: '{ }',
-                action: () => editor.value.chain().focus().toggleCodeBlock().run(),
-                active: () => editor.value.isActive('codeBlock')
-            },
-            {
-                label: '“”',
-                action: () => editor.value.chain().focus().toggleBlockquote().run(),
-                active: () => editor.value.isActive('blockquote')
-            }
+            { label: '{ }', action: () => editor.value.chain().focus().toggleCodeBlock().run(), active: () => editor.value.isActive('codeBlock') },
+            { label: '“”', action: () => editor.value.chain().focus().toggleBlockquote().run(), active: () => editor.value.isActive('blockquote') }
         ]
     },
     {
         label: 'Media & Tables',
         buttons: [
-            {
-                label: 'Image',
-                action: () => editor.value.chain().focus().setImage({src: prompt('Enter image URL')}).run(),
-                active: () => editor.value.isActive('image')
-            },
-            {
-                label: 'Table',
-                action: () => editor.value.chain().focus().insertTable({rows: 3, cols: 3, withHeaderRow: true}).run(),
-                active: () => editor.value.isActive('table')
-            }
+            { label: 'Image', action: () => editor.value.chain().focus().setImage({ src: prompt('Enter image URL') }).run(), active: () => editor.value.isActive('image') },
+            { label: 'Table', action: () => editor.value.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(), active: () => editor.value.isActive('table') }
         ]
     }
 ] : [])
