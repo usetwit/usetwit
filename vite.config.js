@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/app/calendar-shifts-edit.js',
                 'resources/js/app/sales-orders-create.js',
                 'resources/js/app/locations-index.js',
+                'resources/js/app/locations-edit.js',
             ],
             refresh: true,
         }),

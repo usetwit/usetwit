@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Locations\GetLocationsRequest;
 use App\Models\Location;
-use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -16,7 +14,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
-use Spatie\Permission\Models\Role;
 use Symfony\Component\Intl\Countries;
 
 class LocationsController extends Controller
@@ -124,6 +121,11 @@ class LocationsController extends Controller
     {
         $dateSettings = $settings->dateSettings();
 
+        $permissions = [
+            'delete' => auth()->user()->can('delete', Location::class),
+            'restore' => auth()->user()->can('restore', Location::class),
+        ];
+
         $routes = [
             'delete' => route('admin.locations.destroy', $location),
             'restore' => route('admin.locations.restore', $location),
@@ -140,7 +142,7 @@ class LocationsController extends Controller
             'calendar',
         ]);
 
-        return view('admin.locations.edit', compact('routes', 'countries', 'dateSettings'));
+        return view('admin.locations.edit', compact('permissions', 'location', 'routes', 'countries', 'dateSettings'));
     }
 
     /**
