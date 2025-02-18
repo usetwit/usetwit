@@ -97,3 +97,27 @@ input[type="radio"] {
 #content {
     @apply bg-white border-y dark:bg-slate-600 lg:border-x border-gray-200 dark:border-slate-500 mx-0 lg:mx-4 overflow-x-auto;
 }
+
+.wysiwyg-button {
+    @apply text-sm rounded-md text-gray-900 px-2;
+
+    &:hover {
+        @apply bg-gray-100 dark:bg-slate-700;
+    }
+
+    &.active {
+        @apply bg-blue-500 text-white;
+    }
+}
+
+.wysiwyg-menu-item {
+    @apply px-2 py-1 text-sm rounded-md w-full text-gray-900;
+
+    &:hover {
+        @apply bg-gray-100 dark:bg-slate-700;
+    }
+
+    &.active {
+        @apply bg-blue-500 text-white;
+    }
+}

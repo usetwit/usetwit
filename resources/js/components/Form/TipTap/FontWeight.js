@@ -1,4 +1,4 @@
-import { Mark } from '@tiptap/core'
+import {Mark} from '@tiptap/core'
 
 export default Mark.create({
     name: 'fontWeight',
@@ -19,7 +19,7 @@ export default Mark.create({
         }))
     },
 
-    renderHTML({ mark, HTMLAttributes }) {
+    renderHTML({mark, HTMLAttributes}) {
         return [
             'span',
             {
@@ -40,7 +40,7 @@ export default Mark.create({
                 },
                 renderHTML: attributes => {
                     if (!attributes.weight) return {}
-                    return { class: attributes.weight }
+                    return {class: attributes.weight}
                 },
             }
         }
@@ -48,8 +48,8 @@ export default Mark.create({
 
     addCommands() {
         return {
-            toggleFontWeight: (weight) => ({ commands }) => {
-                return commands.toggleMark(this.name, { weight })
+            toggleFontWeight: (weight) => ({commands}) => {
+                return commands.toggleMark(this.name, {weight})
             },
         }
     },

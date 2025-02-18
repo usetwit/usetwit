@@ -1,5 +1,6 @@
 <script setup>
 import useDropdown from "@/composables/useDropdown.js";
+import {computed} from "vue";
 
 const props = defineProps({
     editor: {type: Object, required: true}
@@ -17,30 +18,41 @@ const items = [
     {label: "Black", class: "font-black"},
 ]
 
-const apply = (item) => {
-    props.editor.chain().focus().toggleFontWeight(item.class).run()
-}
-
 const {
     inputRef,
     dropdownStyle,
     showDropdown,
     toggleDropdown,
 } = useDropdown()
+
+const apply = (item) => {
+    props.editor.chain().focus().toggleFontWeight(item.class).run()
+    showDropdown.value = false
+}
+
+const active = computed(() => {
+    const marks = props.editor.getAttributes('fontWeight')
+    return marks?.weight || null
+})
 </script>
 
 <template>
-    <button ref="inputRef" class="wysiwyg-button" @click="toggleDropdown" type="button">Font Weight</button>
+    <button ref="inputRef"
+            class="wysiwyg-button"
+            :class="{ 'active': active }"
+            @click="toggleDropdown"
+            type="button"
+    >Font Weight</button>
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-350 min-w-48"
+             class="dropdown z-350"
              :style="dropdownStyle"
         >
             <ul>
                 <li v-for="item in items" :key="item.class" class="w-full">
                     <button
-                        :class="[item.class, 'px-4 py-2 w-full']"
+                        :class="[item.class, 'wysiwyg-menu-item', { 'active': active === item.class }]"
                         @click="apply(item)"
                     >
                         {{ item.label }}
