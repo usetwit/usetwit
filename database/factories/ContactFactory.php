@@ -13,8 +13,7 @@ class ContactFactory extends Factory
 
     public function definition(): array
     {
-        $contactableTypes = Contact::getValidContactables();
-        $contactableType = Arr::random($contactableTypes);
+        $contactableType = Arr::random(Contact::$validContactables);
 
         return [
             'first_name' => $this->faker->optional()->name,

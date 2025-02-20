@@ -26,8 +26,8 @@ return new class extends Migration
 
         Schema::create($tableNames['permissions'], function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->collation('utf8mb4_bin');
-            $table->string('guard_name')->collation('utf8mb4_bin');
+            $table->string('name')->collation('ascii_bin');
+            $table->string('guard_name')->collation('ascii_bin');
             $table->timestamps();
 
             $table->unique(['name', 'guard_name']);
@@ -39,8 +39,8 @@ return new class extends Migration
                 $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
                 $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');
             }
-            $table->string('name')->collation('utf8mb4_bin');
-            $table->string('guard_name')->collation('utf8mb4_bin');
+            $table->string('name')->collation('ascii_bin');
+            $table->string('guard_name')->collation('ascii_bin');
             $table->timestamps();
             if ($teams || config('permission.testing')) {
                 $table->unique([$columnNames['team_foreign_key'], 'name', 'guard_name']);
@@ -52,7 +52,7 @@ return new class extends Migration
         Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames, $pivotPermission, $teams) {
             $table->unsignedBigInteger($pivotPermission);
 
-            $table->string('model_type')->collation('utf8mb4_bin');
+            $table->string('model_type')->collation('ascii_bin');
             $table->unsignedBigInteger($columnNames['model_morph_key']);
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_model_id_model_type_index');
 
@@ -76,7 +76,7 @@ return new class extends Migration
         Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames, $pivotRole, $teams) {
             $table->unsignedBigInteger($pivotRole);
 
-            $table->string('model_type')->collation('utf8mb4_bin');
+            $table->string('model_type')->collation('ascii_bin');
             $table->unsignedBigInteger($columnNames['model_morph_key']);
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_roles_model_id_model_type_index');
 
@@ -129,10 +129,10 @@ return new class extends Migration
             throw new \Exception('Error: config/permission.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
         }
 
-        Schema::drop($tableNames['role_has_permissions']);
-        Schema::drop($tableNames['model_has_roles']);
-        Schema::drop($tableNames['model_has_permissions']);
-        Schema::drop($tableNames['roles']);
-        Schema::drop($tableNames['permissions']);
+        Schema::dropIfExists($tableNames['role_has_permissions']);
+        Schema::dropIfExists($tableNames['model_has_roles']);
+        Schema::dropIfExists($tableNames['model_has_permissions']);
+        Schema::dropIfExists($tableNames['roles']);
+        Schema::dropIfExists($tableNames['permissions']);
     }
 };

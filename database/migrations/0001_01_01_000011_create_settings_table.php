@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table): void {
             $table->id();
-            $table->string('group')->collation('utf8mb4_bin');
-            $table->string('name')->collation('utf8mb4_bin');
+            $table->string('group')->collation('ascii_bin');
+            $table->string('name')->collation('ascii_bin');
             $table->boolean('locked')->default(false);
             $table->json('payload');
             $table->timestamps();

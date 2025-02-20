@@ -14,8 +14,7 @@ class AddressFactory extends Factory
 
     public function definition(): array
     {
-        $address = app(Address::class);
-        $addressableType = Arr::random($address->validAddressables);
+        $addressableType = Arr::random(Address::$validAddressables);
         $country_code = $this->faker->countryCode;
         $country_name = Countries::getName($country_code, app()->getLocale());
 

@@ -42,7 +42,9 @@ const active = computed(() => {
             :class="{ 'active': active }"
             @click="toggleDropdown"
             type="button"
-    >Font Weight</button>
+    >
+        Font Weight
+    </button>
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"

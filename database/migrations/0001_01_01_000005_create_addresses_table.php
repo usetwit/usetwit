@@ -21,9 +21,7 @@ return new class extends Migration
             $table->string('country_name')->nullable();
             $table->geography('coords')->nullable();
             $table->boolean('default_address')->default(false);
-            $table->string('addressable_type')->collation('utf8mb4_bin');
-            $table->unsignedBigInteger('addressable_id');
-            $table->index(['addressable_id', 'addressable_type'], 'model_has_addresses_addressable_id_addressable_type_index');
+            $table->morphs('addressable');
             $table->softDeletes();
             $table->timestamps();
         });

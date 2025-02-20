@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('calendars', function (Blueprint $table) {
             $table->id();
             $table->morphs('calendarable');
-            $table->index(['calendarable_id', 'calendarable_type'], 'model_has_calendars_calendarable_id_calendarable_type_index');
             $table->timestamps();
         });
     }

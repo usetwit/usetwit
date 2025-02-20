@@ -1,7 +1,8 @@
 @import './checkbox.css' layer(base);
 @import 'primeicons/primeicons.css';
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
+
+@plugin '@tailwindcss/typography';
 
 @font-face {
     font-family: 'primeicons';
@@ -22,51 +23,58 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
 }
 
 @layer utilities {
-  @font-face {
-    font-family: 'Inter';
-    src: url('../fonts/Inter_18pt-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
+    @font-face {
+        font-family: 'Inter';
+        src: url('../fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+    }
 
-  @font-face {
-    font-family: 'Cabin';
-    src: url('../fonts/Cabin-SemiBoldItalic.ttf') format('truetype');
-    font-weight: 600;
-    font-style: italic;
-  }
+    @font-face {
+        font-family: 'Inter';
+        src: url('../fonts/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: italic;
+    }
 
-  * {
-    font-family: 'Inter', sans-serif;
-  }
+    @font-face {
+        font-family: 'Cabin';
+        src: url('../fonts/Cabin-SemiBoldItalic.ttf') format('truetype');
+        font-weight: 600;
+        font-style: italic;
+    }
 
-  .bg-gradient {
-    background: linear-gradient(
-      45deg,
-      var(--color-yellow-200),
-      var(--color-orange-200),
-      var(--color-red-200),
-      var(--color-fuchsia-200)
-    );
-  }
+    * {
+        font-family: 'Inter', sans-serif;
+    }
 
-  .regex-result {
-    @apply font-bold text-orange-500;
-  }
+    .bg-gradient {
+        background: linear-gradient(
+            45deg,
+            var(--color-yellow-200),
+            var(--color-orange-200),
+            var(--color-red-200),
+            var(--color-fuchsia-200)
+        );
+    }
 
-  .dropdown {
-    @apply rounded-lg absolute bg-white shadow-sm border-gray-200 border flex flex-col overflow-y-auto p-1;
-  }
+    .regex-result {
+        @apply font-bold text-orange-500;
+    }
+
+    .dropdown {
+        @apply rounded-lg absolute bg-white shadow-sm border-gray-200 border flex flex-col overflow-y-auto p-1;
+    }
 }
 
 @layer components {
@@ -99,7 +107,7 @@ input[type="radio"] {
 }
 
 .wysiwyg-button {
-    @apply text-sm rounded-md text-gray-900 px-2;
+    @apply text-sm rounded-md text-gray-900 p-1 border;
 
     &:hover {
         @apply bg-gray-100 dark:bg-slate-700;

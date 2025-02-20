@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->string('slug', 50)->collation('utf8mb4_bin')->unique();
+            $table->string('slug', 50)->collation('ascii_bin')->unique();
             $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->boolean('active')->default(1);

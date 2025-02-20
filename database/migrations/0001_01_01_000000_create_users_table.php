@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('slug', 50)->collation('utf8mb4_bin')->unique();
+            $table->string('slug', 50)->collation('ascii_bin')->unique();
             $table->string('username')->unique();
             $table->string('first_name', 85);
             $table->string('middle_names', 85)->nullable();

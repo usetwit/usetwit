@@ -1,1 +1,2 @@
 test for \ in name
+docker run -d --name laragon-redis -p 6379:6379 -v laragon-redis-data:/data --restart unless-stopped redis:7 --appendonly yes

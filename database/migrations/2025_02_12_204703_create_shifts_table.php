@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shifts', function (Blueprint $table) {
             $table->id();
-            $table->string('slug', 50)->collation('utf8mb4_bin')->unique();
+            $table->string('slug', 50)->collation('ascii_bin')->unique();
             $table->string('name')->unique();
             $table->boolean('active')->default(1);
             $table->softDeletes();

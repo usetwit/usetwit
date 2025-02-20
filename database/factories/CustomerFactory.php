@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 
 class CustomerFactory extends Factory
 {
@@ -13,8 +14,8 @@ class CustomerFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'code' => strtoupper(substr($this->faker->name(), 0, 20)),
             'comments' => $this->faker->text(),
+            'type' => Arr::random(['b2b', 'b2c']),
             'created_at' => now(),
             'updated_at' => now(),
         ];

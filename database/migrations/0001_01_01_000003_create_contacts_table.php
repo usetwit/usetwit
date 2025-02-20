@@ -20,9 +20,7 @@ return new class extends Migration
             $table->string('company_number')->nullable();
             $table->string('company_ext')->nullable();
             $table->text('comments')->nullable();
-            $table->string('contactable_type');
-            $table->unsignedBigInteger('contactable_id');
-            $table->index(['contactable_id', 'contactable_type'], 'model_has_contacts_contactable_id_contactable_type_index');
+            $table->morphs('contactable');
             $table->timestamps();
         });
     }

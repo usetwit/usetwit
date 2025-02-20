@@ -10,7 +10,7 @@ class Contact extends Model
 {
     protected $guarded = [];
 
-    protected array $validContactables = [
+    public static array $validContactables = [
         Customer::class,
     ];
 
@@ -19,10 +19,5 @@ class Contact extends Model
     public function contactable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function getValidContactables(): array
-    {
-        return $this->validContactables;
     }
 }

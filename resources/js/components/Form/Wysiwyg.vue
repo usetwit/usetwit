@@ -127,7 +127,7 @@ const toolbarGroups = computed(() => editor.value ? [
             </div>
             <FontWeightButton :editor="editor" />
             <button type="button" @click="toggleHtmlMode" class="p-1 rounded-md text-sm bg-gray-300">
-                {{ isHtmlMode ? "Back to Editor" : "&lt;HTML&gt;" }}
+                {{ isHtmlMode ? "WYSIWYG" : "&lt;HTML&gt;" }}
             </button>
         </div>
 

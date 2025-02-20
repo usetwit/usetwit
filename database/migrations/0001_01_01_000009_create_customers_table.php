@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('code', 20);
+            $table->enum('type', ['b2b', 'b2c']);
             $table->text('comments')->nullable();
             $table->timestamps();
         });
