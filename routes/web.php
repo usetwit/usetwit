@@ -57,7 +57,7 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         Route::post('check-username', 'checkUsername')->name('check-username')->can('updateUsername', User::class);
         Route::post('check-employee-id', 'checkEmployeeId')->name('check-employee-id')->can('updateEmployeeId', User::class);
         Route::post('', 'store')->name('store')->can('create', User::class);
-        Route::post('get-users', 'getUsers')->name('get-users')->can('viewAny', User::class);
+        Route::get('get-users', 'getUsers')->name('get-users')->can('viewAny', User::class);
     });
 
     /* Sales Orders */

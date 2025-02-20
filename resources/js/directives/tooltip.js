@@ -14,10 +14,6 @@ export default {
 
             let top, left
             switch (position) {
-                case 'top':
-                    top = rect.top - tooltipRect.height - 4
-                    left = rect.left + rect.width / 2 - tooltipRect.width / 2
-                    break
                 case 'bottom':
                     top = rect.bottom + 4
                     left = rect.left + rect.width / 2 - tooltipRect.width / 2

@@ -69,7 +69,7 @@ const fetchUsers = async () => {
         per_page: activeData.value.pagination.per_page,
         sort: activeData.value.sort,
         visible: activeData.value.columns.filter(col => col.visible).map(col => col.field)
-    })
+    }, 'get')
 
     await getResponse()
 

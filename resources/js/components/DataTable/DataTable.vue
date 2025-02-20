@@ -1,5 +1,5 @@
 <script setup>
-import { inject, nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, watch } from 'vue'
+import {inject, nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, watch} from 'vue'
 import HeaderCell from '@/components/DataTable/HeaderCell.vue'
 import Cell from '@/components/DataTable/Cell.vue'
 import Button from '@/components/Form/Button.vue'
@@ -9,16 +9,16 @@ import InputGroup from '@/components/Form/InputGroup.vue'
 import InputGroupAddon from '@/components/Form/InputGroupAddon.vue'
 
 const props = defineProps({
-    isLoading: { type: Boolean, default: false },
-    paginationSettings: { type: Object, required: true },
-    dateSettings: { type: Object },
+    isLoading: {type: Boolean, default: false},
+    paginationSettings: {type: Object, required: true},
+    dateSettings: {type: Object},
 })
 
 const columnSet = ref(new Set())
 const columns = ref([])
 const activeData = defineModel()
 const rows = defineModel('rows', {required: true, default: []})
-const style = ref({ top: 0, height: 0 })
+const style = ref({top: 0, height: 0})
 const resizeLeftStyle = ref(null)
 
 const tableRef = useTemplateRef('tableRef')
@@ -59,13 +59,13 @@ watch(columnSet, (newValue) => {
 
         return a.order - b.order
     })
-}, { deep: true })
+}, {deep: true})
 
 watch(rows, () => {
-    nextTick(()=>updateStyle())
+    nextTick(() => updateStyle())
 })
 
-const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableInstance')
+const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableInstance')
 </script>
 
 <template>
@@ -75,20 +75,26 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
             <Button :badge="getFilteredFields().length"
                     @click="reset"
                     class="mr-2"
-                    icon="pi pi-refresh"
-                    label="Reset Filters"
+                    icon="pi pi-sync"
+                    label="Reset"
                     :loading="isLoading"
             />
             <Button :badge="getFilteredFields().length"
                     @click="clearFilters"
+                    class="mr-2"
                     variant="secondary"
                     border
                     icon="pi pi-filter-slash"
-                    label="Clear Filters"
+                    label="Clear"
                     :loading="isLoading"
             />
+            <Button @click="fetch"
+                    variant="success"
+                    icon="pi pi-refresh"
+                    label="Refresh"
+            />
         </div>
-        <InputGroup class="sm:mt-0 mt-2 w-full sm:w-80">
+        <InputGroup class="sm:mt-0 mt-2 w-full sm:w-60">
             <InputText v-model="activeData.filters.global.constraints[0].value"
                        placeholder="Search..."
                        @input="filter"
@@ -98,6 +104,9 @@ const { fetch, filter, getFilteredFields, reset, clearFilters } = inject('tableI
                 <i class="pi pi-search"></i>
             </InputGroupAddon>
         </InputGroup>
+    </div>
+    <div class="text-sm mt-3 text-gray-600">
+        <i class="pi pi-info-circle"></i> Hold ctrl to sort multiple columns
     </div>
 
     <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch" class="mt-8"/>
