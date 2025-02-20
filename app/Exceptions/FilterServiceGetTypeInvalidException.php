@@ -1,9 +1,7 @@
 <?php
 
-    namespace App\Exceptions;
+namespace App\Exceptions;
 
-    use Exception;
+use Exception;
 
-    class FilterServiceGetTypeInvalidException extends Exception
-    {
-    }
+class FilterServiceGetTypeInvalidException extends Exception {}

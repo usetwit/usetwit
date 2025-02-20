@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Location;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class LocationFactory extends Factory
 {
@@ -13,6 +14,9 @@ class LocationFactory extends Factory
     {
         return [
             'name' => $this->faker->city(),
+            'slug' => function (array $attributes) {
+                return Str::slug($attributes['name']);
+            },
             'description' => $this->faker->realText(),
         ];
     }

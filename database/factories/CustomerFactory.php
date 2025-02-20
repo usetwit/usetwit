@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class CustomerFactory extends Factory
 {
@@ -12,10 +13,15 @@ class CustomerFactory extends Factory
 
     public function definition(): array
     {
+        $type = Arr::random(['b2b', 'b2c']);
+
         return [
-            'name' => $this->faker->name(),
-            'comments' => $this->faker->text(),
-            'type' => Arr::random(['b2b', 'b2c']),
+            'type' => $type,
+            'first_name' => $type === 'b2c' ? $this->faker->name() : null,
+            'last_name' => $type === 'b2c' ? $this->faker->name() : null,
+            'company_name' => $type === 'b2b' ? $this->faker->company() : null,
+            'slug' => fn (array $attributes) => Str::slug($type === 'b2c' ? "{$attributes['first_name']} {$attributes['last_name']}" : $attributes['company_name']),
+            'comments' => $this->faker->optional()->text(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

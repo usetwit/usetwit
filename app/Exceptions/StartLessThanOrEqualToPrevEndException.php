@@ -4,6 +4,4 @@ namespace App\Exceptions;
 
 use Exception;
 
-class StartLessThanOrEqualToPrevEndException extends Exception
-{
-}
+class StartLessThanOrEqualToPrevEndException extends Exception {}

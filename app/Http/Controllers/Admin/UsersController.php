@@ -42,6 +42,7 @@ class UsersController extends Controller
 
         $substitutions = ['role_name' => 'roles.name', 'id' => 'users.id'];
         $global = [
+            'id',
             'username',
             'email',
             'first_name',
@@ -49,8 +50,7 @@ class UsersController extends Controller
             'last_name',
             'full_name',
             'employee_id',
-            'roles.name',
-            'users.id',
+            'role_name',
         ];
 
         $cols = Cache::remember('user_columns', 24 * 60 * 60 * 7, function () {

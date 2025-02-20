@@ -39,7 +39,7 @@ return new class extends Migration
                 $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
                 $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');
             }
-            $table->string('name')->collation('ascii_bin');
+            $table->string('name')->collation('utf8mb4_0900_ai_ci');
             $table->string('guard_name')->collation('ascii_bin');
             $table->timestamps();
             if ($teams || config('permission.testing')) {

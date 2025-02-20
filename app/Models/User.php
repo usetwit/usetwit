@@ -64,7 +64,7 @@ class User extends Authenticatable implements Authorizable
     {
         parent::booted();
 
-        static::saving(function ($user) {
+        static::saving(function (self $user) {
             if ($user->isDirty(['first_name', 'middle_names', 'last_name'])) {
                 $user->full_name = trim(preg_replace('/\s+/', ' ', "{$user->first_name} {$user->middle_names} {$user->last_name}"));
             }

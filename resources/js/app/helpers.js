@@ -26,52 +26,48 @@ export const formatDate = (dateString, format, separator) => {
     return 'Invalid DateTime'
 }
 
-const escapeRegex = string => {
-    if (Array.isArray(string) || typeof string === 'object' || typeof string === 'boolean') {
-        return ''
-    }
-
-    string = String(string)
-
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-}
-
 export const applyFilterRegex = (string, global, self = []) => {
     if (Array.isArray(string) || typeof string === 'object' || typeof string === 'boolean') {
-        return ''
+        return '';
     }
 
     if (Array.isArray(global) || typeof global === 'object' || typeof global === 'boolean') {
-        global = ''
+        global = '';
     }
 
-    self = Array.from(self)
-    string = String(string)
-    global = String(global)
+    self = Array.from(self);
+    string = String(string);
+    global = String(global);
 
-    const regexParts = []
+    const regexParts = [];
 
     if (global !== '') {
-        regexParts.push(escapeRegex(global))
+        regexParts.push(escapeRegex(global));
     }
 
     self.forEach(value => {
         if (Array.isArray(value) || typeof value === 'object' || typeof value === 'boolean') {
-            return
+            return;
         }
 
-        value = String(value)
+        value = String(value);
         if (value !== '') {
-            regexParts.push(value)
+            regexParts.push(escapeRegex(value)); // Escape regex special chars
         }
-    })
+    });
 
     if (!regexParts.length) {
-        return string
+        return string;
     }
 
-    return string.replace(new RegExp(regexParts.join('|'), 'gi'), `<span class="regex-result">$&</span>`)
-}
+    // Sort by length in descending order to prioritize longer matches
+    regexParts.sort((a, b) => b.length - a.length);
+
+    return string.replace(new RegExp(regexParts.join('|'), 'gi'), `<span class="regex-result">$&</span>`);
+};
+
+// Utility function to escape regex special characters
+const escapeRegex = (str) => str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 
 export function flagEmoji(countryCode) {
     if (typeof countryCode !== 'string'){

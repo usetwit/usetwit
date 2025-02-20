@@ -4,6 +4,4 @@ namespace App\Exceptions;
 
 use Exception;
 
-class IncorrectTimeFormatException extends Exception
-{
-}
+class IncorrectTimeFormatException extends Exception {}
