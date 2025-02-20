@@ -52,16 +52,25 @@ export default {
             window.removeEventListener('scroll', hideTooltip)
         }
 
+        el._tooltip = tooltip
+        el._showTooltip = showTooltip
+        el._hideTooltip = hideTooltip
         el.addEventListener('mouseenter', showTooltip)
         el.addEventListener('mouseleave', hideTooltip)
-
-        el._tooltip = tooltip
     },
 
     beforeUnmount(el) {
         if (el._tooltip) {
             el._tooltip.remove()
             delete el._tooltip
+        }
+        if (el._showTooltip) {
+            el.removeEventListener('mouseenter', el._showTooltip)
+            delete el._showTooltip
+        }
+        if (el._hideTooltip) {
+            el.removeEventListener('mouseleave', el._hideTooltip)
+            delete el._hideTooltip
         }
     }
 }
