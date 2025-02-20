@@ -1,4 +1,4 @@
-.custom-tooltip {
+.tooltip {
     position: absolute;
     background: black;
     color: white;
@@ -13,7 +13,7 @@
     z-index: 9999;
 }
 
-.custom-tooltip::after {
+.tooltip::after {
     content: "";
     position: absolute;
     border-style: solid;

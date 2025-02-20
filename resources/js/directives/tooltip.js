@@ -4,7 +4,7 @@ export default {
         const position = Object.keys(binding.modifiers)[0] || 'top'
 
         const tooltip = document.createElement('div')
-        tooltip.className = `custom-tooltip tooltip-${position}`
+        tooltip.className = `tooltip tooltip-${position}`
         tooltip.textContent = tooltipText
         document.body.appendChild(tooltip)
 
