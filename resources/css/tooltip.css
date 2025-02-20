@@ -13,15 +13,12 @@
     z-index: 9999;
 }
 
-/* Default arrow styling for all positions */
 .custom-tooltip::after {
     content: "";
     position: absolute;
     border-style: solid;
 }
 
-/* Tooltip above the element (v-tooltip.top) */
-/* Arrow appears at bottom of tooltip pointing down */
 .tooltip-top::after {
     top: 100%;
     left: 50%;
@@ -30,8 +27,6 @@
     border-color: black transparent transparent transparent;
 }
 
-/* Tooltip below the element (v-tooltip.bottom) */
-/* Arrow appears at top of tooltip pointing up */
 .tooltip-bottom::after {
     bottom: 100%;
     left: 50%;
@@ -40,9 +35,6 @@
     border-color: transparent transparent black transparent;
 }
 
-/* Tooltip to the left of the element (v-tooltip.left) */
-/* Arrow appears on the right of the tooltip pointing left */
-/* Left Tooltip Arrow: on the right edge of the tooltip */
 .tooltip-left::after {
     right: 0;
     top: 50%;
@@ -51,7 +43,6 @@
     border-color: transparent transparent transparent black;
 }
 
-/* Right Tooltip Arrow: on the left edge of the tooltip */
 .tooltip-right::after {
     left: 0;
     top: 50%;
