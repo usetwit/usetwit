@@ -16,33 +16,27 @@ export default {
             switch (position) {
                 case 'top':
                     top = rect.top - tooltipRect.height - 4
-                    left = rect.left + (rect.width / 2) - (tooltipRect.width / 2)
+                    left = rect.left + rect.width / 2 - tooltipRect.width / 2
                     break
                 case 'bottom':
                     top = rect.bottom + 4
-                    left = rect.left + (rect.width / 2) - (tooltipRect.width / 2)
+                    left = rect.left + rect.width / 2 - tooltipRect.width / 2
                     break
                 case 'left':
-                    top = rect.top + (rect.height / 2) - (tooltipRect.height / 2)
-                    left = rect.left - tooltipRect.width - 4
+                    top = rect.top + rect.height / 2 - tooltipRect.height / 2
+                    left = rect.left - tooltipRect.width - 8
                     break
                 case 'right':
-                    top = rect.top + (rect.height / 2) - (tooltipRect.height / 2)
-                    left = rect.right + 4
+                    top = rect.top + rect.height / 2 - tooltipRect.height / 2
+                    left = rect.right + 8
                     break
                 default:
                     top = rect.top - tooltipRect.height - 4
-                    left = rect.left + (rect.width / 2) - (tooltipRect.width / 2)
+                    left = rect.left + rect.width / 2 - tooltipRect.width / 2
             }
 
             tooltip.style.top = `${top + window.scrollY}px`
             tooltip.style.left = `${left + window.scrollX}px`
-        }
-
-        const repositionTooltip = () => {
-            if (tooltip.style.visibility === 'visible') {
-                positionTooltip()
-            }
         }
 
         const showTooltip = () => {
@@ -62,17 +56,12 @@ export default {
         el.addEventListener('mouseleave', hideTooltip)
 
         el._tooltip = tooltip
-        el._repositionTooltip = repositionTooltip
     },
 
     beforeUnmount(el) {
         if (el._tooltip) {
             el._tooltip.remove()
             delete el._tooltip
-        }
-        if (el._repositionTooltip) {
-            window.removeEventListener('scroll', el._repositionTooltip)
-            delete el._repositionTooltip
         }
     }
 }
