@@ -6,6 +6,7 @@ use App\Exceptions\InvalidCustomerTypeException;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Sluggable\SlugOptions;
 
@@ -57,6 +58,11 @@ class Customer extends Authenticatable implements Authorizable
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');
+    }
+
+    public function defaultAddress(): MorphOne
+    {
+        return $this->morphOne(Address::class, 'addressable')->where('default_address', true);
     }
 
     public function contacts(): ?MorphMany

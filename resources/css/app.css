@@ -1,4 +1,5 @@
 @import './checkbox.css' layer(base);
+@import './tooltip.css' layer(base);
 @import 'primeicons/primeicons.css';
 @import 'tailwindcss';
 

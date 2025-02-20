@@ -93,6 +93,14 @@ provide('tableInstance', tableInstance)
 </script>
 
 <template>
+    <button v-tooltip.left="'This is a tooltip on top'">LEFT</button>
+    <br><br>
+    <button v-tooltip.right="'This is a tooltip on top'">RIGHT</button>
+    <br><br>
+    <button v-tooltip.top="'This is a tooltip on top'">TOP</button>
+    <br><br>
+    <button v-tooltip.bottom="'This is a tooltip on top'">BOTTOM</button>
+    <br><br>
     <DataTable v-model:rows="rows"
                v-model="activeData"
                :is-loading="isLoading"

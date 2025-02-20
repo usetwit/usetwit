@@ -2,6 +2,7 @@ import { createApp } from 'vue/dist/vue.esm-bundler'
 import { createPinia } from 'pinia'
 import Vue3Toastify, { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
+import tooltip from "@/directives/tooltip.js";
 
 const pinia = createPinia()
 
@@ -18,6 +19,7 @@ export default function vueConfig() {
                 width: 'auto',
             },
         })
+        .directive('tooltip', tooltip)
 
     return { app }
 }
