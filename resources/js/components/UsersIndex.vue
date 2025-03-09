@@ -1,22 +1,22 @@
 <script setup>
-import {provide, ref} from 'vue'
-import useAxios from '@/composables/useAxios.js'
-import DataTable from '@/components/DataTable/DataTable.vue'
-import Column from '@/components/DataTable/Column.vue'
-import Button from '@/components/Form/Button.vue'
-import useTable from '@/composables/useTable.js'
-import {formatDate, applyFilterRegex} from '@/app/helpers.js'
-import useStorage from '@/composables/useStorage.js'
-import {startCase} from 'lodash'
+import {provide, ref} from 'vue';
+import useAxios from '@/composables/useAxios.js';
+import DataTable from '@/components/DataTable/DataTable.vue';
+import Column from '@/components/DataTable/Column.vue';
+import Button from '@/components/Form/Button.vue';
+import useTable from '@/composables/useTable.js';
+import {formatDate, applyFilterRegex} from '@/app/helpers.js';
+import useStorage from '@/composables/useStorage.js';
+import {startCase} from 'lodash';
 
 const props = defineProps({
     paginationSettings: {type: Object, required: true},
     dateSettings: {type: Object, required: true},
     routeGetUsers: {type: String, required: true},
-})
+});
 
-const rows = ref([])
-const isLoading = ref(false)
+const rows = ref([]);
+const isLoading = ref(false);
 const defaultData = {
     filters: {
         global: {constraints: [{value: null, mode: 'contains'}]},
@@ -54,53 +54,45 @@ const defaultData = {
         page: 1,
         per_page: props.paginationSettings.per_page.default,
         total: 0,
-    }
-}
+    },
+};
 
-const storageInstance = useStorage('users-index', defaultData)
-const {activeData} = storageInstance
+const storageInstance = useStorage('users-index', defaultData);
+const {activeData} = storageInstance;
 
 const fetchUsers = async () => {
-    isLoading.value = true
+    isLoading.value = true;
 
     const {data, errors, getResponse} = useAxios(props.routeGetUsers, {
         filters: activeData.value.filters,
         page: activeData.value.pagination.page,
         per_page: activeData.value.pagination.per_page,
         sort: activeData.value.sort,
-        visible: activeData.value.columns.filter(col => col.visible).map(col => col.field)
-    }, 'get')
+        visible: activeData.value.columns.filter(col => col.visible).map(col => col.field),
+    }, 'post');
 
-    await getResponse()
+    await getResponse();
 
     if (!errors.value.raw) {
-        rows.value = data.value.users
-        activeData.value.pagination.total = data.value.total
+        rows.value = data.value.users;
+        activeData.value.pagination.total = data.value.total;
     } else {
-        rows.value = []
+        rows.value = [];
     }
 
-    isLoading.value = false
-}
+    isLoading.value = false;
+};
 
-const tableInstance = useTable(defaultData, fetchUsers, storageInstance)
+const tableInstance = useTable(defaultData, fetchUsers, storageInstance);
 
-const {getColumn, isVisible, getSearchGlobalValue, getSearchValues} = tableInstance
+const {getColumn, isVisible, getSearchGlobalValue, getSearchValues} = tableInstance;
 
-const r = (field, string) => applyFilterRegex(string, getSearchGlobalValue(), getSearchValues(field))
+const r = (field, string) => applyFilterRegex(string, getSearchGlobalValue(), getSearchValues(field));
 
-provide('tableInstance', tableInstance)
+provide('tableInstance', tableInstance);
 </script>
 
 <template>
-    <button v-tooltip.left="'This is a tooltip on top'">LEFT</button>
-    <br><br>
-    <button v-tooltip.right="'This is a tooltip on top'">RIGHT</button>
-    <br><br>
-    <button v-tooltip.top="'This is a tooltip on top'">TOP</button>
-    <br><br>
-    <button v-tooltip.bottom="'This is a tooltip on top'">BOTTOM</button>
-    <br><br>
     <DataTable v-model:rows="rows"
                v-model="activeData"
                :is-loading="isLoading"

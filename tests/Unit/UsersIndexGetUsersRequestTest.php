@@ -25,7 +25,7 @@ class UsersIndexGetUsersRequestTest extends TestCase
 
         $request = new GetUsersRequest();
 
-        return Validator::make($data, $request->rules($filterService, $settings));
+        return Validator::make($data, $request->rules($filterService));
     }
 
     public function test_operator_is_required_with_multiple_constraints()

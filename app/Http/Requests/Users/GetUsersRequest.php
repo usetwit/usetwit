@@ -8,8 +8,6 @@ use App\Services\FilterService;
 use App\Settings\GeneralSettings;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
-use Illuminate\Validation\Rule;
 
 class GetUsersRequest extends FormRequest
 {
@@ -25,9 +23,10 @@ class GetUsersRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array|string>
+     *
      * @throws FilterServiceGetTypeInvalidException
      */
-    public function rules(FilterService $service, GeneralSettings $settings): array
+    public function rules(FilterService $service): array
     {
         $filterRules = [
             'string' => [

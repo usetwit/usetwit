@@ -53,7 +53,7 @@ class FilterService
 
     protected array $validTypes = ['string', 'number', 'date', 'boolean'];
 
-    public function __construct(private GeneralSettings $settings) {}
+    public function __construct(private readonly GeneralSettings $settings) {}
 
     /**
      * @throws FilterServiceGetTypeInvalidException
@@ -244,7 +244,6 @@ class FilterService
             }
 
             $field = $substitutions[$field] ?? $field;
-
             $operator = $props['operator'] ?? 'and';
             $constraints = $props['constraints'] ?? null;
 

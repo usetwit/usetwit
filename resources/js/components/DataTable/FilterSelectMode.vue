@@ -47,8 +47,8 @@ const dateModes = [
 ]
 
 const modes = {
-    string: stringModes.map(mode => ({ mode: mode, label: modeTexts[mode] })),
-    date: dateModes.map(mode => ({ mode: mode, label: modeTexts[mode] })),
+    string: stringModes.map(mode => ({mode, label: modeTexts[mode]})),
+    date: dateModes.map(mode => ({mode, label: modeTexts[mode]})),
 }
 </script>
 
@@ -65,7 +65,3 @@ const modes = {
         </template>
     </Select>
 </template>
-
-<style scoped>
-
-</style>

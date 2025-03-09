@@ -90,8 +90,10 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
             />
             <Button @click="fetch"
                     variant="success"
+                    border
                     icon="pi pi-refresh"
                     label="Refresh"
+                    :loading="isLoading"
             />
         </div>
         <InputGroup class="sm:mt-0 mt-2 w-full sm:w-60">

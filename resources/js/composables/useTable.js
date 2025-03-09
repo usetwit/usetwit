@@ -1,9 +1,9 @@
-import { cloneDeep, debounce, difference } from 'lodash'
-import { watch } from 'vue'
+import {cloneDeep, debounce, difference} from 'lodash'
+import {watch} from 'vue'
 
 export default function useTable(defaultData, fetchFn, storageInstance) {
 
-    const { activeData, set: saveToStorage } = storageInstance
+    const {activeData, set: saveToStorage} = storageInstance
 
     const getColumn = field => {
         return activeData.value.columns.find(col => col.field === field) || null
@@ -14,7 +14,11 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
     }
 
     const getSearchValues = field => {
-        return activeData.value.filters?.[field]?.constraints?.map(value => value.value) || []
+        return activeData.value.filters?.[field]?.constraints?.map(constraint => {
+            if (constraint.mode !== 'not_equals') {
+                return constraint.value
+            }
+        }) || []
     }
 
     const getSortedFields = () => {
@@ -29,7 +33,7 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
 
     watch(activeData, () => {
         saveToStorage()
-    }, { deep: true })
+    }, {deep: true})
 
     const getModeFromMap = fieldType => {
         const modeMapping = {
@@ -52,23 +56,23 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
 
         const mode = modeMapping[col.type] || 'equals'
 
-        activeData.value.filters[col.field].constraints = [{ value, mode }]
+        activeData.value.filters[col.field].constraints = [{value, mode}]
         filter()
     }
 
     const getFilteredFields = () => {
-        const { filters } = activeData.value
+        const {filters} = activeData.value
 
         return Object.keys(filters).filter(key => {
-            return filters[key].constraints.some(({ value }) => value !== null && value !== '')
+            return filters[key].constraints.some(({value}) => value !== null && value !== '')
         })
     }
 
     const clearFilters = () => {
-        const { filters } = activeData.value
+        const {filters} = activeData.value
 
         Object.keys(filters).forEach(key => {
-            filters[key].constraints = [{ value: null, mode: filters[key].constraints[0].mode }]
+            filters[key].constraints = [{value: null, mode: filters[key].constraints[0].mode}]
         })
 
         filter()
@@ -102,7 +106,7 @@ export default function useTable(defaultData, fetchFn, storageInstance) {
         filter()
     }
 
-    const fetch = debounce(fetchFn, 300, { leading: true, trailing: true })
+    const fetch = debounce(fetchFn, 300, {leading: true, trailing: true})
 
     const filter = (doFetch = true, setPageFirst = true) => {
         if (setPageFirst) {
