@@ -1,71 +1,71 @@
 <script setup>
-import {inject, nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, watch} from 'vue'
-import HeaderCell from '@/components/DataTable/HeaderCell.vue'
-import Cell from '@/components/DataTable/Cell.vue'
-import Button from '@/components/Form/Button.vue'
-import Paginator from '@/components/DataTable/Paginator.vue'
-import InputText from '@/components/Form/InputText.vue'
-import InputGroup from '@/components/Form/InputGroup.vue'
-import InputGroupAddon from '@/components/Form/InputGroupAddon.vue'
+import {inject, nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, watch} from 'vue';
+import HeaderCell from '@/components/DataTable/HeaderCell.vue';
+import Cell from '@/components/DataTable/Cell.vue';
+import Button from '@/components/Form/Button.vue';
+import Paginator from '@/components/DataTable/Paginator.vue';
+import InputText from '@/components/Form/InputText.vue';
+import InputGroup from '@/components/Form/InputGroup.vue';
+import InputGroupAddon from '@/components/Form/InputGroupAddon.vue';
 
 const props = defineProps({
     isLoading: {type: Boolean, default: false},
     paginationSettings: {type: Object, required: true},
     dateSettings: {type: Object},
-})
+});
 
-const columnSet = ref(new Set())
-const columns = ref([])
-const activeData = defineModel()
-const rows = defineModel('rows', {required: true, default: []})
-const style = ref({top: 0, height: 0})
-const resizeLeftStyle = ref(null)
+const columnSet = ref(new Set());
+const columns = ref([]);
+const activeData = defineModel();
+const rows = defineModel('rows', {required: true, default: []});
+const style = ref({top: 0, height: 0});
+const resizeLeftStyle = ref(null);
 
-const tableRef = useTemplateRef('tableRef')
+const tableRef = useTemplateRef('tableRef');
 
 const updateStyle = () => {
     style.value = {
         top: String(tableRef.value.getBoundingClientRect().top + window.scrollY) + 'px',
         height: tableRef.value.getBoundingClientRect().height.toString() + 'px',
-    }
-}
+    };
+};
 
 onMounted(() => {
-    updateStyle()
-    window.addEventListener('scroll', updateStyle)
-})
+    updateStyle();
+    window.addEventListener('scroll', updateStyle);
+});
 
 onBeforeUnmount(() => {
-    window.removeEventListener('scroll', updateStyle)
-})
+    window.removeEventListener('scroll', updateStyle);
+});
 
 provide('registerColumn', column => {
-    columnSet.value.add(column)
-})
+    columnSet.value.add(column);
+});
 
 provide('deregisterColumn', column => {
-    columnSet.value.delete(column)
-})
+    columnSet.value.delete(column);
+});
 
-provide('dateSettings', props.dateSettings)
+provide('dateSettings', props.dateSettings);
 
 watch(columnSet, (newValue) => {
     columns.value = Array.from(newValue).sort((a, b) => {
         if (a.order === undefined && b.order !== undefined) {
-            return -1
+            return -1;
         } else if (a.order !== undefined && b.order === undefined) {
-            return 1
+            return 1;
         }
 
-        return a.order - b.order
-    })
-}, {deep: true})
+        return a.order - b.order;
+    });
+}, {deep: true});
 
 watch(rows, () => {
-    nextTick(() => updateStyle())
-})
+    nextTick(() => updateStyle());
+});
 
-const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableInstance')
+const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableInstance');
 </script>
 
 <template>
