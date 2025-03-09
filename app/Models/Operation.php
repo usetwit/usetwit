@@ -10,6 +10,8 @@ class Operation extends Model
 {
     use HasFactory;
 
+    public $guarded = [];
+
     public function calendar(): HasOne
     {
         return $this->hasOne(Calendar::class);

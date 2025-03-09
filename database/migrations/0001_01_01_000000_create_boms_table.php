@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('boms', function (Blueprint $table) {
             $table->id();
-            $table->string('long_id');
+            $table->string('name');
             $table->string('description')->nullable();
             $table->softDeletes();
             $table->timestamps();

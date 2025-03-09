@@ -34,6 +34,8 @@ class GeneralSettings extends Settings
 
     public int $password_strength;
 
+    public string $colors;
+
     public static function group(): string
     {
         return 'general';

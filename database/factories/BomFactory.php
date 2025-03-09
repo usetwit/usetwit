@@ -12,7 +12,7 @@ class BomFactory extends Factory
     public function definition(): array
     {
         return [
-            'long_id' => strtoupper($this->faker->unique()->word),
+            'name' => strtoupper($this->faker->word),
             'description' => $this->faker->sentence,
         ];
     }

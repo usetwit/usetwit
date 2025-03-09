@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name', 16);
             $table->string('description')->nullable();
+            $table->string('color', 6)->collation('ascii_bin')->nullable();
+            $table->double('cost_ph');
             $table->softDeletes();
             $table->timestamps();
         });

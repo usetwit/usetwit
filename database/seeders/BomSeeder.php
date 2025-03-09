@@ -12,6 +12,7 @@ class BomSeeder extends Seeder
      */
     public function run(): void
     {
-        Bom::factory(100)->create();
+        Bom::factory()->create(['name' => 'B5975']);
+        Bom::factory(25)->create();
     }
 }

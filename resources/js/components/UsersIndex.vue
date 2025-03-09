@@ -150,8 +150,10 @@ provide('tableInstance', tableInstance);
                 class="text-center"
         >
             <template #body="{ row, setConstraintsCb }">
-                <Button size="sm" @click="setConstraintsCb(row.role_name)"
-                        v-html="r('role_name', startCase(row.role_name))"/>
+                <Button size="sm"
+                        @click="setConstraintsCb(row.role_name)"
+                        v-html="r('role_name', startCase(row.role_name))"
+                />
             </template>
         </Column>
         <Column :column="getColumn('joined_at')" v-if="isVisible('joined_at')" sortable type="date">

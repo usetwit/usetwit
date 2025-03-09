@@ -13,7 +13,7 @@ class StockItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'long_id' => strtoupper($this->faker->word),
+            'name' => strtoupper($this->faker->word),
             'description' => $this->faker->sentence,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

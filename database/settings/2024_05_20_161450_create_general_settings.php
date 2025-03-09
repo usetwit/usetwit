@@ -685,6 +685,15 @@ class CreateGeneralSettings extends SettingsMigration
         $this->migrator->add('general.date_validation_default', 'dd-MM-yyyy');
         $this->migrator->add('general.date_validation_separators', ['.', '/', '-']);
         $this->migrator->add('general.date_validation_separator_default', '/');
-
+        $this->migrator->add('general.colors', [
+            'blue',
+            'green',
+            'orange',
+            'pink',
+            'purple',
+            'red',
+            'teal',
+            'yellow',
+        ]);
     }
 }
