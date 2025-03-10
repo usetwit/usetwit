@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('heading')
-    Edit Bom Network: {{ $bom->name }}
+    Edit Network: {{ $bom->name }}
 @endsection
 
 @section('breadcrumbs')

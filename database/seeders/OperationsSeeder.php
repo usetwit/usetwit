@@ -15,7 +15,6 @@ class OperationsSeeder extends Seeder
         $operations = [
             'CUTTING-1', 'CUTTING-2',
             'SEWING-1', 'SEWING-2', 'SEWING-3', 'SEWING-4',
-            'QC-CUTTING-1', 'QC-CUTTING-2',
             'QC-SEWING-1', 'QC-SEWING-2',
             'PALLETIZE',
         ];

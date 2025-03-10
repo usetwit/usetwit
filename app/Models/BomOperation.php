@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class BomOperation extends Model
 {
@@ -29,5 +30,28 @@ class BomOperation extends Model
     public function Calendar(): BelongsTo
     {
         return $this->belongsTo(Calendar::class);
+    }
+
+    public function successors(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            BomOperation::class,
+            'bom_operation_successors',
+            'bom_operation_id',
+            'successor_id'
+        );
+    }
+
+    /**
+     * Get the predecessor operations for this operation.
+     */
+    public function predecessors(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            BomOperation::class,
+            'bom_operation_successors',
+            'successor_id',
+            'bom_operation_id'
+        );
     }
 }

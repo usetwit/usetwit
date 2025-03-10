@@ -12,7 +12,7 @@ class BomOperationsSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 11; $i++) {
+        for ($i = 1; $i <= 9; $i++) {
 
             BomOperation::factory()->create([
                 'bom_id' => 1,
@@ -36,5 +36,14 @@ class BomOperationsSeeder extends Seeder
             'x' => 40,
             'y' => 0,
         ]);
+
+        BomOperation::find(1)->successors()->sync([3]);
+        BomOperation::find(2)->successors()->sync([3]);
+        BomOperation::find(3)->successors()->sync([4,5]);
+        BomOperation::find(4)->successors()->sync([7]);
+        BomOperation::find(5)->successors()->sync([10]);
+        BomOperation::find(6)->successors()->sync([8]);
+        BomOperation::find(7)->successors()->sync([10]);
+        BomOperation::find(8)->successors()->sync([9]);
     }
 }

@@ -19,6 +19,7 @@ class BomOperationsNetworkController extends Controller
             'bomOperations',
             'bomOperations.calendar.calendarable',
             'bomOperations.operation',
+            'bomOperations.successors',
         ]);
 
         $operations = [];
@@ -34,6 +35,7 @@ class BomOperationsNetworkController extends Controller
                 'name' => $op->operation->name ?? 'BUFFER',
                 'calendar_id' => $op->calendar_id,
                 'calendar_name' => $op->calendar->calendarable->name,
+                'successors' => $op->successors->pluck('id')->toArray(),
                 'active' => false,
             ];
         }

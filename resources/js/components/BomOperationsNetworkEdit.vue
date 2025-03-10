@@ -87,8 +87,7 @@ const colorVariants = {
     <div id="content">
         <div class="p-2 bg-gray-100">
             <button
-                class="mr-1 text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md text-sm
-           hover:bg-green-300 disabled:bg-gray-300 disabled:text-gray-500"
+                class="mr-1 text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300 disabled:bg-gray-300 disabled:text-gray-500"
                 :disabled="!isAnyActive"
             >
                 <i class="pi pi-link mr-2"></i> Link
