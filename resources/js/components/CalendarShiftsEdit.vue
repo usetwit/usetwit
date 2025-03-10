@@ -1,18 +1,18 @@
 <script setup>
-import { computed, ref } from 'vue'
-import CalendarShiftsMonth from '@/components/CalendarShiftsMonth.vue'
-import CalendarShiftsShiftInput from '@/components/CalendarShiftsShiftInput.vue'
-import useAxios from '@/composables/useAxios'
-import CalendarShiftsSelect from '@/components/CalendarShiftsSelect.vue'
-import Button from '@/components/Form/Button.vue'
-import { toast } from "vue3-toastify";
+import { computed, ref } from 'vue';
+import CalendarShiftsMonth from '@/components/CalendarShiftsMonth.vue';
+import CalendarShiftsShiftInput from '@/components/CalendarShiftsShiftInput.vue';
+import useAxios from '@/composables/useAxios';
+import CalendarShiftsSelect from '@/components/CalendarShiftsSelect.vue';
+import Button from '@/components/Form/Button.vue';
+import { toast } from 'vue3-toastify';
 
-const dateList = ref([])
-const year = ref(new Date().getFullYear())
-const dayTexts = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const monthNumbers = Array.from(Array(12).keys())
-const lastDateClicked = ref(null)
-const isLoading = ref(false)
+const dateList = ref([]);
+const year = ref(new Date().getFullYear());
+const dayTexts = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const monthNumbers = Array.from(Array(12).keys());
+const lastDateClicked = ref(null);
+const isLoading = ref(false);
 
 const props = defineProps({
     route: {
@@ -27,142 +27,142 @@ const props = defineProps({
         required: true,
         type: Array,
     },
-})
+});
 
 const updateShifts = (shifts) => {
-    let activeDates = activeList.value.map(a => a.id)
+    let activeDates = activeList.value.map(a => a.id);
 
     dateList.value.forEach(a => {
             if (activeDates.includes(a.id)) {
-                a.nwd = shifts.nwd
-                a.shift1_start = shifts.shift1_start
-                a.shift1_end = shifts.shift1_end
-                a.shift2_start = shifts.shift2_start
-                a.shift2_end = shifts.shift2_end
-                a.shift3_start = shifts.shift3_start
-                a.shift3_end = shifts.shift3_end
-                a.shift4_start = shifts.shift4_start
-                a.shift4_end = shifts.shift4_end
-                a.isModified = getIsModified(a)
+                a.nwd = shifts.nwd;
+                a.shift1_start = shifts.shift1_start;
+                a.shift1_end = shifts.shift1_end;
+                a.shift2_start = shifts.shift2_start;
+                a.shift2_end = shifts.shift2_end;
+                a.shift3_start = shifts.shift3_start;
+                a.shift3_end = shifts.shift3_end;
+                a.shift4_start = shifts.shift4_start;
+                a.shift4_end = shifts.shift4_end;
+                a.isModified = getIsModified(a);
             }
-        }
-    )
+        },
+    );
 
-    save()
-}
+    save();
+};
 
 const clearActive = () => {
     activeList.value.forEach(a => {
-        a.active = false
-    })
-}
+        a.active = false;
+    });
+};
 
 const singleClick = (date) => {
     if (!(date.active && activeList.value.length === 1)) {
-        clearActive()
+        clearActive();
 
-        date.active = true
-        date.lastClicked = Date.now()
+        date.active = true;
+        date.lastClicked = Date.now();
 
-        lastDateClicked.value = date
+        lastDateClicked.value = date;
     }
-}
+};
 
 const shiftClick = (date) => {
     if (activeList.value.length === 0) {
-        singleClick(date)
+        singleClick(date);
     } else {
-        let minDate = null
-        let maxDate = null
+        let minDate = null;
+        let maxDate = null;
 
-        minDate = Math.min(date.timestamp, lastDateClicked.value.timestamp)
-        maxDate = Math.max(date.timestamp, lastDateClicked.value.timestamp)
+        minDate = Math.min(date.timestamp, lastDateClicked.value.timestamp);
+        maxDate = Math.max(date.timestamp, lastDateClicked.value.timestamp);
 
         dateList.value.forEach(a => {
             if (a.timestamp >= minDate && a.timestamp <= maxDate) {
-                a.active = true
+                a.active = true;
 
                 if (lastDateClicked.value.timestamp !== a.timestamp) {
-                    a.lastClicked = Date.now()
+                    a.lastClicked = Date.now();
                 }
             }
-        })
+        });
     }
-}
+};
 
 const ctrlClick = (date) => {
-    date.active = !date.active
-    date.lastClicked = Date.now()
+    date.active = !date.active;
+    date.lastClicked = Date.now();
 
     if (date.active === true) {
-        lastDateClicked.value = date
+        lastDateClicked.value = date;
     }
-}
+};
 
 const changeYear = direction => {
     if (direction === 'decrease' && year.value > 2020) {
-        year.value--
+        year.value--;
     } else if (direction === 'increase' && year.value < 2050) {
-        year.value++
+        year.value++;
     }
 
-    getDates()
-}
+    getDates();
+};
 
 const save = async () => {
-    isLoading.value = true
+    isLoading.value = true;
 
-    const { status, data, getResponse } = useAxios(
+    const {status, data, getResponse} = useAxios(
         props.routeUpdate,
         {
             dates: dateList.value,
             year: year.value,
         },
-        'patch'
-    )
-    await getResponse()
+        'patch',
+    );
+    await getResponse();
 
-    if (status.value === 200){
-        toast.success(data.value)
+    if (status.value === 200) {
+        toast.success(data.value);
     }
 
-    isLoading.value = false
-}
+    isLoading.value = false;
+};
 
 const getCalendarShifts = async () => {
-    const { status, data, getResponse } = useAxios(
+    const {status, data, getResponse} = useAxios(
         props.route,
         {
             year: year.value,
         },
-    )
-    await getResponse()
+    );
+    await getResponse();
 
     if (status.value === 200) {
-        return data.value
+        return data.value;
     }
 
-    return []
-}
+    return [];
+};
 
 const filterMonth = (month) => {
-    return dateList.value.filter(a => a.month === month)
-}
+    return dateList.value.filter(a => a.month === month);
+};
 
 function getIsModified(date) {
-    return date.shift1_start !== '00:00' || date.shift1_end !== '00:00'
+    return date.shift1_start !== '00:00' || date.shift1_end !== '00:00';
 }
 
 const getDates = async () => {
-    isLoading.value = true
+    isLoading.value = true;
 
-    let dateArray = []
+    let dateArray = [];
     let currentDate = new Date(Date.UTC(year.value, 0, 1));
     const endDate = new Date(Date.UTC(year.value, 11, 31));
-    const calendarShifts = await getCalendarShifts()
+    const calendarShifts = await getCalendarShifts();
 
     while (currentDate <= endDate) {
-        let id = currentDate.toISOString().split('T')[0]
+        let id = currentDate.toISOString().split('T')[0];
         let dateProperties = {
             id: id,
             timestamp: currentDate.getTime(),
@@ -173,12 +173,12 @@ const getDates = async () => {
             active: false,
             lastClicked: 0,
             shift_date: id,
-        }
+        };
 
-        let merged = null
+        let merged = null;
 
         if (typeof calendarShifts[id] !== 'undefined') {
-            merged = { ...calendarShifts[id], ...dateProperties }
+            merged = {...calendarShifts[id], ...dateProperties};
         } else {
             let temp = {
                 'shift1_start': '00:00',
@@ -190,38 +190,38 @@ const getDates = async () => {
                 'shift4_start': '',
                 'shift4_end': '',
                 'nwd': false,
-            }
+            };
 
-            merged = { ...temp, ...dateProperties }
+            merged = {...temp, ...dateProperties};
         }
 
-        dateArray.push({ ...merged, ...{ isModified: getIsModified(merged) } })
+        dateArray.push({...merged, ...{isModified: getIsModified(merged)}});
 
-        currentDate = currentDate.addDays(1)
+        currentDate = currentDate.addDays(1);
     }
 
-    dateList.value = dateArray
-    isLoading.value = false
-}
+    dateList.value = dateArray;
+    isLoading.value = false;
+};
 
-getDates()
+getDates();
 const selectDays = (day) => {
     dateList.value.forEach(a => {
         if (a.dayOfWeek === day) {
-            a.active = true
+            a.active = true;
 
             if (lastDateClicked.value !== a.timestamp) {
-                a.lastClicked = Date.now()
+                a.lastClicked = Date.now();
             }
         }
-    })
-}
+    });
+};
 
 const activeList = computed(() => {
     return dateList.value.filter(a => a.active === true).sort(function (a, b) {
-        return a.lastClicked - b.lastClicked
-    })
-})
+        return a.lastClicked - b.lastClicked;
+    });
+});
 </script>
 
 <template>

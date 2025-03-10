@@ -10,9 +10,9 @@ class Bom extends Model
 {
     use HasFactory;
 
-    public $guarded = [];
+    protected $guarded = [];
 
-    public function operations(): HasMany
+    public function bomOperations(): HasMany
     {
         return $this->hasMany(BomOperation::class);
     }

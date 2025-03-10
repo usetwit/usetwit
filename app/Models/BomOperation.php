@@ -10,7 +10,7 @@ class BomOperation extends Model
 {
     use HasFactory;
 
-    public $guarded = [];
+    protected $guarded = [];
 
     public static array $operationTypes = ['process', 'buffer'];
 
@@ -19,5 +19,15 @@ class BomOperation extends Model
     public function bom(): BelongsTo
     {
         return $this->belongsTo(Bom::class);
+    }
+
+    public function operation(): BelongsTo
+    {
+        return $this->belongsTo(Operation::class);
+    }
+
+    public function Calendar(): BelongsTo
+    {
+        return $this->belongsTo(Calendar::class);
     }
 }

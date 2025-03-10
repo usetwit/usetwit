@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Bom;
 use App\Models\Location;
 use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
@@ -55,7 +56,7 @@ Breadcrumbs::for('admin.users.create', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('admin.users.edit', function (BreadcrumbTrail $trail, User $user) {
     $trail->parent('admin.users.index');
-    $trail->push('Edit User: '.$user->full_name);
+    $trail->push('Edit User: ' . $user->full_name);
 });
 
 /* Locations */
@@ -71,11 +72,23 @@ Breadcrumbs::for('admin.locations.create', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('admin.locations.edit', function (BreadcrumbTrail $trail, Location $location) {
     $trail->parent('admin.locations.index');
-    $trail->push('Edit Location: '.$location->name);
+    $trail->push('Edit Location: ' . $location->name);
 });
 
 /* Company */
 Breadcrumbs::for('admin.company.edit', function (BreadcrumbTrail $trail) {
     $trail->parent('admin.home');
     $trail->push('Company', route('admin.company.edit'));
+});
+
+/* Bom Operations */
+Breadcrumbs::for('admin.bom-operations.edit', function (BreadcrumbTrail $trail, Bom $bom) {
+    $trail->parent('admin.home');
+    $trail->push('Bom Operations', route('admin.bom-operations.edit', $bom));
+});
+
+/* Bom Operations Network */
+Breadcrumbs::for('admin.bom-operations-network.edit', function (BreadcrumbTrail $trail, Bom $bom) {
+    $trail->parent('admin.bom-operations.edit', $bom);
+    $trail->push('Edit Network', route('admin.company.edit'));
 });

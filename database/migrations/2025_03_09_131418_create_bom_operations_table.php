@@ -14,16 +14,16 @@ return new class extends Migration
         Schema::create('bom_operations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bom_id')->constrained();
-            $table->foreignId('operation_id')->constrained();
+            $table->foreignId('operation_id')->nullable()->constrained();
             $table->foreignId('calendar_id')->constrained();
             $table->enum('type', ['process', 'buffer'])->collation('ascii_bin');
             $table->enum('buffer_duration_type', ['minutes', 'calendar_day', 'working_day'])
                 ->collation('ascii_bin')
                 ->nullable();
+            $table->integer('buffer_duration')->nullable();
             $table->integer('x');
             $table->integer('y');
             $table->string('color', 6)->collation('ascii_bin')->nullable();
-            $table->bigInteger('buffer_duration')->nullable();
             $table->text('instructions')->nullable();
             $table->timestamps();
         });

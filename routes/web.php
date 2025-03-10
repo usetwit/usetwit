@@ -68,6 +68,17 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         Route::post('', 'store')->name('store');
     });
 
+    /* Bom Operations */
+    Route::prefix('bom-operations')->name('bom-operations.')->controller('BomOperationsController')->group(function () {
+        Route::get('{bom}/edit', 'edit')->name('edit');
+    });
+
+    /* Bom Operations Network */
+    Route::prefix('bom-operations-network')->name('bom-operations-network.')->controller('BomOperationsNetworkController')->group(function () {
+        Route::get('{bom}/edit', 'edit')->name('edit');
+        Route::patch('{bom}', 'update')->name('update');
+    });
+
     /* Calendars */
     Route::prefix('calendars')->name('calendars.')->middleware('permission:calendars.update')->controller('CalendarsController')->group(function () {
         Route::get('', 'index')->name('index');

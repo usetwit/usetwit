@@ -1,11 +1,13 @@
-import { defineConfig } from 'vite'
-import laravel from 'laravel-vite-plugin'
-import vue from '@vitejs/plugin-vue'
-import path from 'path'
+import {defineConfig} from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
 
 export default defineConfig({
     plugins: [
         vue(),
+        tailwindcss(),
         laravel({
             input: [
                 'resources/css/app.css',
@@ -19,6 +21,7 @@ export default defineConfig({
                 'resources/js/app/sales-orders-create.js',
                 'resources/js/app/locations-index.js',
                 'resources/js/app/locations-edit.js',
+                'resources/js/app/bom-operations-network-edit.js',
             ],
             refresh: true,
         }),
