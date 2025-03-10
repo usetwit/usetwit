@@ -6,19 +6,14 @@ const props = defineProps({
     operations: {type: Array, required: true},
 });
 
-// Use a ref for operations (Vue auto-unwraps refs in templates)
 const ops = ref([...props.operations]);
 
-// Computed property that returns true if any operation is active.
 const isAnyActive = computed(() => ops.value.some(op => op.active));
-
-// For dragging: store the currently dragged operation and the offset
 const draggingOperation = ref(null);
 const dragOffset = ref({x: 0, y: 0});
 const isDragging = ref(false);
 const initialMousePosition = ref({x: 0, y: 0});
 
-// When a user mouses down on an operation, prepare for a possible drag.
 function onMouseDown(e, operation) {
     draggingOperation.value = operation;
     dragOffset.value = {
@@ -29,31 +24,26 @@ function onMouseDown(e, operation) {
     isDragging.value = false;
 }
 
-// Update the position if dragging, and set the flag if movement is significant.
 function onMouseMove(e) {
     if (!draggingOperation.value) return;
 
     const dx = e.clientX - initialMousePosition.value.x;
     const dy = e.clientY - initialMousePosition.value.y;
-    // If the mouse moves more than 4px, we consider it a drag.
+
     if (!isDragging.value && (Math.abs(dx) > 0 || Math.abs(dy) > 0)) {
         isDragging.value = true;
     }
 
-    // Update the operation's position visually.
-    draggingOperation.value.x = e.clientX - dragOffset.value.x;
-    draggingOperation.value.y = e.clientY - dragOffset.value.y;
+    draggingOperation.value.x = Math.max(0, e.clientX - dragOffset.value.x);
+    draggingOperation.value.y = Math.max(0, e.clientY - dragOffset.value.y);
 }
 
 function onMouseUp() {
     if (draggingOperation.value && !isDragging.value) {
         if (draggingOperation.value.active) {
-            // If the station is already active, toggle it off.
             draggingOperation.value.active = false;
         } else {
-            // Otherwise, set all stations to inactive...
             ops.value.forEach(op => op.active = false);
-            // ...and then mark this station as active.
             draggingOperation.value.active = true;
         }
     }
@@ -66,6 +56,7 @@ onMounted(() => {
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 });
+
 onBeforeUnmount(() => {
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
