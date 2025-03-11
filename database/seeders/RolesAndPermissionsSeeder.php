@@ -28,7 +28,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'company.update']);
 
         $methods = ['create', 'update', 'view', 'delete', 'restore'];
-        $modules = ['users', 'roles', 'locations', 'calendars', 'sales-orders', 'invoices'];
+        $modules = ['users', 'roles', 'locations', 'calendars', 'sales-orders', 'invoices', 'bom-operations'];
 
         foreach ($modules as $module) {
             foreach ($methods as $method) {
@@ -37,7 +37,6 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         Role::create(['name' => 'admin'])->givePermissionTo(Permission::all());
-        Role::create(['name' => 'customer']);
         Role::create(['name' => 'design']);
         Role::create(['name' => 'sales']);
         Role::create(['name' => 'purchasing']);

@@ -1,14 +1,16 @@
 <script setup>
 import {ref, computed, onMounted, onBeforeUnmount} from 'vue';
+import useAxios from '@/composables/useAxios.js';
+import BomOperationsNetworkJoins from '@/components/BomOperationsNetworkJoins.vue';
 
 const props = defineProps({
     routes: {type: Object, required: true},
     operations: {type: Array, required: true},
 });
 
-const ops = ref([...props.operations]);
+const operations = ref([...props.operations]);
 
-const isAnyActive = computed(() => ops.value.some(op => op.active));
+const isAnyActive = computed(() => operations.value.some(op => op.active));
 const draggingOperation = ref(null);
 const dragOffset = ref({x: 0, y: 0});
 const isDragging = ref(false);
@@ -38,19 +40,33 @@ function onMouseMove(e) {
     draggingOperation.value.y = Math.max(0, e.clientY - dragOffset.value.y);
 }
 
-function onMouseUp() {
+async function onMouseUp() {
+    const wasDragging = isDragging.value;
+
     if (draggingOperation.value && !isDragging.value) {
         if (draggingOperation.value.active) {
             draggingOperation.value.active = false;
         } else {
-            ops.value.forEach(op => op.active = false);
+            operations.value.forEach(op => op.active = false);
             draggingOperation.value.active = true;
         }
     }
 
     draggingOperation.value = null;
     isDragging.value = false;
+
+    if (wasDragging) {
+        await save();
+    }
 }
+
+const save = async () => {
+    const {getResponse} = useAxios(props.routes.update, {
+        operations: operations.value,
+    }, 'patch');
+
+    await getResponse();
+};
 
 onMounted(() => {
     window.addEventListener('mousemove', onMouseMove);
@@ -63,14 +79,14 @@ onBeforeUnmount(() => {
 });
 
 const colorVariants = {
-    blue: { default: 'bg-blue-300', active: 'bg-blue-400' },
-    red: { default: 'bg-red-300', active: 'bg-red-400' },
-    green: { default: 'bg-green-300', active: 'bg-green-400' },
-    yellow: { default: 'bg-yellow-300', active: 'bg-yellow-400' },
-    purple: { default: 'bg-purple-300', active: 'bg-purple-400' },
-    orange: { default: 'bg-orange-300', active: 'bg-orange-400' },
-    pink: { default: 'bg-pink-300', active: 'bg-pink-400' },
-    teal: { default: 'bg-teal-300', active: 'bg-teal-400' },
+    blue: {default: 'bg-blue-300', active: 'bg-blue-400'},
+    red: {default: 'bg-red-300', active: 'bg-red-400'},
+    green: {default: 'bg-green-300', active: 'bg-green-400'},
+    yellow: {default: 'bg-yellow-300', active: 'bg-yellow-400'},
+    purple: {default: 'bg-purple-300', active: 'bg-purple-400'},
+    orange: {default: 'bg-orange-300', active: 'bg-orange-400'},
+    pink: {default: 'bg-pink-300', active: 'bg-pink-400'},
+    teal: {default: 'bg-teal-300', active: 'bg-teal-400'},
 };
 </script>
 
@@ -91,8 +107,15 @@ const colorVariants = {
             </button>
         </div>
         <div class="min-h-96 overflow-scroll relative" id="network">
+            <template v-for="operation in operations" :key="operation.id">
+                <BomOperationsNetworkJoins v-for="successor in operation.successors"
+                                           :key="`${operation.id}-${successor}`"
+                                           :operation="operation"
+                                           :successor="operations.find(op => op.id === successor)"
+                />
+            </template>
             <div
-                v-for="operation in ops"
+                v-for="operation in operations"
                 :key="operation.id"
                 class="operation-box absolute overflow-hidden text-center border-[2px] text-gray-800"
                 :class="[
@@ -102,7 +125,8 @@ const colorVariants = {
                         'border-gray-800': !operation.active,
                         'cursor-move': isDragging,
                         'cursor-pointer': !isDragging,
-                    }]"
+                    }
+                ]"
                 :style="{
                     left: operation.x + 'px',
                     top: operation.y + 'px',

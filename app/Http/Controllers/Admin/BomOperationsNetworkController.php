@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BomOperationsNetwork\UpdateRequest;
 use App\Models\Bom;
+use App\Models\BomOperation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -35,7 +37,7 @@ class BomOperationsNetworkController extends Controller
                 'name' => $op->operation->name ?? 'BUFFER',
                 'calendar_id' => $op->calendar_id,
                 'calendar_name' => $op->calendar->calendarable->name,
-                'successors' => $op->successors->pluck('id'),
+                'successors' => $op->successors->pluck('id') ?? [],
                 'active' => false,
             ];
         }
@@ -43,8 +45,16 @@ class BomOperationsNetworkController extends Controller
         return view('admin.bom-operations-network.edit', compact('operations', 'bom', 'routes'));
     }
 
-    public function update(Bom $bom): JsonResponse
+    public function update(Bom $bom, UpdateRequest $request): JsonResponse
     {
+        foreach ($request->operations as $operation) {
+            BomOperation::where('id', $operation['id'])->update([
+                'x' => $operation['x'],
+                'y' => $operation['y'],
+                'color' => $operation['color'],
+            ]);
+        }
+
         return response()->json('success');
     }
 }
