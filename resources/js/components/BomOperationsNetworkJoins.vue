@@ -62,7 +62,6 @@ watch(() => ({
         s.value.right = newVal.successorX + width;
         s.value.top = newVal.successorY;
         s.value.bottom = newVal.successorY + width;
-        // console.log(`Operation ${props.operation.id} or its successor moved. Redraw lines.`);
     },
 );
 </script>
@@ -107,13 +106,41 @@ watch(() => ({
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
-                height: ((op.top + width / 2) - (s.top + width / 2)) + 'px',
+                height: ((op.top + width / 2) - (s.top + width / 2) + 2) + 'px',
              }"></div>
         <div class="h-line end-right"
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
                 width: ((s.left - op.right) / 2) + 'px',
+             }"></div>
+    </template>
+    <div v-if="pos.x === 'left' && pos.y === 'middle'"
+         class="h-line end-left"
+         :style="{
+               left: s.right + 'px',
+               top: (op.top + width / 2) + 'px',
+               width: (op.left - s.right) + 'px',
+         }"
+    ></div>
+    <template v-if="pos.x === 'left' && pos.y === 'below'">
+        <div class="h-line end-left"
+             :style="{
+                left: s.right + 'px',
+                top: (s.top + width / 2) + 'px',
+                width: ((op.left - s.right) / 2) + 'px',
+             }"></div>
+        <div class="v-line"
+             :style="{
+                left: (op.right + (s.left - op.right) / 2) + 'px',
+                top: (op.top + width / 2) + 'px',
+                height: ((s.top + width / 2) - (op.top + width / 2) + 2) + 'px',
+             }"></div>
+        <div class="h-line"
+             :style="{
+                left: (s.right + (op.left - s.right) / 2) + 'px',
+                top: (op.top + width / 2) + 'px',
+                width: ((op.left - s.right) / 2) + 'px',
              }"></div>
     </template>
 </template>
@@ -134,11 +161,22 @@ watch(() => ({
 .end-right::after {
     content: "";
     position: absolute;
-    right: 5px; /* Added 'px' */
+    right: 5px;
     top: 50%;
     transform: translateX(100%) translateY(-50%);
-    border-style: solid; /* Ensure border style is set */
+    border-style: solid;
     border-width: 5px 0 5px 5px;
     border-color: transparent transparent transparent black;
+}
+
+.end-left::after {
+    content: "";
+    position: absolute;
+    left: 5px; /* Position on the left side */
+    top: 50%;
+    transform: translateX(-100%) translateY(-50%);
+    border-style: solid;
+    border-width: 5px 5px 5px 0; /* Use border-right for the arrow */
+    border-color: transparent black transparent transparent;
 }
 </style>

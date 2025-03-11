@@ -36,8 +36,8 @@ function onMouseMove(e) {
         isDragging.value = true;
     }
 
-    draggingOperation.value.x = Math.max(0, e.clientX - dragOffset.value.x);
-    draggingOperation.value.y = Math.max(0, e.clientY - dragOffset.value.y);
+    draggingOperation.value.x = Math.max(0, Math.round((e.clientX - dragOffset.value.x) / 10) * 10);
+    draggingOperation.value.y = Math.max(0, Math.round((e.clientY - dragOffset.value.y) / 10) * 10);
 }
 
 async function onMouseUp() {
@@ -146,8 +146,8 @@ const colorVariants = {
 
 <style scoped>
 #network {
-    background: radial-gradient(circle, #ebebeb 1px, transparent 1px);
-    background-size: 5px 5px;
+    background: radial-gradient(circle, #e8e8e8 1px, transparent 1px);
+    background-size: 10px 10px;
     position: relative;
 }
 
@@ -160,37 +160,5 @@ const colorVariants = {
     justify-content: center;
     user-select: none;
     transition: left 0.1s ease, top 0.1s ease;
-}
-
-.right {
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-left: 20px solid black;
-}
-
-.left {
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-right: 20px solid black;
-}
-
-.up {
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 20px solid black;
-}
-
-.down {
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 20px solid black;
 }
 </style>
