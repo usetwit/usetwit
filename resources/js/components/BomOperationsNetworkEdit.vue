@@ -9,12 +9,12 @@ const props = defineProps({
 });
 
 const operations = ref([...props.operations]);
-
 const isAnyActive = computed(() => operations.value.some(op => op.active));
 const draggingOperation = ref(null);
 const dragOffset = ref({x: 0, y: 0});
 const isDragging = ref(false);
 const initialMousePosition = ref({x: 0, y: 0});
+const activeJoin = ref(null);
 
 function onMouseDown(e, operation) {
     draggingOperation.value = operation;
@@ -112,6 +112,7 @@ const colorVariants = {
                                            :key="`${operation.id}-${successor}`"
                                            :operation="operation"
                                            :successor="operations.find(op => op.id === successor)"
+                                           v-model="activeJoin"
                 />
             </template>
             <div

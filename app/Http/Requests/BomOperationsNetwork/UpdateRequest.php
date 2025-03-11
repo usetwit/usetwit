@@ -3,6 +3,7 @@
 namespace App\Http\Requests\BomOperationsNetwork;
 
 use App\Models\BomOperation;
+use App\Rules\MultipleOfTen;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -26,18 +27,20 @@ class UpdateRequest extends FormRequest
     {
         return [
             'operations' => 'array|required',
-            'operations.*.id' => 'exists:bom_operations,id',
+            'operations.*.id' => 'required|exists:bom_operations,id',
             'operations.*.x' => [
                 'required_with:operations.*.id',
                 'integer',
                 'min:0',
                 'max:5000',
+                new MultipleOfTen(),
             ],
             'operations.*.y' => [
                 'required_with:operations.*.id',
                 'integer',
                 'min:0',
                 'max:5000',
+                new MultipleOfTen(),
             ],
             'operations.*.color' => [
                 Rule::in([
@@ -51,6 +54,8 @@ class UpdateRequest extends FormRequest
                     'yellow',
                 ]),
             ],
+            'operations.*.successors' => 'array',
+            'operations.*.successors.*' => 'exists:bom_operations,id',
         ];
     }
 }

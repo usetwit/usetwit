@@ -7,6 +7,7 @@ const props = defineProps({
 });
 
 const width = 60;
+const activeJoin = defineModel();
 
 const op = ref({
     left: props.operation.x,
@@ -24,13 +25,11 @@ const s = ref({
 
 const pos = computed(() => {
     let pos = {
-        x: 'touching',
+        x: 'middle',
         y: 'middle',
     };
 
-    if (s.value.left === op.value.left) {
-        pos.x = 'middle';
-    } else if (s.value.left > op.value.right) {
+    if (s.value.left > op.value.right) {
         pos.x = 'right';
     } else if (s.value.right < op.value.left) {
         pos.x = 'left';
@@ -70,59 +69,107 @@ watch(() => ({
         s.value.bottom = newVal.successorY + width;
     },
 );
+
+const joinClicked = () => {
+    if (activeJoin.value === null
+        || activeJoin.value.operation !== props.operation.id
+        || activeJoin.value.successor !== props.successor.id
+    ) {
+        activeJoin.value = {
+            operation: props.operation.id,
+            successor: props.successor.id,
+        };
+    } else {
+        activeJoin.value = null;
+    }
+};
+
+const active = computed(() => {
+    return activeJoin.value &&
+        activeJoin.value.operation === props.operation.id &&
+        activeJoin.value.successor === props.successor.id;
+});
+
+const classes = computed(() => {
+    return {
+        'bg-red-500 z-500 active': active.value,
+        'bg-black': !active.value,
+    };
+});
 </script>
 
 <template>
     <div v-if="pos.x === 'right' && pos.y === 'middle'"
          class="h-line end-right"
+         :class="classes"
          :style="{
                left: op.right + 'px',
                top: (op.top + width / 2) + 'px',
                width: (s.left - op.right) + 'px',
          }"
+         @click="joinClicked"
     ></div>
     <template v-if="pos.x === 'right' && pos.y === 'below'">
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: op.right + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: ((s.left - op.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 height: ((s.top + width / 2) - (op.top + width / 2)) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line end-right"
+             :class="classes"
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
                 width: ((s.left - op.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'right' && pos.y === 'above'">
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: op.right + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: ((s.left - op.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
                 height: ((op.top + width / 2) - (s.top + width / 2) + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line end-right"
+             :class="classes"
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
                 width: ((s.left - op.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <div v-if="pos.x === 'left' && pos.y === 'middle'"
          class="h-line end-left"
+         :class="classes"
          :style="{
                left: s.right + 'px',
                top: (op.top + width / 2) + 'px',
@@ -131,46 +178,65 @@ watch(() => ({
     ></div>
     <template v-if="pos.x === 'left' && pos.y === 'below'">
         <div class="h-line end-left"
+             :class="classes"
              :style="{
                 left: s.right + 'px',
                 top: (s.top + width / 2) + 'px',
                 width: ((op.left - s.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 height: ((s.top + width / 2) - (op.top + width / 2) + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (s.right + (op.left - s.right) / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: ((op.left - s.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'left' && pos.y === 'above'">
         <div class="h-line end-left"
+             :class="classes"
              :style="{
                 left: s.right + 'px',
                 top: (s.top + width / 2) + 'px',
                 width: ((op.left - s.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
                 height: ((op.top + width / 2) - (s.top + width / 2) + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (s.right + (op.left - s.right) / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: ((op.left - s.right) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <div v-if="pos.x === 'middle' && pos.y === 'below'"
          class="v-line end-down"
+         :class="classes"
          :style="{
                left: (op.left + width / 2) + 'px',
                top: op.bottom + 'px',
@@ -179,47 +245,65 @@ watch(() => ({
     ></div>
     <template v-if="pos.x === 'leftMid' && pos.y === 'below'">
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.left + width / 2) + 'px',
                 top: op.bottom + 'px',
                 height: ((s.top - op.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: (op.bottom + (s.top - op.bottom) / 2) + 'px',
                 width: (op.left - s.left + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line end-down"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: (op.bottom + (s.top - op.bottom) / 2) + 'px',
                 height: ((s.top - op.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'rightMid' && pos.y === 'below'">
-        <div>leftMid</div>
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.left + width / 2) + 'px',
                 top: op.bottom + 'px',
                 height: ((s.top - op.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (op.left + width / 2) + 'px',
                 top: (op.bottom + (s.top - op.bottom) / 2) + 'px',
                 width: (s.right - op.right + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line end-down"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: (op.bottom + (s.top - op.bottom) / 2) + 'px',
                 height: ((s.top - op.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <div v-if="pos.x === 'middle' && pos.y === 'above'"
          class="v-line end-up"
+         :class="classes"
          :style="{
                left: (op.left + width / 2) + 'px',
                top: s.bottom + 'px',
@@ -228,115 +312,152 @@ watch(() => ({
     ></div>
     <template v-if="pos.x === 'leftMid' && pos.y === 'above'">
         <div class="v-line end-up"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: s.bottom + 'px',
                 height: ((op.top - s.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: (op.bottom + (s.top - op.bottom) / 2) + 'px',
                 width: (op.left - s.left + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.right - width / 2) + 'px',
                 top: (s.bottom + (op.top - s.bottom) / 2) + 'px',
                 height: ((op.top - s.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'rightMid' && pos.y === 'above'">
         <div class="v-line end-up"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: s.bottom + 'px',
                 height: ((op.top - s.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (op.left + width / 2) + 'px',
                 top: (s.bottom + (op.top - s.bottom) / 2) + 'px',
                 width: (s.left - op.left + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="v-line"
+             :class="classes"
              :style="{
                 left: (op.right - width / 2) + 'px',
                 top: (s.bottom + (op.top - s.bottom) / 2) + 'px',
                 height: ((op.top - s.bottom) / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'rightEdge' && pos.y === 'above'">
         <div class="v-line end-up"
+             :class="classes"
              :style="{
                 left: (op.right + width / 2) + 'px',
                 top: s.bottom + 'px',
                 height: ((op.top - s.bottom) + width / 2 + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: op.right + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: (width / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'leftEdge' && pos.y === 'above'">
         <div class="v-line end-up"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: s.bottom + 'px',
                 height: ((op.top - s.bottom) + width / 2 + 3) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: (width / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'rightEdge' && pos.y === 'below'">
-        <div>rightEdgeBelow</div>
-
         <div class="v-line end-down"
+             :class="classes"
              :style="{
                 left: (op.right + width / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 height: ((s.top - op.top) - width / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: op.right + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: (width / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
     <template v-if="pos.x === 'leftEdge' && pos.y === 'below'">
-        <div>leftEdgeBelow</div>
         <div class="v-line end-down"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 height: ((s.top - op.top) - width / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
         <div class="h-line"
+             :class="classes"
              :style="{
                 left: (s.left + width / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
                 width: (width / 2) + 'px',
-             }"></div>
+             }"
+             @click="joinClicked"
+        ></div>
     </template>
 </template>
 
 <style scoped lang="postcss">
 .h-line {
     position: absolute;
-    background-color: black;
     height: 3px;
 }
 
 .v-line {
     position: absolute;
-    background-color: black;
     width: 3px;
 }
 
@@ -351,6 +472,10 @@ watch(() => ({
     border-color: transparent transparent transparent black;
 }
 
+.end-right.active::after {
+    border-color: transparent transparent transparent red;
+}
+
 .end-left::after {
     content: "";
     position: absolute;
@@ -360,6 +485,10 @@ watch(() => ({
     border-style: solid;
     border-width: 5px 5px 5px 0;
     border-color: transparent black transparent transparent;
+}
+
+.end-left.active::after {
+    border-color: transparent red transparent transparent;
 }
 
 .end-up::after {
@@ -373,6 +502,10 @@ watch(() => ({
     border-color: transparent transparent black transparent;
 }
 
+.end-up.active::after {
+    border-color: transparent transparent red transparent;
+}
+
 .end-down::after {
     content: "";
     position: absolute;
@@ -383,4 +516,9 @@ watch(() => ({
     border-width: 5px 5px 0 5px;
     border-color: black transparent transparent transparent;
 }
+
+.end-down.active::after {
+    border-color: red transparent transparent transparent;
+}
+
 </style>

@@ -53,6 +53,8 @@ class BomOperationsNetworkController extends Controller
                 'y' => $operation['y'],
                 'color' => $operation['color'],
             ]);
+
+            BomOperation::findOrFail($operation['id'])->successors()->sync($operation['successors'] ?? []);
         }
 
         return response()->json('success');
