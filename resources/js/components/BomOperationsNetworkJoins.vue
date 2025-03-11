@@ -38,9 +38,9 @@ const pos = computed(() => {
 
     if (s.value.top === op.value.top) {
         pos.y = 'middle';
-    } else if (s.value.top > op.value.bottom) {
+    } else if (s.value.top > op.value.top) {
         pos.y = 'below';
-    } else if (s.value.bottom < op.value.top) {
+    } else if (s.value.top < op.value.top) {
         pos.y = 'above';
     }
 
@@ -68,13 +68,77 @@ watch(() => ({
 </script>
 
 <template>
-    <span>{{ pos }} - </span>
+    <div v-if="pos.x === 'right' && pos.y === 'middle'"
+         class="h-line end-right"
+         :style="{
+               left: op.right + 'px',
+               top: (op.top + width / 2) + 'px',
+               width: (s.left - op.right) + 'px',
+         }"
+    ></div>
+    <template v-if="pos.x === 'right' && pos.y === 'below'">
+        <div class="h-line"
+             :style="{
+                left: op.right + 'px',
+                top: (op.top + width / 2) + 'px',
+                width: ((s.left - op.right) / 2) + 'px',
+             }"></div>
+        <div class="v-line"
+             :style="{
+                left: (op.right + (s.left - op.right) / 2) + 'px',
+                top: (op.top + width / 2) + 'px',
+                height: ((s.top + width / 2) - (op.top + width / 2)) + 'px',
+             }"></div>
+        <div class="h-line end-right"
+             :style="{
+                left: (op.right + (s.left - op.right) / 2) + 'px',
+                top: (s.top + width / 2) + 'px',
+                width: ((s.left - op.right) / 2) + 'px',
+             }"></div>
+    </template>
+    <template v-if="pos.x === 'right' && pos.y === 'above'">
+        <div class="h-line"
+             :style="{
+                left: op.right + 'px',
+                top: (op.top + width / 2) + 'px',
+                width: ((s.left - op.right) / 2) + 'px',
+             }"></div>
+        <div class="v-line"
+             :style="{
+                left: (op.right + (s.left - op.right) / 2) + 'px',
+                top: (s.top + width / 2) + 'px',
+                height: ((op.top + width / 2) - (s.top + width / 2)) + 'px',
+             }"></div>
+        <div class="h-line end-right"
+             :style="{
+                left: (op.right + (s.left - op.right) / 2) + 'px',
+                top: (s.top + width / 2) + 'px',
+                width: ((s.left - op.right) / 2) + 'px',
+             }"></div>
+    </template>
 </template>
 
 <style scoped lang="postcss">
 .h-line {
     position: absolute;
     background-color: black;
-    height: 3px;
+    height: 2px;
+}
+
+.v-line {
+    position: absolute;
+    background-color: black;
+    width: 2px;
+}
+
+.end-right::after {
+    content: "";
+    position: absolute;
+    right: 5px; /* Added 'px' */
+    top: 50%;
+    transform: translateX(100%) translateY(-50%);
+    border-style: solid; /* Ensure border style is set */
+    border-width: 5px 0 5px 5px;
+    border-color: transparent transparent transparent black;
 }
 </style>
