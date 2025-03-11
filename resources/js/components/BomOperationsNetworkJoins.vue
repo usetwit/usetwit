@@ -143,19 +143,39 @@ watch(() => ({
                 width: ((op.left - s.right) / 2) + 'px',
              }"></div>
     </template>
+    <template v-if="pos.x === 'left' && pos.y === 'above'">
+        <div class="h-line end-left"
+             :style="{
+                left: s.right + 'px',
+                top: (s.top + width / 2) + 'px',
+                width: ((op.left - s.right) / 2) + 'px',
+             }"></div>
+        <div class="v-line"
+             :style="{
+                left: (op.right + (s.left - op.right) / 2) + 'px',
+                top: (s.top + width / 2) + 'px',
+                height: ((op.top + width / 2) - (s.top + width / 2) + 2) + 'px',
+             }"></div>
+        <div class="h-line"
+             :style="{
+                left: (s.right + (op.left - s.right) / 2) + 'px',
+                top: (op.top + width / 2) + 'px',
+                width: ((op.left - s.right) / 2) + 'px',
+             }"></div>
+    </template>
 </template>
 
 <style scoped lang="postcss">
 .h-line {
     position: absolute;
     background-color: black;
-    height: 2px;
+    height: 3px;
 }
 
 .v-line {
     position: absolute;
     background-color: black;
-    width: 2px;
+    width: 3px;
 }
 
 .end-right::after {
