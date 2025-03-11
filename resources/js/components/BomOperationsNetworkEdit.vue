@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed, onMounted, onBeforeUnmount} from 'vue';
+import {ref, onMounted, onBeforeUnmount, computed} from 'vue';
 import useAxios from '@/composables/useAxios.js';
 import BomOperationsNetworkJoins from '@/components/BomOperationsNetworkJoins.vue';
 import {toast} from 'vue3-toastify';
@@ -10,7 +10,6 @@ const props = defineProps({
 });
 
 const operations = ref([...props.operations]);
-const isAnyActive = computed(() => operations.value.some(op => op.active));
 const draggingOperation = ref(null);
 const dragOffset = ref({x: 0, y: 0});
 const isDragging = ref(false);
@@ -19,6 +18,49 @@ const activeJoin = ref(null);
 const linkMode = ref(false);
 
 function onMouseDown(e, operation) {
+    if (linkMode.value) {
+        const activeOp = activeOperation.value;
+
+        if (!activeOp) {
+            toast.error('No active operation');
+            linkMode.value = false;
+            return;
+        }
+
+        if (activeOp.id === operation.id) {
+            toast.error('Cannot link operation to self');
+            activeOp.active = false;
+            linkMode.value = false;
+            return;
+        }
+
+        const tempSuccessors = {};
+        operations.value.forEach(op => {
+            tempSuccessors[op.id] = [...op.successors];
+        });
+
+        tempSuccessors[activeOp.id].push(operation.id);
+
+        if (!validateGraph(tempSuccessors)) {
+            toast.error('Operation already in cycle');
+            activeOp.active = false;
+            linkMode.value = false;
+            return;
+        }
+
+        if (activeOp.successors.includes(operation.id)) {
+            toast.error('Operation already a successor');
+            activeOp.active = false;
+            linkMode.value = false;
+            return;
+        }
+
+        activeOp.successors.push(operation.id);
+        activeOp.active = false;
+        linkMode.value = false;
+        return;
+    }
+
     draggingOperation.value = operation;
     dragOffset.value = {
         x: e.clientX - operation.x,
@@ -99,6 +141,45 @@ const unlink = () => {
         activeJoin.value = null;
     }
 };
+
+const activeOperation = computed(() => operations.value.find(op => op.active) || null);
+
+const enterLinkMode = () => {
+    if (!activeOperation.value) return;
+
+    linkMode.value = true;
+};
+
+function hasCycleDFS(node, successors, visited, stack) {
+    if (stack.has(node)) return true;
+    if (visited.has(node)) return false;
+
+    visited.add(node);
+    stack.add(node);
+
+    for (const nextOp of (successors[node] || [])) {
+        if (hasCycleDFS(nextOp, successors, visited, stack)) {
+            return true;
+        }
+    }
+
+    stack.delete(node);
+    return false;
+}
+
+function validateGraph(successors) {
+    const visited = new Set();
+    const stack = new Set();
+
+    for (const op in successors) {
+        if (!visited.has(op)) {
+            if (hasCycleDFS(op, successors, visited, stack)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 </script>
 
 <template>
@@ -107,7 +188,8 @@ const unlink = () => {
             <div>
                 <button
                     class="mr-1 text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300 disabled:bg-gray-300 disabled:text-gray-500"
-                    :disabled="!isAnyActive"
+                    :disabled="!activeOperation"
+                    @click="enterLinkMode"
                 >
                     <i class="pi pi-link mr-1"></i>Link
                 </button>
@@ -144,8 +226,9 @@ const unlink = () => {
                     {
                         'border-red-500': operation.active,
                         'border-gray-800': !operation.active,
-                        'cursor-move': isDragging,
-                        'cursor-pointer': !isDragging,
+                        'cursor-move': isDragging && !linkMode,
+                        'cursor-pointer': !isDragging && !linkMode,
+                        'cursor-copy': linkMode,
                     }
                 ]"
                 :style="{
@@ -158,9 +241,6 @@ const unlink = () => {
                 <br>
                 {{ operation.calendar_name }}
             </div>
-        </div>
-        <div v-if="isAnyActive">
-            <strong>An operation is active!</strong>
         </div>
     </div>
 </template>
