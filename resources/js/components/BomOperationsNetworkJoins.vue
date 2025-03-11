@@ -76,8 +76,8 @@ const joinClicked = () => {
         || activeJoin.value.successor !== props.successor.id
     ) {
         activeJoin.value = {
-            operation: props.operation.id,
-            successor: props.successor.id,
+            operationId: props.operation.id,
+            successorId: props.successor.id,
         };
     } else {
         activeJoin.value = null;
@@ -86,8 +86,8 @@ const joinClicked = () => {
 
 const active = computed(() => {
     return activeJoin.value &&
-        activeJoin.value.operation === props.operation.id &&
-        activeJoin.value.successor === props.successor.id;
+        activeJoin.value.operationId === props.operation.id &&
+        activeJoin.value.successorId === props.successor.id;
 });
 
 const classes = computed(() => {

@@ -2,6 +2,7 @@
 import {ref, computed, onMounted, onBeforeUnmount} from 'vue';
 import useAxios from '@/composables/useAxios.js';
 import BomOperationsNetworkJoins from '@/components/BomOperationsNetworkJoins.vue';
+import {toast} from 'vue3-toastify';
 
 const props = defineProps({
     routes: {type: Object, required: true},
@@ -15,6 +16,7 @@ const dragOffset = ref({x: 0, y: 0});
 const isDragging = ref(false);
 const initialMousePosition = ref({x: 0, y: 0});
 const activeJoin = ref(null);
+const linkMode = ref(false);
 
 function onMouseDown(e, operation) {
     draggingOperation.value = operation;
@@ -41,8 +43,6 @@ function onMouseMove(e) {
 }
 
 async function onMouseUp() {
-    const wasDragging = isDragging.value;
-
     if (draggingOperation.value && !isDragging.value) {
         if (draggingOperation.value.active) {
             draggingOperation.value.active = false;
@@ -54,18 +54,18 @@ async function onMouseUp() {
 
     draggingOperation.value = null;
     isDragging.value = false;
-
-    if (wasDragging) {
-        await save();
-    }
 }
 
 const save = async () => {
-    const {getResponse} = useAxios(props.routes.update, {
+    const {getResponse, status, errors} = useAxios(props.routes.update, {
         operations: operations.value,
     }, 'patch');
 
     await getResponse();
+
+    if (status.value === 200 && !errors.value.raw) {
+        toast.success('Saved');
+    }
 };
 
 onMounted(() => {
@@ -88,23 +88,43 @@ const colorVariants = {
     pink: {default: 'bg-pink-300', active: 'bg-pink-400'},
     teal: {default: 'bg-teal-300', active: 'bg-teal-400'},
 };
+
+const unlink = () => {
+    if (!activeJoin.value) return;
+
+    const operation = operations.value.find(op => op.id === activeJoin.value.operationId);
+
+    if (operation) {
+        operation.successors = operation.successors.filter(id => id !== activeJoin.value.successorId);
+        activeJoin.value = null;
+    }
+};
 </script>
 
 <template>
     <div id="content">
-        <div class="p-2 bg-gray-100">
-            <button
-                class="mr-1 text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300 disabled:bg-gray-300 disabled:text-gray-500"
-                :disabled="!isAnyActive"
-            >
-                <i class="pi pi-link mr-2"></i> Link
-            </button>
-            <button>
-                <i class="pi pi-delete-left"></i> Unlink
-            </button>
-            <button>
-                <i class="pi pi-trash"></i> Delete Operation
-            </button>
+        <div class="p-2 bg-gray-100 flex justify-between items-center">
+            <div>
+                <button
+                    class="mr-1 text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300 disabled:bg-gray-300 disabled:text-gray-500"
+                    :disabled="!isAnyActive"
+                >
+                    <i class="pi pi-link mr-1"></i>Link
+                </button>
+                <button
+                    class="mr-1 text-red-700 inline-flex items-center bg-red-200 px-2 py-1 rounded-md hover:bg-red-300 disabled:bg-gray-300 disabled:text-gray-500"
+                    :disabled="activeJoin === null"
+                    @click="unlink"
+                >
+                    <i class="pi pi-trash mr-1"></i>Unlink
+                </button>
+            </div>
+            <div>
+                <button @click="save"
+                        class="text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300">
+                    <i class="pi pi-save mr-1"></i>Save
+                </button>
+            </div>
         </div>
         <div class="min-h-96 overflow-scroll relative" id="network">
             <template v-for="operation in operations" :key="operation.id">
