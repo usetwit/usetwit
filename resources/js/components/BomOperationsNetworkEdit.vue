@@ -114,7 +114,6 @@ const colorVariants = {
                 {{ operation.calendar_name }}
             </div>
         </div>
-        <!-- For demonstration, show if any station is active -->
         <div v-if="isAnyActive">
             <strong>An operation is active!</strong>
         </div>
