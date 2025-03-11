@@ -72,8 +72,8 @@ watch(() => ({
 
 const joinClicked = () => {
     if (activeJoin.value === null
-        || activeJoin.value.operation !== props.operation.id
-        || activeJoin.value.successor !== props.successor.id
+        || activeJoin.value.operationId !== props.operation.id
+        || activeJoin.value.successorId !== props.successor.id
     ) {
         activeJoin.value = {
             operationId: props.operation.id,

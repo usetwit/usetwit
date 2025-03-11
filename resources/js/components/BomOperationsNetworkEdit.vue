@@ -84,7 +84,7 @@ function onMouseMove(e) {
     draggingOperation.value.y = Math.max(0, Math.round((e.clientY - dragOffset.value.y) / 10) * 10);
 }
 
-async function onMouseUp() {
+function onMouseUp() {
     if (draggingOperation.value && !isDragging.value) {
         if (draggingOperation.value.active) {
             draggingOperation.value.active = false;
@@ -178,8 +178,18 @@ function validateGraph(successors) {
             }
         }
     }
+
     return true;
 }
+
+const backgroundClick = (e) => {
+    if (e.target === e.currentTarget) {
+        linkMode.value = false;
+        activeJoin.value = null;
+        operations.value.forEach(op => op.active = false);
+    }
+};
+
 </script>
 
 <template>
@@ -208,7 +218,7 @@ function validateGraph(successors) {
                 </button>
             </div>
         </div>
-        <div class="min-h-96 overflow-scroll relative" id="network">
+        <div class="min-h-96 overflow-scroll relative" id="network" @click="backgroundClick">
             <template v-for="operation in operations" :key="operation.id">
                 <BomOperationsNetworkJoins v-for="successor in operation.successors"
                                            :key="`${operation.id}-${successor}`"
