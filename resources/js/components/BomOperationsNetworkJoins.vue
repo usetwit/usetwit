@@ -9,19 +9,19 @@ const props = defineProps({
 const width = 60;
 const activeJoin = defineModel();
 
-const op = ref({
-    left: props.operation.x,
-    right: props.operation.x + width,
-    top: props.operation.y,
-    bottom: props.operation.y + width,
-});
-
-const s = ref({
-    left: props.successor.x,
-    right: props.successor.x + width,
-    top: props.successor.y,
-    bottom: props.successor.y + width,
-});
+// const op = ref({
+//     left: props.operation.x,
+//     right: props.operation.x + width,
+//     top: props.operation.y,
+//     bottom: props.operation.y + width,
+// });
+//
+// const s = ref({
+//     left: props.successor.x,
+//     right: props.successor.x + width,
+//     top: props.successor.y,
+//     bottom: props.successor.y + width,
+// });
 
 const pos = computed(() => {
     let pos = {
@@ -52,23 +52,37 @@ const pos = computed(() => {
     return pos;
 });
 
-watch(() => ({
-        x: props.operation.x,
-        y: props.operation.y,
-        successorX: props.successor.x,
-        successorY: props.successor.y,
-    }),
-    (newVal) => {
-        op.value.left = newVal.x;
-        op.value.right = newVal.x + width;
-        op.value.top = newVal.y;
-        op.value.bottom = newVal.y + width;
-        s.value.left = newVal.successorX;
-        s.value.right = newVal.successorX + width;
-        s.value.top = newVal.successorY;
-        s.value.bottom = newVal.successorY + width;
-    },
-);
+// watch(() => ({
+//         x: props.operation.x,
+//         y: props.operation.y,
+//         successorX: props.successor.x,
+//         successorY: props.successor.y,
+//     }),
+//     (newVal) => {
+//         op.value.left = newVal.x;
+//         op.value.right = newVal.x + width;
+//         op.value.top = newVal.y;
+//         op.value.bottom = newVal.y + width;
+//         s.value.left = newVal.successorX;
+//         s.value.right = newVal.successorX + width;
+//         s.value.top = newVal.successorY;
+//         s.value.bottom = newVal.successorY + width;
+//     },
+// );
+
+const op = computed(() => ({
+    left: props.operation.x,
+    right: props.operation.x + width,
+    top: props.operation.y,
+    bottom: props.operation.y + width,
+}));
+
+const s = computed(() => ({
+    left: props.successor.x,
+    right: props.successor.x + width,
+    top: props.successor.y,
+    bottom: props.successor.y + width,
+}));
 
 const joinClicked = () => {
     if (activeJoin.value === null
@@ -109,7 +123,7 @@ const classes = computed(() => {
          }"
          @click="joinClicked"
     ></div>
-    <template v-if="pos.x === 'right' && pos.y === 'below'">
+    <template v-else-if="pos.x === 'right' && pos.y === 'below'">
         <div class="h-line"
              :class="classes"
              :style="{
@@ -138,7 +152,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'right' && pos.y === 'above'">
+    <template v-else-if="pos.x === 'right' && pos.y === 'above'">
         <div class="h-line"
              :class="classes"
              :style="{
@@ -167,7 +181,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <div v-if="pos.x === 'left' && pos.y === 'middle'"
+    <div v-else-if="pos.x === 'left' && pos.y === 'middle'"
          class="h-line end-left"
          :class="classes"
          :style="{
@@ -176,7 +190,7 @@ const classes = computed(() => {
                width: (op.left - s.right) + 'px',
          }"
     ></div>
-    <template v-if="pos.x === 'left' && pos.y === 'below'">
+    <template v-else-if="pos.x === 'left' && pos.y === 'below'">
         <div class="h-line end-left"
              :class="classes"
              :style="{
@@ -205,7 +219,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'left' && pos.y === 'above'">
+    <template v-else-if="pos.x === 'left' && pos.y === 'above'">
         <div class="h-line end-left"
              :class="classes"
              :style="{
@@ -234,7 +248,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <div v-if="pos.x === 'middle' && pos.y === 'below'"
+    <div v-else-if="pos.x === 'middle' && pos.y === 'below'"
          class="v-line end-down"
          :class="classes"
          :style="{
@@ -243,7 +257,7 @@ const classes = computed(() => {
                height: (s.top - op.bottom) + 'px',
          }"
     ></div>
-    <template v-if="pos.x === 'leftMid' && pos.y === 'below'">
+    <template v-else-if="pos.x === 'leftMid' && pos.y === 'below'">
         <div class="v-line"
              :class="classes"
              :style="{
@@ -272,7 +286,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'rightMid' && pos.y === 'below'">
+    <template v-else-if="pos.x === 'rightMid' && pos.y === 'below'">
         <div class="v-line"
              :class="classes"
              :style="{
@@ -301,7 +315,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <div v-if="pos.x === 'middle' && pos.y === 'above'"
+    <div v-else-if="pos.x === 'middle' && pos.y === 'above'"
          class="v-line end-up"
          :class="classes"
          :style="{
@@ -310,7 +324,7 @@ const classes = computed(() => {
                height: (op.top - s.bottom) + 'px',
          }"
     ></div>
-    <template v-if="pos.x === 'leftMid' && pos.y === 'above'">
+    <template v-else-if="pos.x === 'leftMid' && pos.y === 'above'">
         <div class="v-line end-up"
              :class="classes"
              :style="{
@@ -339,7 +353,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'rightMid' && pos.y === 'above'">
+    <template v-else-if="pos.x === 'rightMid' && pos.y === 'above'">
         <div class="v-line end-up"
              :class="classes"
              :style="{
@@ -368,7 +382,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'rightEdge' && pos.y === 'above'">
+    <template v-else-if="pos.x === 'rightEdge' && pos.y === 'above'">
         <div class="v-line end-up"
              :class="classes"
              :style="{
@@ -388,7 +402,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'leftEdge' && pos.y === 'above'">
+    <template v-else-if="pos.x === 'leftEdge' && pos.y === 'above'">
         <div class="v-line end-up"
              :class="classes"
              :style="{
@@ -408,7 +422,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'rightEdge' && pos.y === 'below'">
+    <template v-else-if="pos.x === 'rightEdge' && pos.y === 'below'">
         <div class="v-line end-down"
              :class="classes"
              :style="{
@@ -428,7 +442,7 @@ const classes = computed(() => {
              @click="joinClicked"
         ></div>
     </template>
-    <template v-if="pos.x === 'leftEdge' && pos.y === 'below'">
+    <template v-else-if="pos.x === 'leftEdge' && pos.y === 'below'">
         <div class="v-line end-down"
              :class="classes"
              :style="{
