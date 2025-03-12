@@ -1,40 +1,40 @@
 <script setup>
-import useStorage from '@/composables/useStorage.js'
-import useDropdown from '@/composables/useDropdown.js'
+import useStorage from '@/composables/useStorage.js';
+import useDropdown from '@/composables/useDropdown.js';
 
 const props = defineProps({
-    logoutRoute: { type: String, required: true },
-    defaultProfileImage: { type: String, required: true },
-    userProfileImage: { type: String, default: null },
-    name: { type: String, required: true },
-})
+    logoutRoute: {type: String, required: true},
+    defaultProfileImage: {type: String, required: true},
+    userProfileImage: {type: String, default: null},
+    name: {type: String, required: true},
+});
 
-const { activeData: darkMode, set: saveToStorage } = useStorage('dark-mode', false)
+const {activeData: darkMode, set: saveToStorage} = useStorage('dark-mode', false);
 
 const toggleDarkMode = () => {
-    darkMode.value = !darkMode.value
+    darkMode.value = !darkMode.value;
 
     if (darkMode.value) {
-        document.body.classList.add('dark')
+        document.body.classList.add('dark');
     } else {
-        document.body.classList.remove('dark')
+        document.body.classList.remove('dark');
     }
 
-    saveToStorage()
-}
+    saveToStorage();
+};
 
 if (darkMode.value) {
-    document.body.classList.add('dark')
+    document.body.classList.add('dark');
 }
 
-const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 const {
     inputRef,
     dropdownStyle,
     showDropdown,
     toggleDropdown,
-} = useDropdown('right', 'bottom', false)
+} = useDropdown('right', 'bottom', false);
 
 </script>
 

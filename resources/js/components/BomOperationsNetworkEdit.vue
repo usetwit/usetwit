@@ -3,6 +3,7 @@ import {ref, onMounted, onBeforeUnmount, computed} from 'vue';
 import useAxios from '@/composables/useAxios.js';
 import BomOperationsNetworkJoins from '@/components/BomOperationsNetworkJoins.vue';
 import {toast} from 'vue3-toastify';
+import BomOperationsNetworkColorPicker from '@/components/BomOperationsNetworkColorPicker.vue';
 
 const props = defineProps({
     routes: {type: Object, required: true},
@@ -16,11 +17,40 @@ const isDragging = ref(false);
 const initialMousePosition = ref({x: 0, y: 0});
 const activeJoin = ref(null);
 const linkMode = ref(false);
+const unlinkMode = ref(false);
 
 function onMouseDown(e, operation) {
-    if (linkMode.value) {
-        const activeOp = activeOperation.value;
+    const activeOp = activeOperation.value;
 
+    if (unlinkMode.value) {
+        if (!activeOp) {
+            toast.error('No active operation');
+            unlinkMode.value = false;
+            return;
+        }
+
+        if (activeOp.id === operation.id) {
+            toast.error('Cannot unlink operation from itself');
+            activeOp.active = false;
+            unlinkMode.value = false;
+            return;
+        }
+
+        if (!activeOp.successors.includes(operation.id)) {
+            toast.error('Operation is not a successor');
+            activeOp.active = false;
+            unlinkMode.value = false;
+            return;
+        }
+
+        activeOp.successors = activeOp.successors.filter(id => id !== operation.id);
+        toast.success('Operation unlinked');
+        activeOp.active = false;
+        unlinkMode.value = false;
+        return;
+    }
+
+    if (linkMode.value) {
         if (!activeOp) {
             toast.error('No active operation');
             linkMode.value = false;
@@ -28,7 +58,14 @@ function onMouseDown(e, operation) {
         }
 
         if (activeOp.id === operation.id) {
-            toast.error('Cannot link operation to self');
+            toast.error('Cannot link operation to itself');
+            activeOp.active = false;
+            linkMode.value = false;
+            return;
+        }
+
+        if (activeOp.successors.includes(operation.id)) {
+            toast.error('Operation already a successor');
             activeOp.active = false;
             linkMode.value = false;
             return;
@@ -43,13 +80,6 @@ function onMouseDown(e, operation) {
 
         if (!validateGraph(tempSuccessors)) {
             toast.error('Operation already in cycle');
-            activeOp.active = false;
-            linkMode.value = false;
-            return;
-        }
-
-        if (activeOp.successors.includes(operation.id)) {
-            toast.error('Operation already a successor');
             activeOp.active = false;
             linkMode.value = false;
             return;
@@ -76,7 +106,7 @@ function onMouseMove(e) {
     const dx = e.clientX - initialMousePosition.value.x;
     const dy = e.clientY - initialMousePosition.value.y;
 
-    if (!isDragging.value && (Math.abs(dx) > 0 || Math.abs(dy) > 0)) {
+    if (!isDragging.value && (Math.abs(dx) > 2 || Math.abs(dy) > 2)) {
         isDragging.value = true;
     }
 
@@ -132,23 +162,23 @@ const colorVariants = {
 };
 
 const unlink = () => {
-    if (!activeJoin.value) return;
+    if (activeOperation.value) {
+        unlinkMode.value = true;
+        return;
+    }
 
-    const operation = operations.value.find(op => op.id === activeJoin.value.operationId);
+    if (activeJoin.value) {
+        const operation = operations.value.find(op => op.id === activeJoin.value.operationId);
 
-    if (operation) {
-        operation.successors = operation.successors.filter(id => id !== activeJoin.value.successorId);
-        activeJoin.value = null;
+        if (operation) {
+            operation.successors = operation.successors.filter(id => id !== activeJoin.value.successorId);
+            activeJoin.value = null;
+            toast.success('Operation unlinked');
+        }
     }
 };
 
 const activeOperation = computed(() => operations.value.find(op => op.active) || null);
-
-const enterLinkMode = () => {
-    if (!activeOperation.value) return;
-
-    linkMode.value = true;
-};
 
 function hasCycleDFS(node, successors, visited, stack) {
     if (stack.has(node)) return true;
@@ -185,11 +215,17 @@ function validateGraph(successors) {
 const backgroundClick = (e) => {
     if (e.target === e.currentTarget) {
         linkMode.value = false;
+        unlinkMode.value = false;
         activeJoin.value = null;
         operations.value.forEach(op => op.active = false);
     }
 };
 
+const handleColorSelected = (color) => {
+    if (activeOperation.value) {
+        activeOperation.value.color = color;
+    }
+};
 </script>
 
 <template>
@@ -197,19 +233,28 @@ const backgroundClick = (e) => {
         <div class="p-2 bg-gray-100 flex justify-between items-center">
             <div>
                 <button
-                    class="mr-1 text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300 disabled:bg-gray-300 disabled:text-gray-500"
+                    class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
+                    :class="{
+                        'bg-green-200 text-green-700 hover:bg-green-300': !linkMode,
+                        'bg-green-500 text-white hover:bg-green-600': linkMode
+                    }"
                     :disabled="!activeOperation"
-                    @click="enterLinkMode"
+                    @click="linkMode = !linkMode; unlinkMode = false"
                 >
                     <i class="pi pi-link mr-1"></i>Link
                 </button>
                 <button
-                    class="mr-1 text-red-700 inline-flex items-center bg-red-200 px-2 py-1 rounded-md hover:bg-red-300 disabled:bg-gray-300 disabled:text-gray-500"
-                    :disabled="activeJoin === null"
+                    class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
+                    :class="{
+                        'bg-red-200 text-red-700 hover:bg-red-300': !unlinkMode,
+                        'bg-red-500 text-white hover:bg-red-600': unlinkMode
+                    }"
+                    :disabled="!activeJoin && !activeOperation"
                     @click="unlink"
                 >
                     <i class="pi pi-trash mr-1"></i>Unlink
                 </button>
+                <BomOperationsNetworkColorPicker :disabled="!activeOperation" @selected="handleColorSelected" />
             </div>
             <div>
                 <button @click="save"
@@ -236,9 +281,10 @@ const backgroundClick = (e) => {
                     {
                         'border-red-500': operation.active,
                         'border-gray-800': !operation.active,
-                        'cursor-move': isDragging && !linkMode,
-                        'cursor-pointer': !isDragging && !linkMode,
-                        'cursor-copy': linkMode,
+                        'cursor-move': isDragging && !linkMode && !unlinkMode,
+                        'cursor-pointer': !isDragging && !linkMode && !unlinkMode,
+                        'cursor-copy': linkMode && !unlinkMode,
+                        'cursor-no-drop': !linkMode && unlinkMode,
                     }
                 ]"
                 :style="{
