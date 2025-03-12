@@ -124,7 +124,7 @@ const classes = computed(() => {
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
-                height: ((s.top + width / 2) - (op.top + width / 2)) + 'px',
+                height: (s.top - op.top) + 'px',
              }"
              @click="joinClicked"
         ></div>
@@ -153,7 +153,7 @@ const classes = computed(() => {
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
-                height: ((op.top + width / 2) - (s.top + width / 2) + 3) + 'px',
+                height: (op.top - s.top + 3) + 'px',
              }"
              @click="joinClicked"
         ></div>
@@ -191,7 +191,7 @@ const classes = computed(() => {
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (op.top + width / 2) + 'px',
-                height: ((s.top + width / 2) - (op.top + width / 2) + 3) + 'px',
+                height: (s.top - op.top + 3) + 'px',
              }"
              @click="joinClicked"
         ></div>
@@ -220,7 +220,7 @@ const classes = computed(() => {
              :style="{
                 left: (op.right + (s.left - op.right) / 2) + 'px',
                 top: (s.top + width / 2) + 'px',
-                height: ((op.top + width / 2) - (s.top + width / 2) + 3) + 'px',
+                height: (op.top - s.top + 3) + 'px',
              }"
              @click="joinClicked"
         ></div>
