@@ -8,6 +8,7 @@ use App\Http\Requests\SalesOrders\StockBomSearchByNameRequest;
 use App\Models\Bom;
 use App\Models\StockItem;
 use App\Settings\GeneralSettings;
+use Illuminate\Http\JsonResponse;
 
 class SalesOrdersController extends Controller
 {
@@ -23,20 +24,20 @@ class SalesOrdersController extends Controller
         return view('sales-orders.sales-orders-create', compact('dateSettings'));
     }
 
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        return response('Sales Order Saved Successfully', 200);
+        return response()->json('Sales Order Saved Successfully', 200);
     }
 
     public function stockBomSearch(StockBomSearchByNameRequest $request)
     {
-        $long_id = $request->input('long_id');
+        $name = $request->input('name');
 
-        $bomItemsResults = Bom::select(['long_id', 'description'])->where('long_id', 'like', $long_id . '%')->limit(3)
-                              ->orderBy('long_id')->get();
+        $bomItemsResults = Bom::select(['name', 'description'])->where('name', 'like', $name . '%')->limit(3)
+                              ->orderBy('name')->get();
 
-        $stockItemsResults = StockItem::select(['long_id', 'description'])->where('long_id', 'like', $long_id . '%')
-                                      ->limit(3)->orderBy('long_id')->get();
+        $stockItemsResults = StockItem::select(['name', 'description'])->where('name', 'like', $name . '%')
+                                      ->limit(3)->orderBy('name')->get();
 
         $array = [];
         if (count($bomItemsResults)) {

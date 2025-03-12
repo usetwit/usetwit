@@ -129,14 +129,14 @@ function onMouseUp() {
 }
 
 const save = async () => {
-    const {getResponse, status, errors} = useAxios(props.routes.update, {
+    const {getResponse, status, data} = useAxios(props.routes.update, {
         operations: operations.value,
     }, 'patch');
 
     await getResponse();
 
-    if (status.value === 200 && !errors.value.raw) {
-        toast.success('Saved');
+    if (status.value === 200) {
+        toast.success(data.value);
     }
 };
 

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\BomOperationsNetwork;
 
 use App\Models\BomOperation;
+use App\Rules\AcyclicGraph;
 use App\Rules\MultipleOfTen;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,7 +27,11 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'operations' => 'array|required',
+            'operations' => [
+                'array',
+                'required',
+                new AcyclicGraph(),
+            ],
             'operations.*.id' => 'required|exists:bom_operations,id',
             'operations.*.x' => [
                 'required_with:operations.*.id',

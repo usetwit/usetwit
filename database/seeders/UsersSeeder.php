@@ -69,11 +69,7 @@ class UsersSeeder extends Seeder
             'active' => true,
             'joined_at' => '2024-01-01',
         ])->assignRole($role['admin']);
-
-        $roleIds = Role::where('id', '!=', 1)->pluck('id')->toArray();
-
-        User::factory(100)->create()->each(function ($user) use ($roleIds) {
-            $user->assignRole($roleIds[array_rand($roleIds)]);
-        });
+        
+        User::factory(100)->create();
     }
 }

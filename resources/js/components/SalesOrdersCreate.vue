@@ -1,9 +1,9 @@
 <script setup>
-import SalesOrderItems from './SalesOrderItems.vue'
-import Button from '@/components/Form/Button.vue'
-import { ref } from 'vue'
-import useAxios from '@/composables/useAxios'
-import { toast } from 'vue3-toastify'
+import SalesOrderItems from './SalesOrderItems.vue';
+import Button from '@/components/Form/Button.vue';
+import {ref} from 'vue';
+import useAxios from '@/composables/useAxios';
+import {toast} from 'vue3-toastify';
 
 const props = defineProps({
     routeStore: {
@@ -18,41 +18,41 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    dateSettings: { type: Object, required: true },
-})
+    dateSettings: {type: Object, required: true},
+});
 
 const items = ref([{
-    long_id: '',
+    name: '',
     price: '0.00',
     discount: 0,
     discounted_price: 0,
     batches: [1],
     due_date: null,
     due_date_ymd: null,
-    id: 0
-}])
+    id: 0,
+}]);
 
-const isLoading = ref(false)
-const submitDisabled = ref(false)
-const errorFields = ref([])
+const isLoading = ref(false);
+const submitDisabled = ref(false);
+const errorFields = ref([]);
 
 const save = async () => {
-    isLoading.value = true
-    errorFields.value = []
+    isLoading.value = true;
+    errorFields.value = [];
 
-    const { status, data, errors, getResponse } = useAxios(props.routeStore, { items: items.value })
-    await getResponse()
+    const {status, data, errors, getResponse} = useAxios(props.routeStore, {items: items.value});
+    await getResponse();
 
     if (status.value === 200) {
-        toast.success(data.value)
+        toast.success(data.value);
 
-        setTimeout(() => window.location.replace(props.routeRedirect), 2000)
+        setTimeout(() => window.location.replace(props.routeRedirect), 2000);
     } else {
-        errorFields.value = errors.value.fields
+        errorFields.value = errors.value.fields;
     }
 
-    isLoading.value = false
-}
+    isLoading.value = false;
+};
 </script>
 
 

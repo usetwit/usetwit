@@ -23,9 +23,9 @@ class ContactFactory extends Factory
             'company_number' => $this->faker->optional()->phoneNumber,
             'company_ext' => $this->faker->numberBetween(100, 999),
             'comments' => $this->faker->sentence,
-            'user_id' => User::factory()->create()->id,
+            'user_id' => User::factory(),
             'contactable_type' => $contactableType,
-            'contactable_id' => $contactableType::factory()->create()->id,
+            'contactable_id' => $contactableType::factory(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

@@ -12,8 +12,19 @@ class BomOperationsSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 9; $i++) {
+        $positions = [
+            ['x' => 140, 'y' => 50],
+            ['x' => 140, 'y' => 230],
+            ['x' => 270, 'y' => 140],
+            ['x' => 420, 'y' => 20],
+            ['x' => 420, 'y' => 140],
+            ['x' => 760, 'y' => 140],
+            ['x' => 530, 'y' => 20],
+            ['x' => 850, 'y' => 140],
+            ['x' => 940, 'y' => 140],
+        ];
 
+        for ($i = 1; $i <= 9; $i++) {
             BomOperation::factory()->create([
                 'bom_id' => 1,
                 'operation_id' => $i,
@@ -21,8 +32,8 @@ class BomOperationsSeeder extends Seeder
                 'type' => 'process',
                 'buffer_duration_type' => null,
                 'buffer_duration' => null,
-                'x' => 5,
-                'y' => $i * 40,
+                'x' => $positions[$i - 1]['x'],
+                'y' => $positions[$i - 1]['y'],
             ]);
         }
 
@@ -33,8 +44,8 @@ class BomOperationsSeeder extends Seeder
             'type' => 'buffer',
             'buffer_duration_type' => 'calendar_day',
             'buffer_duration' => 2,
-            'x' => 40,
-            'y' => 0,
+            'x' => 670,
+            'y' => 140,
         ]);
 
         BomOperation::find(1)->successors()->sync([3]);

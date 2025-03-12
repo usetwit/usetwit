@@ -17,7 +17,7 @@ class CalendarFactory extends Factory
         ];
     }
 
-    public function withCalendarable()
+    public function withCalendarable(): CalendarFactory
     {
         return $this->state(function () {
             $calendarableClass = collect(Calendar::$validCalendarables)->random();

@@ -16,8 +16,8 @@ class StockOrBom implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $existsInStockItems = DB::table('stock_items')->where('long_id', $value)->exists();
-        $existsInBoms = DB::table('boms')->where('long_id', $value)->exists();
+        $existsInStockItems = DB::table('stock_items')->where('name', $value)->exists();
+        $existsInBoms = DB::table('boms')->where('name', $value)->exists();
 
         if (!$existsInStockItems && !$existsInBoms) {
             $fail("The {$attribute} must exist in either the stock_items or boms table.");

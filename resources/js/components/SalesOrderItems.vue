@@ -17,7 +17,7 @@ const items = defineModel()
 
 const addItem = () => {
     items.value.push({
-        long_id: '',
+        name: '',
         price: '0.00',
         discount: 0,
         discounted_price: 0,
@@ -127,7 +127,7 @@ const batchTotal = (item) => {
                     <SalesOrdersAutocomplete :error-fields="errorFields"
                                              :index="index"
                                              :route-stock-bom-search="routeStockBomSearch"
-                                             v-model="item.long_id"
+                                             v-model="item.name"
                     />
                 </td>
                 <td>

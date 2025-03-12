@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('bom_id')->constrained();
             $table->foreignId('operation_id')->nullable()->constrained();
             $table->foreignId('calendar_id')->constrained();
+            $table->double('rate_ph');
+            $table->enum('rate_view', ['per_minute', 'per_hour'])->collation('ascii_bin');
             $table->enum('type', ['process', 'buffer'])->collation('ascii_bin');
             $table->enum('buffer_duration_type', ['minutes', 'calendar_day', 'working_day'])
                 ->collation('ascii_bin')

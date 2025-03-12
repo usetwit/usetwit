@@ -43,6 +43,10 @@ class ClearAll extends Command
         $this->call('view:clear');
         $this->info('Compiled views cleared.');
 
+        // Clear logs
+        $this->call('app:clear-logs');
+        $this->info('Logs cleared.');
+
         $this->info('All caches cleared successfully! 🎉');
 
         return 0;

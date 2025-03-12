@@ -17,9 +17,9 @@ class BomOperation extends Model
 
     public static array $bufferDurationTypes = ['minutes', 'calendar_day', 'working_day'];
 
-    public function bom(): BelongsTo
+    public function bomVersion(): BelongsTo
     {
-        return $this->belongsTo(Bom::class);
+        return $this->belongsTo(BomVersion::class);
     }
 
     public function operation(): BelongsTo
@@ -27,7 +27,7 @@ class BomOperation extends Model
         return $this->belongsTo(Operation::class);
     }
 
-    public function Calendar(): BelongsTo
+    public function calendar(): BelongsTo
     {
         return $this->belongsTo(Calendar::class);
     }

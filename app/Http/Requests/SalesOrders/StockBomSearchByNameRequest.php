@@ -23,7 +23,7 @@ class StockBomSearchByNameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'long_id' => [
+            'name' => [
                 'required',
                 'string',
                 'max:255',

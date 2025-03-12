@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Bom;
 use App\Models\Location;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -75,8 +76,8 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
 
     /* Bom Operations Network */
     Route::prefix('bom-operations-network')->name('bom-operations-network.')->controller('BomOperationsNetworkController')->group(function () {
-        Route::get('{bom}/edit', 'edit')->name('edit');
-        Route::patch('{bom}', 'update')->name('update');
+        Route::get('{bom_version}/edit', 'edit')->name('edit')->can('update', Bom::class);
+        Route::patch('{bom_version}', 'update')->name('update')->can('update', Bom::class);
     });
 
     /* Calendars */

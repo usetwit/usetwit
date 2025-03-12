@@ -1,36 +1,36 @@
 <script setup>
-import useDropdown from '@/composables/useDropdown.js'
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
-import InputText from './InputText.vue'
-import zxcvbn from 'zxcvbn'
-import InputGroup from "./InputGroup.vue";
+import useDropdown from '@/composables/useDropdown.js';
+import {computed, onMounted, ref, useTemplateRef} from 'vue';
+import InputText from './InputText.vue';
+import zxcvbn from 'zxcvbn';
+import InputGroup from './InputGroup.vue';
 
 defineOptions({
     inheritAttrs: false,
-})
+});
 
 const {
     inputRef,
     dropdownStyle,
     showDropdown,
-} = useDropdown('left', 'bottom', true)
+} = useDropdown('left', 'bottom', true);
 
-const model = defineModel({ type: [String, null] })
-const inputTextRef = useTemplateRef('inputText')
+const model = defineModel({type: [String, null]});
+const inputTextRef = useTemplateRef('inputText');
 
 onMounted(() => {
     if (inputTextRef.value?.inputElement instanceof HTMLElement) {
-        inputRef.value = inputTextRef.value.inputElement
+        inputRef.value = inputTextRef.value.inputElement;
     }
-})
+});
 
-const type = ref('password')
-const strength = computed(() => zxcvbn(model.value || '').score)
+const type = ref('password');
+const strength = computed(() => zxcvbn(model.value || '').score);
 const width = computed(() => model.value === '' || model.value === null ?
-                             '0px' :
-                             ((strength.value + 1) / 5 * 100) + '%')
-const texts = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong']
-const strengthText = computed(() => !model.value ? 'Enter a password' : texts[strength.value])
+    '0px' :
+    ((strength.value + 1) / 5 * 100) + '%');
+const texts = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong'];
+const strengthText = computed(() => !model.value ? 'Enter a password' : texts[strength.value]);
 </script>
 
 <template>

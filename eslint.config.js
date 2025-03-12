@@ -12,6 +12,7 @@ export default [
         rules: {
             'comma-dangle': ['error', 'always-multiline'],
             'semi': ['error', 'always'],
+            'vue/multi-word-component-names': 'off',
         },
     },
     pluginJs.configs.recommended,

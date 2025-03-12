@@ -12,7 +12,7 @@ class SalesOrderItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'long_id' => strtoupper($this->faker->unique()->word),
+
         ];
     }
 }

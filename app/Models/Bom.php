@@ -12,8 +12,8 @@ class Bom extends Model
 
     protected $guarded = [];
 
-    public function bomOperations(): HasMany
+    public function bomVersions(): HasMany
     {
-        return $this->hasMany(BomOperation::class);
+        return $this->hasMany(BomVersion::class);
     }
 }
