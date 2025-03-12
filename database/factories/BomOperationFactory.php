@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Bom;
 use App\Models\BomOperation;
+use App\Models\BomVersion;
 use App\Models\Calendar;
 use App\Models\Operation;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -30,11 +30,12 @@ class BomOperationFactory extends Factory
         }
 
         return [
-            'bom_id' => Bom::factory(),
+            'bom_version_id' => BomVersion::factory(),
             'operation_id' => Operation::factory(),
             'calendar_id' => Calendar::factory(),
             'type' => $type,
             'buffer_duration_type' => $bufferDurationType,
+            'cost_ph' => $this->faker->randomFloat(2, 15),
             'x' => $this->faker->numberBetween(0, 1000),
             'y' => $this->faker->numberBetween(0, 1000),
             'color' => $this->faker->randomElement(['red', 'green', 'blue', 'yellow', 'teal']),

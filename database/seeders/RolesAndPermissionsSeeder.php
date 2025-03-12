@@ -28,7 +28,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'company.update']);
 
         $methods = ['create', 'update', 'view', 'delete', 'restore'];
-        $modules = ['users', 'roles', 'locations', 'calendars', 'sales-orders', 'invoices', 'bom-operations'];
+        $modules = ['users', 'roles', 'locations', 'calendars', 'sales-orders', 'invoices', 'boms'];
 
         foreach ($modules as $module) {
             foreach ($methods as $method) {

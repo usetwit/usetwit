@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('bom_operations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bom_id')->constrained();
+            $table->foreignId('bom_version_id')->constrained();
             $table->foreignId('operation_id')->nullable()->constrained();
             $table->foreignId('calendar_id')->constrained();
-            $table->double('rate_ph');
-            $table->enum('rate_view', ['per_minute', 'per_hour'])->collation('ascii_bin');
+            $table->double('cost_ph');
             $table->enum('type', ['process', 'buffer'])->collation('ascii_bin');
             $table->enum('buffer_duration_type', ['minutes', 'calendar_day', 'working_day'])
                 ->collation('ascii_bin')

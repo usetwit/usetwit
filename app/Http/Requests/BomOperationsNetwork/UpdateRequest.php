@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\BomOperationsNetwork;
 
-use App\Models\BomOperation;
+use App\Models\Bom;
 use App\Rules\AcyclicGraph;
 use App\Rules\MultipleOfTen;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -16,7 +16,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', BomOperation::class);
+        return $this->user()->can('update', Bom::class);
     }
 
     /**

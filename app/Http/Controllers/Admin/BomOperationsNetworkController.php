@@ -4,21 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BomOperationsNetwork\UpdateRequest;
-use App\Models\Bom;
-use App\Models\BomOperation;
 use App\Models\BomVersion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
 class BomOperationsNetworkController extends Controller
 {
-    public function edit(Bom $bom): View
+    public function edit(BomVersion $bomVersion): View
     {
         $routes = [
-            'update' => route('admin.bom-operations-network.update', $bom),
+            'update' => route('admin.bom-operations-network.update', $bomVersion),
         ];
 
-        $bom->load([
+        $bomVersion->load([
             'bomOperations',
             'bomOperations.calendar.calendarable',
             'bomOperations.operation',
@@ -27,7 +25,7 @@ class BomOperationsNetworkController extends Controller
 
         $operations = [];
 
-        foreach ($bom->bomOperations as $op) {
+        foreach ($bomVersion->bomOperations as $op) {
             $operations[] = [
                 'id' => $op->id,
                 'x' => $op->x,
@@ -42,7 +40,7 @@ class BomOperationsNetworkController extends Controller
             ];
         }
 
-        return view('admin.bom-operations-network.edit', compact('operations', 'bom', 'routes'));
+        return view('admin.bom-operations-network.edit', compact('operations', 'bomVersion', 'routes'));
     }
 
     public function update(BomVersion $bomVersion, UpdateRequest $request): JsonResponse

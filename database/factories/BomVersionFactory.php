@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Models\Bom;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BomVersionsFactory extends Factory
+class BomVersionFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,7 +16,7 @@ class BomVersionsFactory extends Factory
     {
         return [
             'bom_id' => Bom::factory(),
-            'bom_version' => $this->faker->randomDigit(),
+            'version' => $this->faker->randomDigit(),
             'comments' => $this->faker->text(),
         ];
     }

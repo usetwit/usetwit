@@ -26,7 +26,7 @@ class BomOperationsSeeder extends Seeder
 
         for ($i = 1; $i <= 9; $i++) {
             BomOperation::factory()->create([
-                'bom_id' => 1,
+                'bom_version_id' => 1,
                 'operation_id' => $i,
                 'calendar_id' => 2,
                 'type' => 'process',
@@ -38,7 +38,7 @@ class BomOperationsSeeder extends Seeder
         }
 
         BomOperation::factory()->create([
-            'bom_id' => 1,
+            'bom_version_id' => 1,
             'operation_id' => null,
             'calendar_id' => 2,
             'type' => 'buffer',

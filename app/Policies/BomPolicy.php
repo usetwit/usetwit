@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 
-class BomOperationPolicy
+class BomPolicy
 {
     /**
      * Create a new policy instance.
@@ -15,6 +15,6 @@ class BomOperationPolicy
 
     public function update(User $user): bool
     {
-        return $user->can('bom-operations.update');
+        return $user->can('boms.update');
     }
 }

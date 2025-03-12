@@ -233,6 +233,7 @@ const handleColorSelected = (color) => {
         <div class="p-2 bg-gray-100 flex justify-between items-center">
             <div>
                 <button
+                    type="button"
                     class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
                     :class="{
                         'bg-green-200 text-green-700 hover:bg-green-300': !linkMode,
@@ -244,6 +245,7 @@ const handleColorSelected = (color) => {
                     <i class="pi pi-link mr-1"></i>Link
                 </button>
                 <button
+                    type="button"
                     class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
                     :class="{
                         'bg-red-200 text-red-700 hover:bg-red-300': !unlinkMode,
@@ -254,10 +256,11 @@ const handleColorSelected = (color) => {
                 >
                     <i class="pi pi-trash mr-1"></i>Unlink
                 </button>
-                <BomOperationsNetworkColorPicker :disabled="!activeOperation" @selected="handleColorSelected" />
+                <BomOperationsNetworkColorPicker :disabled="!activeOperation" @selected="handleColorSelected"/>
             </div>
             <div>
-                <button @click="save"
+                <button type="button"
+                        @click="save"
                         class="text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300">
                     <i class="pi pi-save mr-1"></i>Save
                 </button>

@@ -1,11 +1,11 @@
 @extends('admin.layout')
 
 @section('heading')
-    Edit Network: {{ $bom->name }}
+    Edit Network: {{ $bomVersion->bom->name }} v{{ $bomVersion->version }}
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('admin.bom-operations-network.edit', $bom) }}
+    {{ Breadcrumbs::render('admin.bom-operations-network.edit', $bomVersion) }}
 @endsection
 
 @section('javascript')

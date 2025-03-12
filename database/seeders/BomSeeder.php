@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Bom;
+use App\Models\BomVersion;
 use Illuminate\Database\Seeder;
 
 class BomSeeder extends Seeder
@@ -12,7 +13,8 @@ class BomSeeder extends Seeder
      */
     public function run(): void
     {
-        Bom::factory()->create(['name' => 'B5975']);
+        BomVersion::factory()->for(Bom::factory())->create();
+
         Bom::factory(25)->create();
     }
 }
