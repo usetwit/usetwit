@@ -1,3 +1,5 @@
 test for \ in name
 docker run -d --name laragon-redis -p 6379:6379 -v laragon-redis-data:/data --restart unless-stopped redis:7 --appendonly yes
 add does not contain to text filters
+Fix unlink if it is a predescceor
+Turn off unlink mode if a line is selected

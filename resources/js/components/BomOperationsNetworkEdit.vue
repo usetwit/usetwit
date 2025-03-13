@@ -21,53 +21,51 @@ const linkMode = ref(false);
 const unlinkMode = ref(false);
 
 function onMouseDown(e, operation) {
-    const activeOp = activeOperation.value;
+    activeJoin.value = false;
 
     if (unlinkMode.value) {
-        if (!activeOp) {
-            toast.error('No active operation');
+        if (!activeOperation.value) {
+            toast.error('No active operation.');
             unlinkMode.value = false;
             return;
         }
 
-        if (activeOp.id === operation.id) {
-            toast.error('Cannot unlink operation from itself');
-            activeOp.active = false;
+        if (activeOperation.value.id === operation.id) {
+            toast.error('Cannot unlink operation from itself.');
+            activeOperation.value.active = false;
             unlinkMode.value = false;
             return;
         }
 
-        if (!activeOp.successors.includes(operation.id)) {
-            toast.error('Operation is not a successor');
-            activeOp.active = false;
+        if (!activeOperation.value.successors.includes(operation.id)) {
+            toast.error('Operation is not a successor.');
+            activeOperation.value.active = false;
             unlinkMode.value = false;
             return;
         }
 
-        activeOp.successors = activeOp.successors.filter(id => id !== operation.id);
-        toast.success('Operation unlinked');
-        activeOp.active = false;
+        activeOperation.value.successors = activeOperation.value.successors.filter(id => id !== operation.id);
+        toast.success('Operation unlinked.');
+        activeOperation.value.active = false;
         unlinkMode.value = false;
         return;
-    }
-
-    if (linkMode.value) {
-        if (!activeOp) {
-            toast.error('No active operation');
+    } else if (linkMode.value) {
+        if (!activeOperation.value) {
+            toast.error('No active operation.');
             linkMode.value = false;
             return;
         }
 
-        if (activeOp.id === operation.id) {
-            toast.error('Cannot link operation to itself');
-            activeOp.active = false;
+        if (activeOperation.value.id === operation.id) {
+            toast.error('Cannot link operation to itself.');
+            activeOperation.value.active = false;
             linkMode.value = false;
             return;
         }
 
-        if (activeOp.successors.includes(operation.id)) {
-            toast.error('Operation already a successor');
-            activeOp.active = false;
+        if (activeOperation.value.successors.includes(operation.id)) {
+            toast.error('Operation already a successor.');
+            activeOperation.value.active = false;
             linkMode.value = false;
             return;
         }
@@ -77,17 +75,17 @@ function onMouseDown(e, operation) {
             tempSuccessors[op.id] = [...op.successors];
         });
 
-        tempSuccessors[activeOp.id].push(operation.id);
+        tempSuccessors[activeOperation.value.id].push(operation.id);
 
         if (!validateGraph(tempSuccessors)) {
-            toast.error('Operation already in cycle');
-            activeOp.active = false;
+            toast.error('Operation already in cycle.');
+            activeOperation.value.active = false;
             linkMode.value = false;
             return;
         }
 
-        activeOp.successors.push(operation.id);
-        activeOp.active = false;
+        activeOperation.value.successors.push(operation.id);
+        activeOperation.value.active = false;
         linkMode.value = false;
         return;
     }
@@ -130,17 +128,21 @@ function onMouseUp() {
 }
 
 const save = async () => {
+    isLoading.value = true;
+
     const {getResponse, status, data} = useAxios(props.routes.update, {
         operations: operations.value,
     }, 'patch');
 
     await getResponse();
-console.log(status.value, data.value.status);
+
     if (status.value === 200 && data.value.status === 'updated') {
         toast.success(data.value.message);
     } else if (status.value === 200 && data.value.status === 'network_changed') {
         modalIsVisible.value = true;
     }
+
+    isLoading.value = false;
 };
 
 onMounted(() => {
@@ -165,6 +167,14 @@ const colorVariants = {
 };
 
 const unlink = () => {
+    activeJoin.value = false;
+    linkMode.value = false;
+
+    if (unlinkMode.value) {
+        unlinkMode.value = false;
+        return;
+    }
+
     if (activeOperation.value) {
         unlinkMode.value = true;
         return;
@@ -176,7 +186,6 @@ const unlink = () => {
         if (operation) {
             operation.successors = operation.successors.filter(id => id !== activeJoin.value.successorId);
             activeJoin.value = null;
-            toast.success('Operation unlinked');
         }
     }
 };
@@ -231,8 +240,11 @@ const handleColorSelected = (color) => {
 };
 
 const modalIsVisible = ref(false);
+const isLoading = ref(false);
 
 const upversion = async () => {
+    isLoading.value = true;
+
     const {getResponse, status, data} = useAxios(props.routes.upversion, {
         operations: operations.value,
     }, 'post');
@@ -242,21 +254,31 @@ const upversion = async () => {
     if (status.value === 422) {
         toast.error(data.value.message);
     } else if (status.value === 201) {
-        toast.success(data.value.message)
+        toast.success(data.value.message);
 
-        setTimeout(() => window.location.replace(data.value.redirect), 2000)
+        window.location.replace(data.value.redirect);
     }
+
+    isLoading.value = false;
+};
+
+const handleJoinClicked = () => {
+    activeOperation.value = false;
+    linkMode.value = false;
+    unlinkMode.value = false;
+    operations.value.forEach(op => op.active = false);
 }
 </script>
 
 <template>
-    <Modal v-if="modalIsVisible" v-model="modalIsVisible" @accepted="upversion" icon="pi pi-file-arrow-up" label="Upversion BOM" variant="danger">
-        <p class="mb-2">
-            This will create a newer version of the BOM.
-        </p>
-        <p>
-            Are you sure you wish to continue?
-        </p>
+    <Modal v-if="modalIsVisible"
+           v-model="modalIsVisible"
+           title="Are you sure?"
+           icon="pi pi-file-arrow-up"
+           variant="danger"
+           @accepted="upversion"
+    >
+        This will create a newer version of the BOM.
     </Modal>
     <div id="content">
         <div class="p-2 bg-gray-100 flex justify-between items-center">
@@ -287,10 +309,11 @@ const upversion = async () => {
             </div>
             <div>
                 <button type="button"
+                        :disabled="isLoading"
                         @click="save"
                         class="text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300"
                 >
-                    <i class="pi pi-save mr-1"></i>Save
+                    <i class="pi mr-1" :class="isLoading ? 'pi-spinner pi-spin' : 'pi-save'"></i>Save
                 </button>
             </div>
         </div>
@@ -301,6 +324,7 @@ const upversion = async () => {
                                            :operation="operation"
                                            :successor="operations.find(op => op.id === successor)"
                                            v-model="activeJoin"
+                                           @clicked="handleJoinClicked"
                 />
             </template>
             <div v-for="operation in operations"

@@ -38,10 +38,12 @@ const accept = () => {
                     <slot/>
                 </div>
                 <div class="flex justify-end">
-                    <Button variant="secondary" @click="close" class="mr-1" icon="pi pi-times-circle" border>
+                    <Button type="button" variant="secondary" @click="close" class="mr-1" icon="pi pi-times-circle" border>
                         Cancel
                     </Button>
-                    <Button :variant="variant" @click="accept" :icon="icon" :label="label" border></Button>
+                    <slot name="accept">
+                        <Button type="button" :variant="variant" @click="accept" :icon="icon" :label="label" border></Button>
+                    </slot>
                 </div>
             </div>
         </div>

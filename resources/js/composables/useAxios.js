@@ -2,6 +2,7 @@ import axios from 'axios';
 import {ref} from 'vue';
 import {toast} from 'vue3-toastify';
 import qs from 'qs';
+import csrfToken from '@/csrf.js';
 
 export default function useAxios(url, params = {}, method = 'post') {
     method = method.toLowerCase();
@@ -13,8 +14,6 @@ export default function useAxios(url, params = {}, method = 'post') {
         message: '',
     });
     const status = ref(null);
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const getResponse = async () => {
         try {

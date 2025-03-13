@@ -1,5 +1,5 @@
 <script setup>
-const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+import csrfToken from '@/csrf.js';
 </script>
 
 <template>

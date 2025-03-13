@@ -1,5 +1,5 @@
 <script setup>
-import {computed} from 'vue'
+import {computed} from 'vue';
 
 const props = defineProps({
     loading: {type: Boolean, default: false},
@@ -8,17 +8,18 @@ const props = defineProps({
     label: {type: String},
     variant: {
         type: String, default: 'primary', validator(value) {
-            return ['primary', 'secondary', 'success', 'warning', 'danger'].includes(value)
-        }
+            return ['primary', 'secondary', 'success', 'warning', 'danger'].includes(value);
+        },
     },
     border: {type: Boolean, default: false},
     badge: {type: [String, Number]},
     size: {
         type: String, default: 'md', validator(value) {
-            return ['sm', 'md'].includes(value)
-        }
+            return ['sm', 'md'].includes(value);
+        },
     },
-})
+    type: {type: String, default: 'button'},
+});
 
 const variantClasses = {
     normal: {
@@ -53,24 +54,24 @@ const variantClasses = {
             warning: 'dark:text-yellow-50 text-yellow-600 bg-yellow-50 border-yellow-600 dark:bg-yellow-600 dark:border-yellow-400',
             danger: 'dark:text-red-50 text-red-600 bg-red-50 border-red-600 dark:bg-red-600 dark:border-red-400',
         },
-    }
-}
+    },
+};
 
 const setClasses = computed(() => {
     if (props.border) {
         return props.loading ?
             `${variantClasses.border.loading[props.variant]} cursor-not-allowed` :
-            variantClasses.border.normal[props.variant]
+            variantClasses.border.normal[props.variant];
     } else {
         return props.loading ?
             `${variantClasses.normal.loading[props.variant]} cursor-not-allowed` :
-            variantClasses.normal.normal[props.variant]
+            variantClasses.normal.normal[props.variant];
     }
-})
+});
 
 const setSizeClasses = computed(() => {
-    return props.size === 'sm' ? 'text-sm px-2 py-2' : 'px-3 py-1.5'
-})
+    return props.size === 'sm' ? 'text-sm px-2 py-2' : 'px-3 py-1.5';
+});
 </script>
 
 <template>
@@ -78,8 +79,9 @@ const setSizeClasses = computed(() => {
             :class="[setClasses, setSizeClasses]"
             :disabled="disabled || loading"
             :aria-disabled="disabled || loading"
+            :type="type"
     >
-        <i v-if="loading" class="pi pi-spin pi-spinner" :class="{'mr-2': label || $slots.default}"></i>
+        <i v-if="loading" class="pi pi-spin pi-spinner" :class="{'mr-1': label || $slots.default}"></i>
         <i v-if="icon && !loading" :class="[{'mr-1': label || $slots.default}, icon]"></i>
         <span v-if="label">{{ label }}</span>
         <span v-if="$slots.default">

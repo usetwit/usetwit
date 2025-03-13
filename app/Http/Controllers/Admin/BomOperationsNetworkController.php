@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BomOperationsNetwork\UpdateRequest;
 use App\Models\BomVersion;
 use App\Services\BomComparisonService;
+use App\Services\BomUpversionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class BomOperationsNetworkController extends Controller
@@ -55,7 +57,8 @@ class BomOperationsNetworkController extends Controller
         }
 
         foreach ($request->operations as $operation) {
-            $bomOperation = $bomVersion->bomOperations()->findOrFail($operation['id']);
+            $bomOperation = $bomVersion->bomOperations()
+                                       ->findOrFail($operation['id']);
 
             $bomOperation->update([
                 'x' => $operation['x'],
@@ -63,7 +66,8 @@ class BomOperationsNetworkController extends Controller
                 'color' => $operation['color'],
             ]);
 
-            $bomOperation->successors()->sync($operation['successors'] ?? []);
+            $bomOperation->successors()
+                         ->sync($operation['successors'] ?? []);
         }
 
         return response()->json([
@@ -72,14 +76,22 @@ class BomOperationsNetworkController extends Controller
         ]);
     }
 
-    public function upversion(BomVersion $bomVersion, UpdateRequest $request, BomComparisonService $service): JsonResponse
+    public function upversion(
+        BomVersion           $bomVersion,
+        UpdateRequest        $request,
+        BomComparisonService $comparisonService,
+        BomUpversionService  $upversionService
+    ): RedirectResponse
     {
-        if (!$service->networkHasChanged($bomVersion, $request->validated())) {
-            return response()->json([
+        if (! $comparisonService->networkHasChanged($bomVersion, $request->validated())) {
+            return back()->withErrors([
                 'message' => 'Network has not changed',
-            ], 422);
+            ]);
         }
 
-        return response()->json(['message' => 'New BOM version created', 'redirect' => '/'], 201);
+        $newVersion = $upversionService->upversionNetwork($bomVersion, $request->validated());
+
+        return redirect()->route('admin.bom-operations-network.edit', $newVersion)
+                         ->with('success', 'New BOM version created');
     }
 }

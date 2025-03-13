@@ -9,20 +9,6 @@ const props = defineProps({
 const width = 60;
 const activeJoin = defineModel();
 
-// const op = ref({
-//     left: props.operation.x,
-//     right: props.operation.x + width,
-//     top: props.operation.y,
-//     bottom: props.operation.y + width,
-// });
-//
-// const s = ref({
-//     left: props.successor.x,
-//     right: props.successor.x + width,
-//     top: props.successor.y,
-//     bottom: props.successor.y + width,
-// });
-
 const pos = computed(() => {
     let pos = {
         x: 'middle',
@@ -52,24 +38,6 @@ const pos = computed(() => {
     return pos;
 });
 
-// watch(() => ({
-//         x: props.operation.x,
-//         y: props.operation.y,
-//         successorX: props.successor.x,
-//         successorY: props.successor.y,
-//     }),
-//     (newVal) => {
-//         op.value.left = newVal.x;
-//         op.value.right = newVal.x + width;
-//         op.value.top = newVal.y;
-//         op.value.bottom = newVal.y + width;
-//         s.value.left = newVal.successorX;
-//         s.value.right = newVal.successorX + width;
-//         s.value.top = newVal.successorY;
-//         s.value.bottom = newVal.successorY + width;
-//     },
-// );
-
 const op = computed(() => ({
     left: props.operation.x,
     right: props.operation.x + width,
@@ -84,7 +52,11 @@ const s = computed(() => ({
     bottom: props.successor.y + width,
 }));
 
+const emit = defineEmits(['clicked'])
+
 const joinClicked = () => {
+    emit('clicked');
+
     if (activeJoin.value === null
         || activeJoin.value.operationId !== props.operation.id
         || activeJoin.value.successorId !== props.successor.id
