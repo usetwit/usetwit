@@ -4,6 +4,7 @@ import useAxios from '@/composables/useAxios.js';
 import BomOperationsNetworkJoins from '@/components/BomOperationsNetworkJoins.vue';
 import {toast} from 'vue3-toastify';
 import BomOperationsNetworkColorPicker from '@/components/BomOperationsNetworkColorPicker.vue';
+import Modal from '@/components/Modal.vue';
 
 const props = defineProps({
     routes: {type: Object, required: true},
@@ -134,9 +135,11 @@ const save = async () => {
     }, 'patch');
 
     await getResponse();
-
-    if (status.value === 200) {
-        toast.success(data.value);
+console.log(status.value, data.value.status);
+    if (status.value === 200 && data.value.status === 'updated') {
+        toast.success(data.value.message);
+    } else if (status.value === 200 && data.value.status === 'network_changed') {
+        modalIsVisible.value = true;
     }
 };
 
@@ -226,33 +229,57 @@ const handleColorSelected = (color) => {
         activeOperation.value.color = color;
     }
 };
+
+const modalIsVisible = ref(false);
+
+const upversion = async () => {
+    const {getResponse, status, data} = useAxios(props.routes.upversion, {
+        operations: operations.value,
+    }, 'post');
+
+    await getResponse();
+
+    if (status.value === 422) {
+        toast.error(data.value.message);
+    } else if (status.value === 201) {
+        toast.success(data.value.message)
+
+        setTimeout(() => window.location.replace(data.value.redirect), 2000)
+    }
+}
 </script>
 
 <template>
+    <Modal v-if="modalIsVisible" v-model="modalIsVisible" @accepted="upversion" icon="pi pi-file-arrow-up" label="Upversion BOM" variant="danger">
+        <p class="mb-2">
+            This will create a newer version of the BOM.
+        </p>
+        <p>
+            Are you sure you wish to continue?
+        </p>
+    </Modal>
     <div id="content">
         <div class="p-2 bg-gray-100 flex justify-between items-center">
             <div>
-                <button
-                    type="button"
-                    class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
-                    :class="{
+                <button type="button"
+                        class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
+                        :class="{
                         'bg-green-200 text-green-700 hover:bg-green-300': !linkMode,
                         'bg-green-500 text-white hover:bg-green-600': linkMode
                     }"
-                    :disabled="!activeOperation"
-                    @click="linkMode = !linkMode; unlinkMode = false"
+                        :disabled="!activeOperation"
+                        @click="linkMode = !linkMode; unlinkMode = false"
                 >
                     <i class="pi pi-link mr-1"></i>Link
                 </button>
-                <button
-                    type="button"
-                    class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
-                    :class="{
+                <button type="button"
+                        class="mr-1 inline-flex items-center px-2 py-1 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
+                        :class="{
                         'bg-red-200 text-red-700 hover:bg-red-300': !unlinkMode,
                         'bg-red-500 text-white hover:bg-red-600': unlinkMode
                     }"
-                    :disabled="!activeJoin && !activeOperation"
-                    @click="unlink"
+                        :disabled="!activeJoin && !activeOperation"
+                        @click="unlink"
                 >
                     <i class="pi pi-trash mr-1"></i>Unlink
                 </button>
@@ -261,7 +288,8 @@ const handleColorSelected = (color) => {
             <div>
                 <button type="button"
                         @click="save"
-                        class="text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300">
+                        class="text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300"
+                >
                     <i class="pi pi-save mr-1"></i>Save
                 </button>
             </div>
@@ -275,26 +303,25 @@ const handleColorSelected = (color) => {
                                            v-model="activeJoin"
                 />
             </template>
-            <div
-                v-for="operation in operations"
-                :key="operation.id"
-                class="operation-box absolute overflow-hidden text-center border-[2px] text-gray-800"
-                :class="[
+            <div v-for="operation in operations"
+                 :key="operation.id"
+                 class="operation-box absolute overflow-hidden text-center border-[2px] text-gray-800"
+                 :class="[
                     colorVariants[operation.color][operation.active ? 'active' : 'default'],
                     {
                         'border-red-500': operation.active,
                         'border-gray-800': !operation.active,
                         'cursor-move': isDragging && !linkMode && !unlinkMode,
                         'cursor-pointer': !isDragging && !linkMode && !unlinkMode,
-                        'cursor-copy': linkMode && !unlinkMode,
-                        'cursor-no-drop': !linkMode && unlinkMode,
+                        'cursor-copy': linkMode && !unlinkMode && !isDragging,
+                        'cursor-no-drop': !linkMode && unlinkMode && !isDragging,
                     }
                 ]"
-                :style="{
+                 :style="{
                     left: operation.x + 'px',
                     top: operation.y + 'px',
                 }"
-                @mousedown="onMouseDown($event, operation)"
+                 @mousedown="onMouseDown($event, operation)"
             >
                 {{ operation.name }}<br>
                 <br>

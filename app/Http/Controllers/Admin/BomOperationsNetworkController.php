@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BomOperationsNetwork\UpdateRequest;
 use App\Models\BomVersion;
+use App\Services\BomComparisonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -14,6 +15,7 @@ class BomOperationsNetworkController extends Controller
     {
         $routes = [
             'update' => route('admin.bom-operations-network.update', $bomVersion),
+            'upversion' => route('admin.bom-operations-network.upversion', $bomVersion),
         ];
 
         $bomVersion->load([
@@ -43,8 +45,15 @@ class BomOperationsNetworkController extends Controller
         return view('admin.bom-operations-network.edit', compact('operations', 'bomVersion', 'routes'));
     }
 
-    public function update(BomVersion $bomVersion, UpdateRequest $request): JsonResponse
+    public function update(BomVersion $bomVersion, UpdateRequest $request, BomComparisonService $service): JsonResponse
     {
+        if ($service->networkHasChanged($bomVersion, $request->validated())) {
+            return response()->json([
+                'message' => 'Network has changed',
+                'status' => 'network_changed',
+            ]);
+        }
+
         foreach ($request->operations as $operation) {
             $bomOperation = $bomVersion->bomOperations()->findOrFail($operation['id']);
 
@@ -57,6 +66,20 @@ class BomOperationsNetworkController extends Controller
             $bomOperation->successors()->sync($operation['successors'] ?? []);
         }
 
-        return response()->json('Save successful');
+        return response()->json([
+            'message' => 'Save successful',
+            'status' => 'updated',
+        ]);
+    }
+
+    public function upversion(BomVersion $bomVersion, UpdateRequest $request, BomComparisonService $service): JsonResponse
+    {
+        if (!$service->networkHasChanged($bomVersion, $request->validated())) {
+            return response()->json([
+                'message' => 'Network has not changed',
+            ], 422);
+        }
+
+        return response()->json(['message' => 'New BOM version created', 'redirect' => '/'], 201);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests\BomOperationsNetwork;
 
 use App\Models\Bom;
 use App\Rules\AcyclicGraph;
+use App\Rules\ArrayUniqueValues;
 use App\Rules\MultipleOfTen;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -59,7 +60,10 @@ class UpdateRequest extends FormRequest
                     'yellow',
                 ]),
             ],
-            'operations.*.successors' => 'array',
+            'operations.*.successors' => [
+                'array',
+                new ArrayUniqueValues(),
+            ],
             'operations.*.successors.*' => 'exists:bom_operations,id',
         ];
     }

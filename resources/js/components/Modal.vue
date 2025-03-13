@@ -1,34 +1,35 @@
 <script setup>
-import Button from '@/components/Form/Button.vue'
+import Button from '@/components/Form/Button.vue';
 
 const props = defineProps({
-    title: { type: String, default: null },
-    variant: { type: String, default: 'primary' },
-    icon: { type: String, default: null },
-    label: { type: String, default: null },
-})
+    title: {type: String, default: null},
+    variant: {type: String, default: 'primary'},
+    icon: {type: String, default: null},
+    label: {type: String, default: null},
+});
 
-const emit = defineEmits(['closed', 'accepted'])
-const isVisible = defineModel()
+const emit = defineEmits(['closed', 'accepted']);
+const isVisible = defineModel();
 
 const close = () => {
-    isVisible.value = false
-    emit('closed')
-}
+    isVisible.value = false;
+    emit('closed');
+};
 
 const accept = () => {
-    isVisible.value = false
-    emit('accepted')
-}
+    isVisible.value = false;
+    emit('accepted');
+};
 </script>
 
 <template>
     <Teleport to="body">
         <div @click.self="isVisible = false"
-             class="opacity-50 bg-gray-900 z-950 w-full h-full left-0 top-0 fixed flex items-center justify-center"
+             class="bg-gray-900/50 z-950 w-full h-full left-0 top-0 fixed flex items-center justify-center"
         >
             <div
-                class="rounded-lg bg-white shadow-sm border-gray-200 border flex flex-col overflow-y-auto p-2 md:p-4 max-w-full max-h-full md:max-w-lg md:max-h-[90vh]">
+                class="rounded-lg bg-white shadow-sm border-gray-200 border flex flex-col overflow-y-auto p-2 md:p-4 max-w-full max-h-full md:max-w-lg md:max-h-[90vh]"
+            >
                 <h2 v-if="title || $slots.title" class="text-lg font-semibold mb-2 md:mb-4">
                     {{ title }}
                     <slot name="title"/>
@@ -37,7 +38,7 @@ const accept = () => {
                     <slot/>
                 </div>
                 <div class="flex justify-end">
-                    <Button variant="secondary" @click="close" class="mr-2" icon="pi pi-times-circle" border>
+                    <Button variant="secondary" @click="close" class="mr-1" icon="pi pi-times-circle" border>
                         Cancel
                     </Button>
                     <Button :variant="variant" @click="accept" :icon="icon" :label="label" border></Button>

@@ -78,6 +78,7 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     Route::prefix('bom-operations-network')->name('bom-operations-network.')->controller('BomOperationsNetworkController')->group(function () {
         Route::get('{bom_version}/edit', 'edit')->name('edit')->can('update', Bom::class);
         Route::patch('{bom_version}', 'update')->name('update')->can('update', Bom::class);
+        Route::post('{bom_version}/upversion', 'update')->name('upversion')->can('update', Bom::class);
     });
 
     /* Calendars */

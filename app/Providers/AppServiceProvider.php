@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Composers\NavbarComposer;
 use App\Composers\AdminSidebarComposer;
+use App\Services\BomComparisonService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(BomComparisonService::class, function ($app) {
+            return new BomComparisonService();
+        });
     }
 
     /**
