@@ -1,8 +1,8 @@
 <script setup>
 const props = defineProps({
-    required: { type: Boolean, default: false },
-    vertical: { type: Boolean, default: false },
-})
+    required: {type: Boolean, default: false},
+    vertical: {type: Boolean, default: false},
+});
 </script>
 
 <template>
@@ -23,7 +23,7 @@ const props = defineProps({
 </template>
 
 <style scoped lang="postcss">
-@reference "../../../css/app.css";
+@reference '../../../css/app.css';
 
 :deep(label) {
     @apply font-bold text-sm lg:text-base;

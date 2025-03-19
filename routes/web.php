@@ -69,16 +69,11 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         Route::post('', 'store')->name('store');
     });
 
-    /* Bom Operations */
-    Route::prefix('bom-operations')->name('bom-operations.')->controller('BomOperationsController')->group(function () {
-        Route::get('{bom}/edit', 'edit')->name('edit');
-    });
-
-    /* Bom Operations Network */
-    Route::prefix('bom-operations-network')->name('bom-operations-network.')->controller('BomOperationsNetworkController')->group(function () {
-        Route::get('{bom_version}/edit', 'edit')->name('edit')->can('update', Bom::class);
-        Route::patch('{bom_version}', 'update')->name('update')->can('update', Bom::class);
-        Route::post('{bom_version}/upversion', 'upversion')->name('upversion')->can('update', Bom::class);
+    /* Bom Version */
+    Route::prefix('bom')->name('bom.')->controller('BomController')->group(function () {
+        Route::get('{bom}/edit', 'edit')->name('edit')->can('update', 'bom');
+        Route::post('checkName', 'checkName')->name('checkName');
+        Route::patch('{bom}', 'update')->name('update')->can('update', 'bom');
     });
 
     /* Calendars */

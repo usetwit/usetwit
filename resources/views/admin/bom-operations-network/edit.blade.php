@@ -11,7 +11,7 @@
 @section('javascript')
     @parent
 
-    @vite(['resources/js/app/bom-operations-network-edit.js'])
+    @vite(['resources/js/app/bom-edit.js'])
 @endsection
 
 @section('content')

@@ -21,7 +21,7 @@ export default defineConfig({
                 'resources/js/app/sales-orders-create.js',
                 'resources/js/app/locations-index.js',
                 'resources/js/app/locations-edit.js',
-                'resources/js/app/bom-operations-network-edit.js',
+                'resources/js/app/bom-edit.js',
             ],
             refresh: true,
         }),

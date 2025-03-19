@@ -167,7 +167,6 @@ const colorVariants = {
 };
 
 const unlink = () => {
-    activeJoin.value = false;
     linkMode.value = false;
 
     if (unlinkMode.value) {
@@ -229,6 +228,7 @@ const backgroundClick = (e) => {
         linkMode.value = false;
         unlinkMode.value = false;
         activeJoin.value = null;
+        activeOperation.value = null;
         operations.value.forEach(op => op.active = false);
     }
 };
