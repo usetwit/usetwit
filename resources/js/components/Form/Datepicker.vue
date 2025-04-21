@@ -1,11 +1,11 @@
 <script setup>
-import useDropdown from '@/composables/useDropdown'
-import useDates from '@/composables/useDates'
-import {onMounted, ref, useTemplateRef, watch} from 'vue'
-import InputGroup from '@/components/Form/InputGroup.vue'
-import InputText from '@/components/Form/InputText.vue'
-import DatepickerHeader from '@/components/Form/DatepickerHeader.vue'
-import {DateTime} from 'luxon'
+import useDropdown from '@/composables/useDropdown';
+import useDates from '@/composables/useDates';
+import {onMounted, ref, useTemplateRef, watch} from 'vue';
+import InputGroup from '@/components/Form/InputGroup.vue';
+import InputText from '@/components/Form/InputText.vue';
+import DatepickerHeader from '@/components/Form/DatepickerHeader.vue';
+import {DateTime} from 'luxon';
 
 const props = defineProps({
     disabled: {type: Boolean, default: false},
@@ -19,28 +19,28 @@ const props = defineProps({
     containerClass: {type: [String, Object]},
     positionY: {type: String, default: 'bottom'},
     positionX: {type: String, default: 'center'},
-})
+});
 
 defineOptions({
     inheritAttrs: false,
-})
+});
 
-const model = defineModel()
+const model = defineModel();
 
-let initialTextValue = ''
-let initialDate = DateTime.utc()
+let initialTextValue = '';
+let initialDate = DateTime.utc();
 
 if (model.value) {
-    const test = DateTime.fromFormat(model.value, 'yyyy-MM-dd')
+    const test = DateTime.fromFormat(model.value, 'yyyy-MM-dd');
 
     if (test.isValid) {
-        initialDate = test
-        initialTextValue = initialDate.toFormat(props.format.replace(/-/g, props.separator))
+        initialDate = test;
+        initialTextValue = initialDate.toFormat(props.format.replace(/-/g, props.separator));
     }
 }
 
-const inputModel = ref(initialTextValue)
-const mode = ref('day')
+const inputModel = ref(initialTextValue);
+const mode = ref('day');
 
 const {
     isToday,
@@ -54,74 +54,74 @@ const {
     yearRounded,
     minYear,
     maxYear,
-} = useDates(initialDate)
+} = useDates(initialDate);
 
 const {
     inputRef,
     dropdownStyle,
     showDropdown,
     toggleDropdown,
-    updateDropdownPosition
-} = useDropdown(props.positionX, props.positionY)
+    updateDropdownPosition,
+} = useDropdown(props.positionX, props.positionY);
 
-const inputTextRef = useTemplateRef('inputTextComponent')
+const inputTextRef = useTemplateRef('inputTextComponent');
 
 onMounted(() => {
     if (inputTextRef.value?.inputElement instanceof HTMLElement) {
-        inputRef.value = inputTextRef.value.inputElement
+        inputRef.value = inputTextRef.value.inputElement;
     }
-})
+});
 
 const changeMode = newMode => {
-    mode.value = newMode
-    updateDropdownPosition()
-}
+    mode.value = newMode;
+    updateDropdownPosition();
+};
 
 const selectMonth = newMonth => {
-    month.value = newMonth
-    changeMode('day')
-}
+    month.value = newMonth;
+    changeMode('day');
+};
 
 const selectYear = newYear => {
-    year.value = newYear
-    changeMode('month')
-}
+    year.value = newYear;
+    changeMode('month');
+};
 
 const setDate = day => {
-    const selectedDate = DateTime.utc(day.year, day.month, day.day)
+    const selectedDate = DateTime.utc(day.year, day.month, day.day);
 
-    inputModel.value = selectedDate.toFormat(props.format.replace(/-/g, props.separator))
-    showDropdown.value = false
-}
+    inputModel.value = selectedDate.toFormat(props.format.replace(/-/g, props.separator));
+    showDropdown.value = false;
+};
 
 const isSelected = day => {
     if (!inputModel.value) {
-        return false
+        return false;
     }
 
-    const parsedDate = DateTime.fromFormat(inputModel.value.replace(/[./]/g, '-'), props.format)
+    const parsedDate = DateTime.fromFormat(inputModel.value.replace(/[./]/g, '-'), props.format);
 
-    return parsedDate.isValid && parsedDate.hasSame(day, 'day')
-}
+    return parsedDate.isValid && parsedDate.hasSame(day, 'day');
+};
 
 watch(inputModel, (newValue) => {
-    const formattedValue = newValue.replace(/[./]/g, '-')
+    const formattedValue = newValue.replace(/[./]/g, '-');
 
-    const parsedDate = DateTime.fromFormat(formattedValue, props.format.replace(/[./]/g, '-'))
+    const parsedDate = DateTime.fromFormat(formattedValue, props.format.replace(/[./]/g, '-'));
 
     if (parsedDate.isValid) {
-        model.value = parsedDate.toFormat('yyyy-MM-dd')
-        year.value = parsedDate.year
-        month.value = parsedDate.month
-        inputRef.value.setCustomValidity('')
+        model.value = parsedDate.toFormat('yyyy-MM-dd');
+        year.value = parsedDate.year;
+        month.value = parsedDate.month;
+        inputRef.value.setCustomValidity('');
     } else {
-        model.value = null
+        model.value = null;
 
         if (newValue) {
-            inputRef.value.setCustomValidity('Please specify a valid date')
+            inputRef.value.setCustomValidity('Please specify a valid date');
         }
     }
-})
+});
 </script>
 
 <template>
@@ -212,7 +212,8 @@ watch(inputModel, (newValue) => {
                     </DatepickerHeader>
 
                     <div class="grid grid-cols-7 w-full gap-1">
-                        <span v-for="day in dayTexts" class="font-bold text-xs text-center text-gray-600">
+                        <span v-for="(day, dayIndex) in dayTexts" class="font-bold text-xs text-center text-gray-600"
+                              :key="dayIndex">
                             {{ day }}
                         </span>
                         <template v-for="day in month.dates" :key="day">

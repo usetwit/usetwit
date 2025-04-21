@@ -1,7 +1,6 @@
-import vueConfig from '../vue-config.js'
-import Sidebar from '../components/Sidebar.vue'
+import vueConfig from '../vue-config.js';
+import AdminSidebar from '../components/AdminSidebar.vue';
 
-const { app } = vueConfig()
+const {app} = vueConfig();
 
-app.component('Sidebar', Sidebar)
-    .mount('#sidebar')
+app.component('AdminSidebar', AdminSidebar).mount('#sidebar');
