@@ -17,7 +17,7 @@
 @section('content')
     <div id="app">
         <sales-orders-create route-store="{{ route('admin.sales-orders.store') }}"
-                             route-stock-bom-search="{{ route('admin.sales-orders.stock-bom-search') }}"
+                             route-stock-bom-search="{{ route('admin.sales-orders.stock-boms-search') }}"
                              route-redirect="{{ route('admin.sales-orders.index') }}"
                              :date-settings="{{ Js::from($dateSettings) }}"
         ></sales-orders-create>

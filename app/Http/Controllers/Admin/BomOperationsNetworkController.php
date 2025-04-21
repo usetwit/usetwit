@@ -16,8 +16,8 @@ class BomOperationsNetworkController extends Controller
     public function edit(BomVersion $bomVersion): View
     {
         $routes = [
-            'update' => route('admin.bom.update', $bomVersion),
-            'upversion' => route('admin.bom.upversion', $bomVersion),
+            'update' => route('admin.boms.update', $bomVersion),
+            'upversion' => route('admin.boms.upversion', $bomVersion),
         ];
 
         $bomVersion->load([
@@ -91,7 +91,7 @@ class BomOperationsNetworkController extends Controller
 
         $newVersion = $upversionService->upversionNetwork($bomVersion, $request->validated());
 
-        return redirect()->route('admin.bom.edit', $newVersion)
+        return redirect()->route('admin.boms.edit', $newVersion)
                          ->with('success', 'New BOM version created');
     }
 }

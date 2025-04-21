@@ -5,13 +5,13 @@
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('admin.bom-operations-network.edit', $bomVersion) }}
+    {{ Breadcrumbs::render('admin.boms-operations-network.edit', $bomVersion) }}
 @endsection
 
 @section('javascript')
     @parent
 
-    @vite(['resources/js/app/bom-edit.js'])
+    @vite(['resources/js/app/boms-edit.js'])
 @endsection
 
 @section('content')

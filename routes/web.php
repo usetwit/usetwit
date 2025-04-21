@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Bom;
+use App\Models\BomVersion;
 use App\Models\Location;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -65,15 +66,21 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     Route::prefix('sales-orders')->name('sales-orders.')->controller('SalesOrdersController')->group(function () {
         Route::get('', 'index')->name('index');
         Route::get('create', 'create')->name('create');
-        Route::post('stock-bom-search', 'stockBomSearch')->name('stock-bom-search');
+        Route::post('stock-boms-search', 'stockBomSearch')->name('stock-boms-search');
         Route::post('', 'store')->name('store');
     });
 
-    /* Bom Version */
-    Route::prefix('bom')->name('bom.')->controller('BomController')->group(function () {
-        Route::get('{bom}/edit', 'edit')->name('edit')->can('update', 'bom');
+    /* Boms */
+    Route::prefix('boms')->name('boms.')->controller('BomController')->group(function () {
+        Route::get('{boms}/edit', 'edit')->name('edit')->can('update', 'boms');
         Route::post('checkName', 'checkName')->name('checkName');
-        Route::patch('{bom}', 'update')->name('update')->can('update', 'bom');
+        Route::patch('{boms}', 'update')->name('update')->can('update', 'boms');
+
+        Route::prefix('versions')->name('versions.')->controller('Boms\VersionsController')->group(function () {
+            Route::get('index/{boms}', 'index')->name('index')->can('viewAny', Bom::class);
+            Route::get('bom-version/{bomVersion}', 'edit')->name('edit');
+            Route::patch('bom-version/{bomVersion}', 'update')->name('update');
+        });
     });
 
     /* Calendars */

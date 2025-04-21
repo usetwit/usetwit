@@ -1,21 +1,22 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
-import Button from '@/components/Form/Button.vue'
-import InputText from '@/components/Form/InputText.vue'
+import {computed, ref, watch} from 'vue';
+import Button from '@/components/Form/Button.vue';
+import InputText from '@/components/Form/InputText.vue';
+import {toast} from 'vue3-toastify';
 
 const props = defineProps({
     date: {
         type: [Object, null],
         required: true,
     },
-})
+});
 
 const isLoading = defineModel('is-loading', {
     type: Boolean,
     default: false,
-})
+});
 
-const emit = defineEmits(['updateShifts'])
+const emit = defineEmits(['updateShifts']);
 
 const localDate = ref({
     'nwd': props.date.nwd,
@@ -27,7 +28,7 @@ const localDate = ref({
     'shift3_end': props.date.shift3_end,
     'shift4_start': props.date.shift4_start,
     'shift4_end': props.date.shift4_end,
-})
+});
 
 const isModified = computed(() => {
     return localDate.value.nwd !== false
@@ -38,19 +39,19 @@ const isModified = computed(() => {
         || localDate.value.shift3_start !== ''
         || localDate.value.shift3_end !== ''
         || localDate.value.shift4_start !== ''
-        || localDate.value.shift4_end !== ''
-})
+        || localDate.value.shift4_end !== '';
+});
 
 const submitShifts = () => {
     if (localDate.value.nwd) {
-        localDate.value.shift1_start = '00:00'
-        localDate.value.shift1_end = '00:00'
-        localDate.value.shift2_start = ''
-        localDate.value.shift2_end = ''
-        localDate.value.shift3_start = ''
-        localDate.value.shift3_end = ''
-        localDate.value.shift4_start = ''
-        localDate.value.shift4_end = ''
+        localDate.value.shift1_start = '00:00';
+        localDate.value.shift1_end = '00:00';
+        localDate.value.shift2_start = '';
+        localDate.value.shift2_end = '';
+        localDate.value.shift3_start = '';
+        localDate.value.shift3_end = '';
+        localDate.value.shift4_start = '';
+        localDate.value.shift4_end = '';
 
     } else if (errors.value.shift1 || errors.value.shift2 || errors.value.shift3 || errors.value.shift4) {
         toast.add({
@@ -58,98 +59,98 @@ const submitShifts = () => {
             summary: 'Error',
             group: 'br',
             detail: 'Please correct all errors',
-            life: 3000
-        })
-        return
+            life: 3000,
+        });
+        return;
     }
 
-    emit('updateShifts', localDate.value)
-}
+    emit('updateShifts', localDate.value);
+};
 
 const errors = computed(() => {
-    let shift1 = null
-    let shift2 = null
-    let shift3 = null
-    let shift4 = null
-    let regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
+    let shift1 = null;
+    let shift2 = null;
+    let shift3 = null;
+    let shift4 = null;
+    let regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
     if (!localDate.value.nwd) {
         if (localDate.value.shift1_start && !regex.test(localDate.value.shift1_start)) {
-            shift1 = "Start must be a valid time"
+            shift1 = 'Start must be a valid time';
         } else if (localDate.value.shift1_end && !regex.test(localDate.value.shift1_end)) {
-            shift1 = "End must be a valid time"
+            shift1 = 'End must be a valid time';
         } else if (localDate.value.shift1_end !== '00:00' && localDate.value.shift1_end <= localDate.value.shift1_start) {
-            shift1 = "End must be greater than start"
+            shift1 = 'End must be greater than start';
         }
 
         if (localDate.value.shift1_end && !localDate.value.shift1_start) {
-            shift1 = "Start must be entered"
+            shift1 = 'Start must be entered';
         }
 
         if (localDate.value.shift2_start) {
             if (localDate.value.shift1_end === '00:00') {
-                shift2 = "24 hours have been specified"
+                shift2 = '24 hours have been specified';
             } else if (localDate.value.shift2_start && !regex.test(localDate.value.shift2_start)) {
-                shift2 = "Start must be a valid time"
+                shift2 = 'Start must be a valid time';
             } else if (localDate.value.shift2_end && !regex.test(localDate.value.shift2_end)) {
-                shift2 = "End must be a valid time"
+                shift2 = 'End must be a valid time';
             } else if (!localDate.value.shift1_start || !localDate.value.shift1_end) {
-                shift2 = "Previous shifts must be specified"
+                shift2 = 'Previous shifts must be specified';
             } else if (localDate.value.shift2_start <= localDate.value.shift1_end) {
-                shift2 = "Start must be greater than Shift 1 end"
+                shift2 = 'Start must be greater than Shift 1 end';
             } else if (localDate.value.shift2_end !== '00:00' && (localDate.value.shift2_end <= localDate.value.shift2_start || !localDate.value.shift2_end)) {
-                shift2 = "End must be greater than start"
+                shift2 = 'End must be greater than start';
             }
         }
 
         if (localDate.value.shift2_end && !localDate.value.shift2_start) {
-            shift2 = "Start must be entered"
+            shift2 = 'Start must be entered';
         }
 
         if (localDate.value.shift3_start) {
             if (localDate.value.shift2_end === '00:00') {
-                shift3 = "24 hours have been specified"
+                shift3 = '24 hours have been specified';
             } else if (localDate.value.shift2_end === '00:00') {
-                shift3 = "24 hours have been specified"
+                shift3 = '24 hours have been specified';
             } else if (localDate.value.shift3_start && !regex.test(localDate.value.shift3_start)) {
-                shift3 = "Start must be a valid time"
+                shift3 = 'Start must be a valid time';
             } else if (localDate.value.shift3_end && !regex.test(localDate.value.shift3_end)) {
-                shift3 = "End must be a valid time"
+                shift3 = 'End must be a valid time';
             } else if (localDate.value.shift2_end === '00:00') {
-                shift3 = "24 hours have been specified"
+                shift3 = '24 hours have been specified';
             } else if (!localDate.value.shift2_start || !localDate.value.shift2_end) {
-                shift3 = "Previous shifts must be specified"
+                shift3 = 'Previous shifts must be specified';
             } else if (localDate.value.shift3_start <= localDate.value.shift2_end) {
-                shift3 = "Start must be greater than Shift 2 end"
+                shift3 = 'Start must be greater than Shift 2 end';
             } else if (localDate.value.shift3_end !== '00:00' && (localDate.value.shift3_end <= localDate.value.shift3_start || !localDate.value.shift3_end)) {
-                shift3 = "End must be greater than start"
+                shift3 = 'End must be greater than start';
             }
         }
 
         if (localDate.value.shift3_end && !localDate.value.shift3_start) {
-            shift3 = "Start must be entered"
+            shift3 = 'Start must be entered';
         }
 
         if (localDate.value.shift4_start) {
             if (localDate.value.shift3_end === '00:00') {
-                shift4 = "24 hours have been specified"
+                shift4 = '24 hours have been specified';
             } else if (localDate.value.shift4_start && !regex.test(localDate.value.shift4_start)) {
-                shift4 = "Start must be a valid time"
+                shift4 = 'Start must be a valid time';
             } else if (localDate.value.shift4_end && !regex.test(localDate.value.shift4_end)) {
-                shift4 = "End must be a valid time"
+                shift4 = 'End must be a valid time';
             } else if (localDate.value.shift3_end === '00:00') {
-                shift4 = "24 hours have been specified"
+                shift4 = '24 hours have been specified';
             } else if (!localDate.value.shift3_start || !localDate.value.shift3_end) {
-                shift4 = "Previous shifts must be specified"
+                shift4 = 'Previous shifts must be specified';
             } else if (localDate.value.shift4_start <= localDate.value.shift3_end) {
-                shift4 = "Start must be greater than Shift 3 end"
+                shift4 = 'Start must be greater than Shift 3 end';
             } else if (localDate.value.shift4_end !== '00:00' && (localDate.value.shift4_end <= localDate.value.shift4_start || !localDate.value.shift4_end)) {
-                shift4 = "End must be greater than start"
+                shift4 = 'End must be greater than start';
             }
         }
 
         if (localDate.value.shift4_end && !localDate.value.shift4_start) {
-            shift4 = "Start must be entered"
+            shift4 = 'Start must be entered';
         }
     }
 
@@ -158,8 +159,8 @@ const errors = computed(() => {
         shift2: shift2,
         shift3: shift3,
         shift4: shift4,
-    }
-})
+    };
+});
 
 watch(() => props.date, (newValue, oldValue) => {
     if (newValue.id !== oldValue.id) {
@@ -173,9 +174,9 @@ watch(() => props.date, (newValue, oldValue) => {
             shift3_end: newValue.shift3_end,
             shift4_start: newValue.shift4_start,
             shift4_end: newValue.shift4_end,
-        }
+        };
     }
-})
+});
 
 const setTo24Hours = () => {
     localDate.value = {
@@ -188,8 +189,8 @@ const setTo24Hours = () => {
         shift3_end: '',
         shift4_start: '',
         shift4_end: '',
-    }
-}
+    };
+};
 </script>
 
 <template>

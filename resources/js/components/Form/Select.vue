@@ -1,72 +1,72 @@
 <script setup>
-import useDropdown from '../../composables/useDropdown.js'
-import { computed, toRaw } from 'vue'
-import { isEqual } from 'lodash'
+import useDropdown from '../../composables/useDropdown.js';
+import {computed, toRaw} from 'vue';
+import {isEqual} from 'lodash';
 
 const props = defineProps({
-    placeholder: { type: String, default: 'Select an option' },
-    options: { type: Array, required: true },
-    optionLabel: { type: String, required: true },
-    optionValue: { type: String, default: null },
-    isLoading: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false },
-    invalid: { type: Boolean, default: false },
-    showClear: { type: Boolean, default: false },
-    dropdownClass: { type: String },
-})
+    placeholder: {type: String, default: 'Select an option'},
+    options: {type: Array, required: true},
+    optionLabel: {type: String, required: true},
+    optionValue: {type: String, default: null},
+    isLoading: {type: Boolean, default: false},
+    disabled: {type: Boolean, default: false},
+    invalid: {type: Boolean, default: false},
+    showClear: {type: Boolean, default: false},
+    dropdownClass: {type: String},
+});
 
-const model = defineModel()
-const emit = defineEmits(['selected'])
+const model = defineModel();
+const emit = defineEmits(['selected']);
 
 defineOptions({
     inheritAttrs: false,
-})
+});
 
 const text = computed(() => {
-    let foundOption
+    let foundOption;
 
     if (typeof model.value === 'object') {
-        foundOption = props.options.find(option => isEqual(option, toRaw(model.value)))
+        foundOption = props.options.find(option => isEqual(option, toRaw(model.value)));
     } else if (['string', 'number'].includes(typeof model.value)) {
-        foundOption = props.options.find(option => option[props.optionValue] === model.value)
+        foundOption = props.options.find(option => option[props.optionValue] === model.value);
     }
 
-    return foundOption ? foundOption[props.optionLabel] : props.placeholder
-})
+    return foundOption ? foundOption[props.optionLabel] : props.placeholder;
+});
 
 const {
     inputRef,
     dropdownStyle,
     showDropdown,
-} = useDropdown('left', 'bottom', true)
+} = useDropdown('left', 'bottom', true);
 
 const optionSelected = option => {
     if (props.optionValue) {
-        model.value = option[props.optionValue]
+        model.value = option[props.optionValue];
     } else {
-        model.value = option
+        model.value = option;
     }
 
-    showDropdown.value = false
-    emit('selected', option)
-}
+    showDropdown.value = false;
+    emit('selected', option);
+};
 
 const clear = () => {
-    showDropdown.value = false
-    model.value = null
-}
+    showDropdown.value = false;
+    model.value = null;
+};
 
 const toggleDropdown = () => {
-    showDropdown.value = !props.isLoading && !props.disabled && showDropdown.value === false
-}
+    showDropdown.value = !props.isLoading && !props.disabled && showDropdown.value === false;
+};
 
 const setClasses = computed(() => {
-    const disabled = 'bg-gray-100 dark:bg-gray-600 border-gray-400 cursor-not-allowed'
-    const invalid = 'bg-white dark:bg-gray-900 border-red-600 focus:outline-red-600/50 hover:border-red-500'
-    const normal = 'bg-white dark:bg-gray-900 border-gray-300 hover:border-gray-400 focus:outline-slate-400/50'
+    const disabled = 'bg-gray-100 dark:bg-gray-600 border-gray-400 cursor-not-allowed';
+    const invalid = 'bg-white dark:bg-gray-900 border-red-600 focus:outline-red-600/50 hover:border-red-500';
+    const normal = 'bg-white dark:bg-gray-900 border-gray-300 hover:border-gray-400 focus:outline-slate-400/50';
 
-    return props.disabled ? disabled : props.invalid ? invalid : normal
-})
+    return props.disabled ? disabled : props.invalid ? invalid : normal;
+});
 </script>
 
 <template>

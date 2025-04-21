@@ -1,4 +1,4 @@
-import CalendarShiftsEdit from '@/components/CalendarShiftsEdit.vue'
+import Edit from '@/components/Admin/Calendars/Shifts/Edit.vue'
 import vueConfig from '@/vue-config.js'
 
 Date.prototype.addDays = function (days) {
@@ -9,5 +9,5 @@ Date.prototype.addDays = function (days) {
 
 const { app } = vueConfig()
 
-app.component('CalendarShiftsEdit', CalendarShiftsEdit)
+app.component('Edit', Edit)
     .mount('#app')

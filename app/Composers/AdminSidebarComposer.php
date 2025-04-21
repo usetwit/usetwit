@@ -12,55 +12,74 @@ class AdminSidebarComposer
      */
     public function compose(View $view): void
     {
-        $routeMatches = [
-            'admin.calendars.index' => [
-                'admin.calendars.index',
-                'admin.calendars.show',
-                'admin.calendars.calendar-shifts.edit',
+        $items = [
+            [
+                'label' => 'Calendars',
+                'icon' => 'pi pi-calendar',
+                'links' => [
+                    [
+                        'type' => 'link',
+                        'label' => 'All Calendars',
+                        'route' => 'calendars.index',
+                    ],
+                    [
+                        'type' => 'link',
+                        'label' => 'Create Calendar',
+                        'route' => 'calendars.create',
+                    ],
+                ],
             ],
-            'admin.calendars.create' => [
-                'admin.calendars.create',
-            ],
-            'admin.sales-orders.index' => [
-                'admin.sales-orders.index',
-            ],
-            'admin.sales-orders.create' => [
-                'admin.sales-orders.create',
-            ],
-            'admin.company.edit' => [
-                'admin.company.edit',
-            ],
-            'admin.application.index' => [
-                'admin.application.index',
-                'admin.application.edit',
-            ],
-            'admin.users.index' => [
-                'admin.users.index',
-                'admin.users.edit',
-            ],
-            'admin.users.create' => [
-                'admin.users.create',
-            ],
-            'admin.locations.index' => [
-                'admin.locations.index',
-            ],
-            'admin.locations.create' => [
-                'admin.locations.create',
+            [
+                'label' => 'Users',
+                'icon' => 'pi pi-users',
+                'links' => [
+                    [
+                        'type' => 'heading',
+                        'label' => 'Users',
+                    ],
+                    [
+                        'type' => 'link',
+                        'label' => 'All Users',
+                        'route' => 'users.index',
+                        'matches' => [
+                            'users.edit',
+                        ],
+                    ],
+                    [
+                        'type' => 'link',
+                        'label' => 'Create User',
+                        'route' => 'users.create',
+                    ],
+                ],
             ],
         ];
 
-        $uris = [];
-        $routes = [];
+        foreach ($items as &$item) {
+            $item['expanded'] = false;
 
-        foreach ($routeMatches as $route => $options) {
-            foreach ($options as $value) {
-                $uris[$route] = route($route);
-                $routes[$value] = $route;
+            foreach ($item['links'] as &$link) {
+                if ($link['type'] === 'link') {
+                    $link['link'] = route("admin.{$link['route']}");
+
+                    if (! isset($link['matches'])) {
+                        $link['matches'] = [$link['route']];
+                    } else {
+                        $link['matches'][] = $link['route'];
+                    }
+
+                    foreach ($link['matches'] as &$match) {
+                        $match = "admin.{$match}";
+                    }
+
+                    if (! $item['expanded'] && in_array(Route::currentRouteName(), $link['matches'])) {
+                        $item['expanded'] = true;
+                    }
+
+                    unset($link['matches'], $link['route']);
+                }
             }
         }
 
-        $current = Route::currentRouteName();
-
-        $view->with(compact('uris', 'routes', 'current'));
+        $view->with(compact('items'));
     }
 }

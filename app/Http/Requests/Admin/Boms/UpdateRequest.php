@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\Boms;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('bom'));
+        return $this->user()->can('update', $this->route('boms'));
     }
 
     /**
@@ -27,7 +28,7 @@ class UpdateRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'unique:boms,name',
+                Rule::unique('boms', 'name')->ignore($this->route('boms')->id),
             ],
             'description' => [
                 'string',

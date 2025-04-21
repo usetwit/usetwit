@@ -5,7 +5,7 @@ namespace App\Composers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-class NavbarComposer
+class AdminNavbarComposer
 {
     /**
      * Bind data to the view.

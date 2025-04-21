@@ -1,11 +1,11 @@
 <script setup>
-import { computed, ref } from 'vue';
-import CalendarShiftsMonth from '@/components/CalendarShiftsMonth.vue';
-import CalendarShiftsShiftInput from '@/components/CalendarShiftsShiftInput.vue';
-import useAxios from '@/composables/useAxios';
-import CalendarShiftsSelect from '@/components/CalendarShiftsSelect.vue';
+import {computed, ref} from 'vue';
+import Month from '@/components/Admin/Calendars/Shifts/Month.vue';
+import ShiftInput from '@/components/Admin/Calendars/Shifts/ShiftInput.vue';
+import useAxios from '@/composables/useAxios.js';
+import Select from '@/components/Admin/Calendars/Shifts/Select.vue';
 import Button from '@/components/Form/Button.vue';
-import { toast } from 'vue3-toastify';
+import {toast} from 'vue3-toastify';
 
 const dateList = ref([]);
 const year = ref(new Date().getFullYear());
@@ -227,7 +227,7 @@ const activeList = computed(() => {
 <template>
     <div class="p-4">
 
-        <CalendarShiftsSelect :calendar-list="props.calendarList"/>
+        <Select :calendar-list="props.calendarList"/>
 
         <Button v-for="(day, key) in dayTexts"
                 @click="selectDays(key + 1 === 7 ? 0 : key + 1)"
@@ -261,7 +261,7 @@ const activeList = computed(() => {
 
         <div class="flex">
             <div class="grow grid xl:grid-cols-2 2xl:grid-cols-3 gap-4">
-                <CalendarShiftsMonth
+                <Month
                     v-if="dateList.length"
                     v-for="monthNumber in monthNumbers"
                     :monthNumber="monthNumber"
@@ -274,10 +274,10 @@ const activeList = computed(() => {
                 />
             </div>
 
-            <CalendarShiftsShiftInput :date="activeList[0]"
-                                      v-if="activeList.length"
-                                      @updateShifts="updateShifts"
-                                      v-model:isLoading="isLoading"
+            <ShiftInput :date="activeList[0]"
+                        v-if="activeList.length"
+                        @updateShifts="updateShifts"
+                        v-model:isLoading="isLoading"
             />
 
         </div>

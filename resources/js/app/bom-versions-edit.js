@@ -1,4 +1,4 @@
-import Edit from '@/components/Admin/Boms/Edit.vue';
+import Edit from '@/components/Admin/Boms/Versions/Edit.vue';
 import vueConfig from '@/vue-config.js';
 
 const {app} = vueConfig();

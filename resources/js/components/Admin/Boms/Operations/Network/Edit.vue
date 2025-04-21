@@ -1,7 +1,7 @@
 <script setup>
 import {ref, onMounted, onBeforeUnmount, computed} from 'vue';
 import useAxios from '@/composables/useAxios.js';
-import BomOperationsNetworkJoins from '@/components/BomOperationsNetworkJoins.vue';
+import Joins from '@/components/Admin/Boms/Operations/Network/Joins.vue';
 import {toast} from 'vue3-toastify';
 import BomOperationsNetworkColorPicker from '@/components/BomOperationsNetworkColorPicker.vue';
 import Modal from '@/components/Modal.vue';
@@ -319,7 +319,7 @@ const handleJoinClicked = () => {
         </div>
         <div class="min-h-96 overflow-scroll relative" id="network" @click="backgroundClick">
             <template v-for="operation in operations" :key="operation.id">
-                <BomOperationsNetworkJoins v-for="successor in operation.successors"
+                <Joins v-for="successor in operation.successors"
                                            :key="`${operation.id}-${successor}`"
                                            :operation="operation"
                                            :successor="operations.find(op => op.id === successor)"

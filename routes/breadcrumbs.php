@@ -82,8 +82,13 @@ Breadcrumbs::for('admin.company.edit', function (BreadcrumbTrail $trail) {
     $trail->push('Company', route('admin.company.edit'));
 });
 
-/* Bom Operations */
-Breadcrumbs::for('admin.bom.edit', function (BreadcrumbTrail $trail, Bom $bom) {
+/* Boms */
+Breadcrumbs::for('admin.boms.edit', function (BreadcrumbTrail $trail, Bom $bom) {
     $trail->parent('admin.home');
-    $trail->push('Bom', route('admin.bom.edit', $bom));
+    $trail->push('Edit Boms', route('admin.boms.edit', $bom));
+});
+
+Breadcrumbs::for('admin.boms.versions.edit', function (BreadcrumbTrail $trail, BomVersion $bomVersion) {
+    $trail->parent('admin.home');
+    $trail->push('Edit Boms', route('admin.boms.edit', $bomVersion));
 });

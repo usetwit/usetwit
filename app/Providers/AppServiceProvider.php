@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use App\Composers\NavbarComposer;
+use App\Composers\AdminNavbarComposer;
 use App\Composers\AdminSidebarComposer;
 use App\Services\BomComparisonService;
 use App\Services\BomUpversionService;
+use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -17,11 +18,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(BomComparisonService::class, function ($app) {
+        $this->app->singleton(BomComparisonService::class, function () {
             return new BomComparisonService();
         });
 
-        $this->app->singleton(BomUpversionService::class, function ($app) {
+        $this->app->singleton(BomUpversionService::class, function () {
             return new BomUpversionService();
         });
     }
@@ -34,7 +35,10 @@ class AppServiceProvider extends ServiceProvider
         Route::pattern('calendar', '[0-9]+');
         Route::pattern('year', '^\d{4}$');
 
-        View::composer('app._sidebar', AdminSidebarComposer::class);
-        View::composer('app._navbar', NavbarComposer::class);
+        View::composer('admin.layout', AdminSidebarComposer::class);
+        View::composer('admin.layout', AdminNavbarComposer::class);
+        View::composer('admin.layout', function ($view) {
+            $view->with('breadcrumbs', Breadcrumbs::generate());
+        });
     }
 }

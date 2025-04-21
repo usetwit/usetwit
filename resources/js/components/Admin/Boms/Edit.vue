@@ -7,10 +7,12 @@ import Button from '@/components/Form/Button.vue';
 import useAxios from '@/composables/useAxios.js';
 import {toast} from 'vue3-toastify';
 import {debounce} from 'lodash';
+import Select from '@/components/Form/Select.vue';
 
 const props = defineProps({
     bom: {type: Object, required: true},
     routes: {type: Object, required: true},
+    versions: {type: Array, required: true},
 });
 
 const bom = ref(props.bom);
@@ -19,6 +21,7 @@ const errorFields = ref([]);
 const nameExists = ref(false);
 
 const checkName = async () => {
+    if(bom.value.name) {
         const {data, getResponse} = useAxios(
             props.routes.check_name,
             {name: bom.value.name},
@@ -28,6 +31,7 @@ const checkName = async () => {
         await getResponse();
 
         nameExists.value = data.value.exists && props.bom.name !== bom.value.name;
+    }
 };
 
 const save = async () => {
@@ -58,6 +62,9 @@ const debouncedCheckName = debounce(checkName, 300, {leading: true, trailing: tr
 
 <template>
     <div id="content">
+        <div class="flex justify-end">
+            <Select :option-label="null" :options="versions"/>
+        </div>
         <form @submit.prevent="save" autocomplete="off">
 
             <Wrapper>

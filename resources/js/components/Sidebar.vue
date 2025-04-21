@@ -1,6 +1,6 @@
 <script setup>
-import {ref} from 'vue'
-import {useMenuStore} from '../stores/menuStore'
+import {ref} from 'vue';
+import {useMenuStore} from '../stores/menuStore';
 
 const props = defineProps({
     routes: {
@@ -85,12 +85,12 @@ const items = ref([
             {
                 type: 'link',
                 text: 'All Users',
-                route: 'admin.users.index'
+                route: 'admin.users.index',
             },
             {
                 type: 'link',
                 text: 'Create User',
-                route: 'admin.users.create'
+                route: 'admin.users.create',
             },
         ],
     },
@@ -102,45 +102,46 @@ const items = ref([
             {
                 type: 'link',
                 text: 'All Sales Orders',
-                route: 'admin.sales-orders.index'
+                route: 'admin.sales-orders.index',
             },
             {
                 type: 'link',
                 text: 'Create Sales Order',
-                route: 'admin.sales-orders.create'
+                route: 'admin.sales-orders.create',
             },
         ],
     },
-])
+]);
 
 items.value.forEach(item => {
     item.expanded = item.links.some((subItem) => {
-        return subItem.type !== 'heading' && subItem.route === props.routes[props.current]
-    })
+        return subItem.type !== 'heading' && subItem.route === props.routes[props.current];
+    });
 });
 
 const toggleExpanded = (item) => {
-    item.expanded = !item.expanded
-}
+    item.expanded = !item.expanded;
+};
 
-const store = useMenuStore()
+const store = useMenuStore();
 
 const closeMenu = () => {
-    store.isMenuVisible = false
+    store.isMenuVisible = false;
     document.documentElement.classList.remove('overflow-hidden');
-    document.body.classList.remove('overflow-hidden')
-}
+    document.body.classList.remove('overflow-hidden');
+};
 
 const checkScreenSize = () => {
-    store.isLargeScreen = window.innerWidth >= 1024
+    store.isLargeScreen = window.innerWidth >= 1024;
 
     if (store.isLargeScreen) {
-        closeMenu()
+        closeMenu();
     }
-}
+};
 
-checkScreenSize()
-window.addEventListener('resize', checkScreenSize)
+checkScreenSize();
+
+window.addEventListener('resize', checkScreenSize);
 </script>
 
 <template>

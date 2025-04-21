@@ -17,12 +17,18 @@ class BomController extends Controller
     public function edit(Bom $bom)
     {
         $routes = [
-            'update' => route('admin.bom.update', $bom),
-            'check_name' => route('admin.bom.checkName'),
+            'update' => route('admin.boms.update', $bom),
+            'check_name' => route('admin.boms.checkName'),
         ];
 
-        return view('admin.bom.edit', compact('bom', 'routes'));
+        $versions = $bom->bomVersions()
+                        ->orderByDesc('version')
+                        ->pluck('version', 'id')
+                        ->map(fn ($version) => "v{$version}");
+
+        return view('admin.bom.edit', compact('bom', 'routes', 'versions'));
     }
+
 
     public function update(Bom $bom, UpdateRequest $request): JsonResponse
     {
