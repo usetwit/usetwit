@@ -17,14 +17,27 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         Permission::create(['name' => 'users.view.self']);
-        Permission::create(['name' => 'users.update.self.address']);
         Permission::create(['name' => 'users.update.self.personal-profile']);
         Permission::create(['name' => 'users.update.self.company-profile']);
         Permission::create(['name' => 'users.update.self.profile-image']);
-        Permission::create(['name' => 'users.update.address']);
         Permission::create(['name' => 'users.update.personal-profile']);
         Permission::create(['name' => 'users.update.company-profile']);
         Permission::create(['name' => 'users.update.profile-image']);
+        Permission::create(['name' => 'addresses.user.create']);
+        Permission::create(['name' => 'addresses.user.create.self']);
+        Permission::create(['name' => 'addresses.user.update']);
+        Permission::create(['name' => 'addresses.user.update.self']);
+        Permission::create(['name' => 'addresses.user.delete']);
+        Permission::create(['name' => 'addresses.user.delete.self']);
+        Permission::create(['name' => 'addresses.customer.create']);
+        Permission::create(['name' => 'addresses.customer.create.self']);
+        Permission::create(['name' => 'addresses.customer.update']);
+        Permission::create(['name' => 'addresses.customer.update.self']);
+        Permission::create(['name' => 'addresses.customer.delete']);
+        Permission::create(['name' => 'addresses.customer.delete.self']);
+        Permission::create(['name' => 'addresses.company.create']);
+        Permission::create(['name' => 'addresses.company.update']);
+        Permission::create(['name' => 'addresses.company.delete']);
         Permission::create(['name' => 'company.update']);
 
         $methods = ['create', 'update', 'view', 'delete', 'restore'];

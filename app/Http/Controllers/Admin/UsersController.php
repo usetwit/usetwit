@@ -56,7 +56,7 @@ class UsersController extends Controller
         $cols = Cache::remember('user_columns', 24 * 60 * 60 * 7, function () {
             $cols = Schema::getColumnListing('users');
             $cols = array_diff($cols, ['password', 'remember_token']);
-            $cols = array_map(fn ($value) => 'users.'.$value, $cols);
+            $cols = array_map(fn($value) => 'users.'.$value, $cols);
 
             return array_merge($cols, ['roles.name as role_name']);
         });
@@ -71,7 +71,7 @@ class UsersController extends Controller
         $total = $query->total();
 
         $users = $query->getCollection()->map(function ($user) {
-            return array_merge((array) $user, [
+            return array_merge((array)$user, [
                 'edit_user_route' => route('admin.users.edit', $user->slug),
                 'created_at' => Carbon::parse($user->created_at)->format('Y-m-d'),
                 'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d'),
@@ -90,7 +90,9 @@ class UsersController extends Controller
             'protected_info' => auth()->user()->can('updateProtectedInfo', User::class),
             'delete' => auth()->user()->can('delete', User::class),
             'restore' => auth()->user()->can('restore', User::class),
-            'address' => auth()->user()->can('updateAddress', $user),
+            'create_address' => auth()->user()->can('createAddress', $user),
+            'update_address' => auth()->user()->can('updateAddress', User::class),
+            'delete_address' => auth()->user()->can('deleteAddress', $user),
             'personal_profile' => auth()->user()->can('updatePersonalProfile', $user),
             'company_profile' => auth()->user()->can('updateCompanyProfile', $user),
             'image' => auth()->user()->can('updateProfileImage', $user),
@@ -99,11 +101,13 @@ class UsersController extends Controller
             'employee_id' => auth()->user()->can('updateEmployeeId', User::class),
         ];
 
+        $permissions['address'] = $permissions['create_address'] || $permissions['update_address'] || $permissions['delete_address'];
+
         $routes = [
             'delete' => route('admin.users.destroy', $user),
             'restore' => route('admin.users.restore', $user),
             'protected_info' => route('admin.users.update.protected-info', $user),
-            'address' => route('admin.users.update.address', $user),
+            'create_address' => route('admin.addresses.user.create', $user),
             'personal_profile' => route('admin.users.update.personal-profile', $user),
             'company_profile' => route('admin.users.update.company-profile', $user),
             'password' => route('admin.users.update.password', $user),
@@ -119,7 +123,7 @@ class UsersController extends Controller
             })->values();
 
         $user->load([
-            'address',
+            'addresses',
             'profileImages',
             'roles' => function (MorphToMany $query) {
                 $query->limit(1);

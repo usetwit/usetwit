@@ -1,10 +1,10 @@
 <script setup>
 const props = defineProps({
-    label: { type: String, default: null },
-    id: { type: String, default: null },
-})
+    label: {type: String, default: null},
+    id: {type: String, default: null},
+});
 
-const model = defineModel()
+const model = defineModel();
 </script>
 
 <template>

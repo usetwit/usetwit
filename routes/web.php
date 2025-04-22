@@ -27,15 +27,26 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     });
 
     /* Company */
-    Route::prefix('company')->name('company.')->middleware('permission:company.update')->controller('CompanyController')->group(function () {
-        Route::get('edit', 'edit')->name('edit');
-        Route::patch('', 'update')->name('update');
-    });
+    Route::prefix('company')
+         ->name('company.')
+         ->middleware('permission:company.update')
+         ->controller('CompanyController')
+         ->group(function () {
+             Route::get('edit', 'edit')->name('edit');
+             Route::patch('', 'update')->name('update');
+         });
 
 //    /* Roles and Permissions */
 //    Route::prefix('roles')->name('roles.')->middleware('permission:roles.update')->controller('RolesController')->group(function () {
 //        Route::get('{role}/edit', 'edit')->name('edit');
 //    });
+
+
+    /* Addresses */
+    Route::prefix('addresses')->name('addresses.')->controller('AddressesController')->group(function () {
+        Route::post('user/{user}/create', 'userCreate')->name('user.create')->can('createAddress', 'user');
+        Route::patch('user/{address}', 'update')->name('user.update')->can('updateUserAddress', 'address');
+    });
 
     /* Users */
     Route::prefix('users')->name('users.')->controller('UsersController')->group(function () {
@@ -47,17 +58,33 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
 
         /* Users Update */
         Route::prefix('update')->name('update.')->controller('UsersUpdateController')->group(function () {
-            Route::patch('employee-id/{user}', 'updateEmployeeId')->name('employee-id')->withTrashed()->can('updateEmployeeId', 'user');
-            Route::patch('username/{user}', 'updateUsername')->name('username')->withTrashed()->can('updateUsername', 'user');
-            Route::patch('company-profile/{user}', 'updateCompanyProfile')->name('company-profile')->withTrashed()->can('updateCompanyProfile', 'user');
-            Route::patch('personal-profile/{user}', 'updatePersonalProfile')->name('personal-profile')->withTrashed()->can('updatePersonalProfile', 'user');
-            Route::patch('address/{user}', 'updateAddress')->name('address')->withTrashed()->can('updateAddress', 'user');
+            Route::patch('employee-id/{user}', 'updateEmployeeId')
+                 ->name('employee-id')
+                 ->withTrashed()
+                 ->can('updateEmployeeId', 'user');
+            Route::patch('username/{user}', 'updateUsername')
+                 ->name('username')
+                 ->withTrashed()
+                 ->can('updateUsername', 'user');
+            Route::patch('company-profile/{user}', 'updateCompanyProfile')
+                 ->name('company-profile')
+                 ->withTrashed()
+                 ->can('updateCompanyProfile', 'user');
+            Route::patch('personal-profile/{user}', 'updatePersonalProfile')
+                 ->name('personal-profile')
+                 ->withTrashed()
+                 ->can('updatePersonalProfile', 'user');
             Route::patch('password/{user}', 'updatePassword')->name('password')->withTrashed();
-            Route::patch('protected-info/{user}', 'updateProtectedInfo')->name('protected-info')->withTrashed()->can('updateProtectedInfo', User::class);
+            Route::patch('protected-info/{user}', 'updateProtectedInfo')
+                 ->name('protected-info')
+                 ->withTrashed()
+                 ->can('updateProtectedInfo', User::class);
         });
 
         Route::post('check-username', 'checkUsername')->name('check-username')->can('updateUsername', User::class);
-        Route::post('check-employee-id', 'checkEmployeeId')->name('check-employee-id')->can('updateEmployeeId', User::class);
+        Route::post('check-employee-id', 'checkEmployeeId')
+             ->name('check-employee-id')
+             ->can('updateEmployeeId', User::class);
         Route::post('', 'store')->name('store')->can('create', User::class);
         Route::post('get-users', 'getUsers')->name('get-users')->can('viewAny', User::class);
     });
@@ -84,19 +111,26 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     });
 
     /* Calendars */
-    Route::prefix('calendars')->name('calendars.')->middleware('permission:calendars.update')->controller('CalendarsController')->group(function () {
-        Route::get('', 'index')->name('index');
-        Route::get('create', 'create')->name('create');
-        Route::get('{calendar}/edit', 'edit')->name('edit');
-        Route::patch('{calendar}', 'update')->name('update');
+    Route::prefix('calendars')
+         ->name('calendars.')
+         ->middleware('permission:calendars.update')
+         ->controller('CalendarsController')
+         ->group(function () {
+             Route::get('', 'index')->name('index');
+             Route::get('create', 'create')->name('create');
+             Route::get('{calendar}/edit', 'edit')->name('edit');
+             Route::patch('{calendar}', 'update')->name('update');
 
-        /* Calendar Shifts */
-        Route::prefix('calendar-shifts')->name('calendar-shifts.')->controller('CalendarShiftsController')->group(function () {
-            Route::patch('{calendar}', 'update')->name('update');
-            Route::post('{calendar}', 'getCalendarShifts')->name('get-calendar-shifts');
-            Route::get('{calendar}/edit', 'edit')->name('edit');
-        });
-    });
+             /* Calendar Shifts */
+             Route::prefix('calendar-shifts')
+                  ->name('calendar-shifts.')
+                  ->controller('CalendarShiftsController')
+                  ->group(function () {
+                      Route::patch('{calendar}', 'update')->name('update');
+                      Route::post('{calendar}', 'getCalendarShifts')->name('get-calendar-shifts');
+                      Route::get('{calendar}/edit', 'edit')->name('edit');
+                  });
+         });
 
     /* Locations */
     Route::prefix('locations')->name('locations.')->controller('LocationsController')->group(function () {

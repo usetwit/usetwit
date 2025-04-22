@@ -2,18 +2,18 @@
 <html class="h-full">
 <head>
     <title>Sign In - useTwit</title>
-    @include('app._meta')
-    @include('app._css')
+
+    @include('admin._meta')
+
+    @vite('resources/css/app.css')
 </head>
 <body class="bg-gradient h-full flex items-center justify-center">
 <section class="flex flex-col items-center justify-center w-full max-w-md mx-1 md:mx-auto">
     <div class="w-full bg-white rounded-lg shadow-sm">
         <div class="space-y-4 p-4">
             <h1 class="flex items-center text-xl font-bold text-gray-800">
-                <a href="#" class="flex items-center">
-                    <img class="w-8 h-8" src="{{ asset('images/logo.svg', true) }}" alt="useTwit">
-                </a>
-                <span class="ml-2 pt-1.5">Sign in</span>
+                <img class="w-8 h-8" src="{{ asset('images/logo.svg', true) }}" alt="useTwit">
+                <span class="ml-1 pt-1.5">Sign in</span>
             </h1>
             <form class="lg:space-y-4"
                   action="{{ route('auth.login') }}"
@@ -61,8 +61,11 @@
                 </button>
             </form>
         </div>
+
+        <div class="text-gray-800 mt-4 text-sm drop-shadow-sm text-center mb-2">&copy; 2024 useTwit
+            v{{ config('app.version') }}</div>
+
     </div>
-    <div class="text-gray-800 mt-4 text-sm drop-shadow-sm">&copy; 2024 useTwit v{{ config('app.version') }}</div>
 </section>
 </body>
 

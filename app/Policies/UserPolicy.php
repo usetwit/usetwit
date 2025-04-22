@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Address;
 use App\Models\User;
 
 class UserPolicy
@@ -31,6 +32,46 @@ class UserPolicy
     }
 
     /**
+     * Determine whether the user can create an address.
+     */
+    public function createAddress(User $user, User $model): bool
+    {
+        if ($user->can('users.addresses.create')) {
+            return true;
+        }
+
+        if ($user->can('users.addresses.create.self')) {
+            return $user->id === $model->id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can create an address.
+     */
+    public function deleteAddress(User $user, User $model): bool
+    {
+        if ($user->can('users.addresses.delete')) {
+            return true;
+        }
+
+        if ($user->can('users.addresses.delete.self')) {
+            return $user->id === $model->id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update an address.
+     */
+    public function updateAddress(User $user): bool
+    {
+        return $user->can('addresses.user.update') || $user->can('addresses.user.update.self');
+    }
+
+    /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
@@ -43,8 +84,11 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->can('users.update') || $user->can('updatePersonalProfile', $model) || $user->can('updateAddress',
-                $model) || $user->can('updateProfileImage', $model) || $user->can('updateCompanyProfile', $model);
+        return $user->can('users.update')
+            || $user->can('updatePersonalProfile', $model)
+            || $user->can('updateAddress', $model)
+            || $user->can('updateProfileImage', $model)
+            || $user->can('updateCompanyProfile', $model);
     }
 
     /**
@@ -149,22 +193,6 @@ class UserPolicy
     public function updateProtectedInfo(User $user): bool
     {
         return $user->can('users.update');
-    }
-
-    /**
-     * Determine whether the user can update the model address.
-     */
-    public function updateAddress(User $user, User $model): bool
-    {
-        if ($user->can('users.update')) {
-            return true;
-        }
-
-        if ($user->can('users.update.self.address')) {
-            return $user->id === $model->id;
-        }
-
-        return false;
     }
 
     /**

@@ -14,7 +14,6 @@ class AddressFactory extends Factory
 
     public function definition(): array
     {
-        $addressableType = Arr::random(Address::$validAddressables);
         $country_code = $this->faker->countryCode;
         $country_name = Countries::getName($country_code, app()->getLocale());
 
@@ -25,8 +24,7 @@ class AddressFactory extends Factory
             'postcode' => $this->faker->postcode,
             'country_code' => $country_code,
             'country_name' => $country_name,
-            'addressable_type' => $addressableType,
-            'addressable_id' => $addressableType::factory()->create()->id,
+            'default_address' => false,
             'deleted_at' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

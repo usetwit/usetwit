@@ -7,12 +7,20 @@ use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 class Customer extends Authenticatable implements Authorizable
 {
     use HasFactory;
+    use HasRoles;
+    use HasSlug;
+    use Notifiable;
+    use SoftDeletes;
 
     /**
      * Get the options for generating the slug.
@@ -22,8 +30,8 @@ class Customer extends Authenticatable implements Authorizable
     public function getSlugOptions(): SlugOptions
     {
         $slugOptions = SlugOptions::create()
-            ->saveSlugsTo('slug')
-            ->slugsShouldBeNoLongerThan(50);
+                                  ->saveSlugsTo('slug')
+                                  ->slugsShouldBeNoLongerThan(50);
 
         if ($this->isB2C()) {
             return $slugOptions->generateSlugsFrom(['first_name', 'last_name']);

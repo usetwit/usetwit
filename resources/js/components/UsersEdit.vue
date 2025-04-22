@@ -1,70 +1,45 @@
 <script setup>
-import { ref, useTemplateRef, watch } from 'vue'
-import Tab from '@/components/Tab.vue'
-import Wrapper from '@/components/Form/Wrapper.vue'
-import InputText from '@/components/Form/InputText.vue'
-import Button from '@/components/Form/Button.vue'
-import FormWrapper from '@/components/Form/Wrapper.vue'
-import Select from '@/components/Form/Select.vue'
-import Datepicker from '@/components/Form/Datepicker.vue'
-import Password from '@/components/Form/Password.vue'
-import useAxios from '@/composables/useAxios.js'
-import { debounce, pick } from 'lodash'
-import { toast } from 'vue3-toastify'
-import Csrf from '@/components/Form/Csrf.vue'
-import Modal from '@/components/Modal.vue'
+import {ref, useTemplateRef, watch} from 'vue';
+import Tab from '@/components/Tab.vue';
+import Wrapper from '@/components/Form/Wrapper.vue';
+import InputText from '@/components/Form/InputText.vue';
+import Button from '@/components/Form/Button.vue';
+import FormWrapper from '@/components/Form/Wrapper.vue';
+import Select from '@/components/Form/Select.vue';
+import Datepicker from '@/components/Form/Datepicker.vue';
+import Password from '@/components/Form/Password.vue';
+import useAxios from '@/composables/useAxios.js';
+import {debounce, pick} from 'lodash';
+import {toast} from 'vue3-toastify';
+import Csrf from '@/components/Form/Csrf.vue';
+import Modal from '@/components/Modal.vue';
+import CreateAddress from '@/components/Addresses/Create.vue';
 
 const props = defineProps({
-    roles: { type: Array, required: true },
-    permissions: { type: Object, required: true },
-    routes: { type: Object, required: true },
-    user: { type: Object, required: true },
-    countries: { type: Array, required: true },
-    dateSettings: { type: Object, required: true },
-})
+    roles: {type: Array, required: true},
+    permissions: {type: Object, required: true},
+    routes: {type: Object, required: true},
+    user: {type: Object, required: true},
+    countries: {type: Array, required: true},
+    dateSettings: {type: Object, required: true},
+});
 
-const usernameExists = ref(false)
-const employeeIdExists = ref(false)
-const isLoading = ref(false)
-const tabs = ref([])
-const activeTab = ref(null)
-const errorFields = ref([])
+const usernameExists = ref(false);
+const employeeIdExists = ref(false);
+const isLoading = ref(false);
+const tabs = ref([]);
+const activeTab = ref(null);
+const errorFields = ref([]);
+const {roles, ...rest} = props.user;
+
+// eslint-disable-next-line vue/no-dupe-keys
 const user = ref({
-    // Personal Profile
-    first_name: props.user.first_name,
-    middle_names: props.user.middle_names,
-    last_name: props.user.last_name,
-    personal_number: props.user.personal_number,
-    personal_mobile_number: props.user.personal_mobile_number,
-    personal_email: props.user.personal_email,
-    dob: props.user.dob,
-
-    // Company Profile
-    company_mobile_number: props.user.company_mobile_number,
-    company_number: props.user.company_number,
-    email: props.user.email,
-    company_ext: props.user.company_ext,
-
-    // Address
-    address_line_1: props.user.address?.address_line_1 || null,
-    address_line_2: props.user.address?.address_line_2 || null,
-    address_line_3: props.user.address?.address_line_3 || null,
-    postcode: props.user.address?.postcode || null,
-    country: props.user.address?.country || null,
-
-    // Protected Info
-    joined_at: props.user.joined_at,
-    left_at: props.user.left_at,
-    username: props.user.username,
-    employee_id: props.user.employee_id,
-    role_id: props.user.roles[0]?.id,
-    active: props.user.active,
-
-    // Password
-    new_password_confirmation: '',
+    ...rest,
+    role_id: roles?.[0]?.id,
     new_password: '',
+    new_password_confirmation: '',
     current_password: '',
-})
+});
 
 const tabTexts = {
     personal_profile: '<i class="pi pi-user-edit hidden md:inline-block mr-2"></i>Personal',
@@ -72,54 +47,54 @@ const tabTexts = {
     address: '<i class="pi pi-map hidden md:inline-block mr-2"></i>Address',
     image: '<i class="pi pi-image hidden md:inline-block mr-2"></i>Profile Image',
     protected_info: '<i class="pi pi-exclamation-circle hidden md:inline-block mr-2"></i>Admin',
-}
+};
 
 for (const [key, text] of Object.entries(tabTexts)) {
     if (props.permissions[key]) {
-        tabs.value.push({ key, text })
+        tabs.value.push({key, text});
     }
 }
 
 tabs.value.push({
     key: 'password',
-    text: `<span class="text-red-500"><i class="pi pi-key hidden md:inline-block mr-2"></i>Password</span>`,
-})
+    text: '<span class="text-red-500"><i class="pi pi-key hidden md:inline-block mr-2"></i>Password</span>',
+});
 
 const currentHash = window.location.hash.slice(1);
-const activeTabFromHash = tabs.value.find(tab => tab.key === currentHash)
-activeTab.value = activeTabFromHash || tabs.value[0]
+const activeTabFromHash = tabs.value.find(tab => tab.key === currentHash);
+activeTab.value = activeTabFromHash || tabs.value[0];
 
 const handleClick = text => {
-    activeTab.value = text
-}
+    activeTab.value = text;
+};
 
 const update = async (route, fields) => {
-    isLoading.value = true
+    isLoading.value = true;
 
-    const { errors, status, data, getResponse } = useAxios(
+    const {errors, status, data, getResponse} = useAxios(
         route,
         pick(user.value, fields),
         'patch',
-    )
+    );
 
-    await getResponse()
+    await getResponse();
 
     if (status.value === 200) {
-        toast.success(data.value)
+        toast.success(data.value);
     } else {
-        errorFields.value = errors.value.fields
+        errorFields.value = errors.value.fields;
     }
 
-    isLoading.value = false
-}
+    isLoading.value = false;
+};
 
 const updatePassword = async () => {
     await update(props.routes.password, [
         'current_password',
         'new_password',
         'new_password_confirmation',
-    ])
-}
+    ]);
+};
 
 const updatePersonalProfile = async () => {
     await update(props.routes.personal_profile, [
@@ -130,27 +105,17 @@ const updatePersonalProfile = async () => {
         'personal_number',
         'personal_mobile_number',
         'personal_email',
-    ])
-}
+    ]);
+};
 
 const updateCompanyProfile = async () => {
-    update(props.routes.company_profile, [
+    await update(props.routes.company_profile, [
         'email',
         'company_number',
         'company_ext',
         'company_mobile_number',
-    ])
-}
-
-const updateAddress = async () => {
-    await update(props.routes.address, [
-        'address_line_1',
-        'address_line_2',
-        'address_line_3',
-        'postcode',
-        'country',
-    ])
-}
+    ]);
+};
 
 const updateProtectedInfo = async () => {
     await update(props.routes.protected_info, [
@@ -158,68 +123,68 @@ const updateProtectedInfo = async () => {
         'left_at',
         'role_id',
         'employee_id',
-    ])
-}
+    ]);
+};
 
 const updateUsername = async () => {
-    await update(props.routes.username, ['username'])
-}
+    await update(props.routes.username, ['username']);
+};
 
 const updateEmployeeId = async () => {
-    await update(props.routes.employee_id, ['employee_id',])
-}
+    await update(props.routes.employee_id, ['employee_id']);
+};
 
-const deleteModalIsVisible = ref(false)
-const deleteUserForm = useTemplateRef('deleteUserForm')
+const deleteModalIsVisible = ref(false);
+const deleteUserForm = useTemplateRef('deleteUserForm');
 
 const checkUsername = async () => {
     if (user.value.username) {
-        isLoading.value = true
+        isLoading.value = true;
 
-        const { data, errors, getResponse } = useAxios(
+        const {data, errors, getResponse} = useAxios(
             props.routes.check_username,
-            { username: user.value.username },
+            {username: user.value.username},
             'post',
-        )
-        await getResponse()
+        );
+        await getResponse();
 
         if (!errors.value.raw) {
-            usernameExists.value = data.value.length > 0
+            usernameExists.value = data.value.length > 0;
         }
 
-        isLoading.value = false
+        isLoading.value = false;
     } else {
-        usernameExists.value = false
+        usernameExists.value = false;
     }
-}
+};
 
 const checkEmployeeId = async () => {
     if (user.value.employee_id) {
-        isLoading.value = true
+        isLoading.value = true;
 
-        const { data, errors, getResponse } = useAxios(
+        const {data, errors, getResponse} = useAxios(
             props.routes.check_employee_id,
-            { employee_id: user.value.employee_id },
+            {employee_id: user.value.employee_id},
             'post',
-        )
-        await getResponse()
+        );
+        await getResponse();
 
         if (!errors.value.raw) {
-            employeeIdExists.value = data.value.length > 0
+            employeeIdExists.value = data.value.length > 0;
         }
 
-        isLoading.value = false
+        isLoading.value = false;
     } else {
-        employeeIdExists.value = false
+        employeeIdExists.value = false;
     }
-}
+};
 
-const debouncedCheckUsername = debounce(checkUsername, 300, { leading: true, trailing: true })
-const debouncedEmployeeId = debounce(checkEmployeeId, 300, { leading: true, trailing: true })
+const debouncedCheckUsername = debounce(checkUsername, 300, {leading: true, trailing: true});
+const debouncedEmployeeId = debounce(checkEmployeeId, 300, {leading: true, trailing: true});
 
 watch(() => user.value.username, (newValue) => {
-    user.value.username = newValue.toLowerCase()
-})
+    user.value.username = newValue.toLowerCase();
+});
 </script>
 
 <template>
@@ -459,18 +424,18 @@ watch(() => user.value.username, (newValue) => {
 
                 <Wrapper>
                     <template #text>
-                        <label for="personal_email">
+                        <label for="email">
                             Company Email
                         </label>
                     </template>
 
                     <template #input>
                         <InputText class="rounded-md w-full sm:w-60"
-                                   id="company_email"
+                                   id="email"
                                    type="email"
                                    maxlength="255"
                                    placeholder="Company Email"
-                                   v-model="user.personal_email"
+                                   v-model="user.email"
                         />
                     </template>
                 </Wrapper>
@@ -489,107 +454,7 @@ watch(() => user.value.username, (newValue) => {
             </form>
         </div>
         <div v-if="activeTab.key === 'address'">
-            <form @submit.prevent="updateAddress" autocomplete="off">
-                <Wrapper>
-                    <template #text>
-                        <label for="address_line_1">
-                            Line 1
-                        </label>
-                    </template>
 
-                    <template #input>
-                        <InputText class="rounded-md w-full sm:w-60"
-                                   maxlength="255"
-                                   id="address_line_1"
-                                   placeholder="Line 1"
-                                   v-model="user.address_line_1"
-                        />
-                    </template>
-                </Wrapper>
-
-                <Wrapper>
-                    <template #text>
-                        <label for="address_line_2">
-                            Line 2
-                        </label>
-                    </template>
-
-                    <template #input>
-                        <InputText class="rounded-md w-full sm:w-60"
-                                   maxlength="255"
-                                   id="address_line_2"
-                                   placeholder="Line 2"
-                                   v-model="user.address_line_2"
-                        />
-                    </template>
-                </Wrapper>
-
-                <Wrapper>
-                    <template #text>
-                        <label for="address_line_3">
-                            Line 3
-                        </label>
-                    </template>
-
-                    <template #input>
-                        <InputText class="rounded-md w-full sm:w-60"
-                                   maxlength="255"
-                                   id="address_line_3"
-                                   placeholder="Line 3"
-                                   v-model="user.address_line_3"
-                        />
-                    </template>
-                </Wrapper>
-
-                <Wrapper>
-                    <template #text>
-                        <label for="postcode">
-                            Postcode
-                        </label>
-                    </template>
-
-                    <template #input>
-                        <InputText class="rounded-md w-full sm:w-60"
-                                   maxlength="10"
-                                   id="postcode"
-                                   placeholder="Postcode"
-                                   v-model="user.postcode"
-                        />
-                    </template>
-                </Wrapper>
-
-                <Wrapper>
-                    <template #text>
-                        <label>
-                            Country
-                        </label>
-                    </template>
-
-                    <template #input>
-                        <Select v-model="user.country"
-                                :options="countries"
-                                option-label="name"
-                                option-value="code"
-                                placeholder="Select a Country"
-                                class="w-full"
-                                show-clear
-                                filter
-                        />
-                    </template>
-                </Wrapper>
-
-                <div class="flex">
-                    <Button severity="success"
-                            type="submit"
-                            aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
-                            label="Save"
-                            icon="pi pi-save"
-                            class="mx-auto my-4"
-                    />
-                </div>
-            </form>
         </div>
         <div v-if="activeTab.key === 'protected_info'">
             <form @submit.prevent="updateUsername" autocomplete="off" v-if="permissions.username">
@@ -823,6 +688,7 @@ watch(() => user.value.username, (newValue) => {
                         <Password class="w-full sm:w-60"
                                   maxlength="255"
                                   id="new_password"
+                                  name="new_password"
                                   required
                                   placeholder="••••••••"
                                   v-model="user.new_password"
@@ -839,14 +705,14 @@ watch(() => user.value.username, (newValue) => {
                     </template>
 
                     <template #input>
-                        <InputText class="rounded-md w-full sm:w-60"
-                                   maxlength="255"
-                                   type="password"
-                                   placeholder="••••••••"
-                                   id="new_password_confirmation"
-                                   v-model="user.new_password_confirmation"
-                                   :invalid="errorFields.includes('new_password_confirmation')"
-                                   required
+                        <Password class="w-full sm:w-60"
+                                  maxlength="255"
+                                  id="new_password_confirmation"
+                                  name="new_password_confirmation"
+                                  required
+                                  placeholder="••••••••"
+                                  v-model="user.new_password_confirmation"
+                                  :invalid="errorFields.includes('new_password_confirmation')"
                         />
                     </template>
                 </Wrapper>

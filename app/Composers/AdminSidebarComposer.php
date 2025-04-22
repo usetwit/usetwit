@@ -111,31 +111,30 @@ class AdminSidebarComposer
 
         $current = Route::currentRouteName();
 
-        foreach ($items as $index => &$item) {
+        foreach ($items as $i => &$item) {
             $item['expanded'] = false;
-            $item['id'] = $index;
+            $item['id'] = $i;
 
-            foreach ($item['links'] as $linkIndex => &$link) {
-                $link['id'] = "{$index}-{$linkIndex}";
-                $link['active'] = false;
+            foreach ($item['links'] as $j => &$link) {
+                $link['id'] = "{$i}-{$j}";
 
-                if ($link['type'] === 'link') {
-                    $link['link'] = route("admin.{$link['route']}");
-
-                    $link['matches'] ??= [];
-                    $link['matches'][] = $link['route'];
-
-                    foreach ($link['matches'] as &$match) {
-                        $match = "admin.{$match}";
-                        $link['active'] = $match === $current;
-                    }
-
-                    if (! $item['expanded'] && in_array($current, $link['matches'])) {
-                        $item['expanded'] = true;
-                    }
-
-                    unset($link['matches'], $link['route']);
+                if ($link['type'] !== 'link') {
+                    continue;
                 }
+
+                $link['link'] = route("admin.{$link['route']}");
+
+                $matches = $link['matches'] ?? [];
+                $matches[] = $link['route'];
+                $prefixedMatches = array_map(fn($m) => "admin.$m", $matches);
+
+                $link['active'] = in_array($current, $prefixedMatches, true);
+
+                if (! $item['expanded'] && $link['active']) {
+                    $item['expanded'] = true;
+                }
+
+                unset($link['matches'], $link['route']);
             }
         }
 

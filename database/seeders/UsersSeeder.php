@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\User;
 use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 use Illuminate\Database\Seeder;
@@ -29,6 +30,17 @@ class UsersSeeder extends Seeder
             'active' => true,
             'joined_at' => '2024-01-01',
         ])->assignRole($role['admin']);
+
+        Address::factory()
+               ->count(3)
+               ->for($mike, 'addressable')
+               ->create();
+
+        Address::factory()
+               ->for($mike, 'addressable')
+               ->state(['default_address' => true])
+               ->create();
+
 
         $filePath = storage_path('app/images/user/profile/1/b0f8b49f22c718e9924f5b1165111a67.png');
         $img = null;

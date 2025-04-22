@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Hash;
 class UsersUpdateController extends Controller
 {
     /**
-     * @param  UpdatePasswordRequest  $request
-     * @param  User  $user
+     * @param UpdatePasswordRequest $request
+     * @param User                  $user
      *
      * @return string
      */
@@ -29,8 +29,8 @@ class UsersUpdateController extends Controller
     }
 
     /**
-     * @param  UpdatePersonalProfileRequest  $request
-     * @param  User  $user
+     * @param UpdatePersonalProfileRequest $request
+     * @param User                         $user
      *
      * @return string
      */
@@ -50,8 +50,8 @@ class UsersUpdateController extends Controller
     }
 
     /**
-     * @param  UpdateCompanyProfileRequest  $request
-     * @param  User  $user
+     * @param UpdateCompanyProfileRequest $request
+     * @param User                        $user
      *
      * @return string
      */
@@ -68,8 +68,8 @@ class UsersUpdateController extends Controller
     }
 
     /**
-     * @param  UpdateProtectedInfoRequest  $request
-     * @param  User  $user
+     * @param UpdateProtectedInfoRequest $request
+     * @param User                       $user
      *
      * @return string
      */
@@ -88,29 +88,8 @@ class UsersUpdateController extends Controller
     }
 
     /**
-     * @param  UpdateAddressRequest  $request
-     * @param  User  $user
-     *
-     * @return string
-     */
-    public function updateAddress(UpdateAddressRequest $request, User $user)
-    {
-        $addressFields = $request->only(['address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'country']);
-
-        $addressFields['default_address'] = true;
-
-        if ($user->address()->first()) {
-            $user->address()->update($addressFields);
-        } else {
-            $user->address()->create($addressFields);
-        }
-
-        return 'Address updated successfully';
-    }
-
-    /**
-     * @param  UpdateUsernameRequest  $request
-     * @param  User  $user
+     * @param UpdateUsernameRequest $request
+     * @param User                  $user
      *
      * @return string
      */
@@ -122,8 +101,8 @@ class UsersUpdateController extends Controller
     }
 
     /**
-     * @param  UpdateEmployeeIdRequest  $request
-     * @param  User  $user
+     * @param UpdateEmployeeIdRequest $request
+     * @param User                    $user
      *
      * @return string
      */

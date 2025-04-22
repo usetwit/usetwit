@@ -44,9 +44,9 @@ class User extends Authenticatable implements Authorizable
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom(['first_name', 'middle_names', 'last_name'])
-            ->saveSlugsTo('slug')
-            ->slugsShouldBeNoLongerThan(50);
+                          ->generateSlugsFrom(['first_name', 'middle_names', 'last_name'])
+                          ->saveSlugsTo('slug')
+                          ->slugsShouldBeNoLongerThan(50);
     }
 
     /**
@@ -95,9 +95,15 @@ class User extends Authenticatable implements Authorizable
         ];
     }
 
-    public function address(): MorphOne
+    public function addresses(): MorphMany
     {
-        return $this->morphOne(Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
+    }
+
+    public function defaultAddress(): MorphOne
+    {
+        return $this->morphOne(Address::class, 'addressable')
+                    ->where('default_address', true);
     }
 
     public function images(): MorphMany

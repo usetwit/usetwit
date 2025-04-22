@@ -14,5 +14,7 @@ export default [
             semi: ['error', 'always'],
             quotes: ['error', 'single', {avoidEscape: true}],
             'vue/multi-word-component-names': 'off',
+            'no-unused-vars': 'off',
+            'vue/valid-attribute-name': 'off',
         },
     }];
