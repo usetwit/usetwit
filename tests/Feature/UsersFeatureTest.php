@@ -75,7 +75,7 @@ class UsersFeatureTest extends TestCase
             'postcode' => $payload['postcode'],
             'country_code' => $payload['country_code'],
             'country_name' => $payload['country_name'],
-            'default_address' => true,
+            'is_default' => true,
             'addressable_type' => User::class,
             'addressable_id' => $newUser->id,
         ]);

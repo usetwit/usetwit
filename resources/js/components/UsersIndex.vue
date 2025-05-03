@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 const rows = ref([]);
-const isLoading = ref(false);
+const loading = ref(false);
 const defaultData = {
     filters: {
         global: {constraints: [{value: null, mode: 'contains'}]},
@@ -61,7 +61,7 @@ const storageInstance = useStorage('users-index', defaultData);
 const {activeData} = storageInstance;
 
 const fetchUsers = async () => {
-    isLoading.value = true;
+    loading.value = true;
 
     const {data, errors, getResponse} = useAxios(props.routeGetUsers, {
         filters: activeData.value.filters,
@@ -80,7 +80,7 @@ const fetchUsers = async () => {
         rows.value = [];
     }
 
-    isLoading.value = false;
+    loading.value = false;
 };
 
 const tableInstance = useTable(defaultData, fetchUsers, storageInstance);
@@ -95,7 +95,7 @@ provide('tableInstance', tableInstance);
 <template>
     <DataTable v-model:rows="rows"
                v-model="activeData"
-               :is-loading="isLoading"
+               :loading="loading"
                :pagination-settings="paginationSettings"
                :date-settings="dateSettings"
     >

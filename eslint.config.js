@@ -16,5 +16,6 @@ export default [
             'vue/multi-word-component-names': 'off',
             'no-unused-vars': 'off',
             'vue/valid-attribute-name': 'off',
+            'vue/no-dupe-keys': 'off',
         },
     }];

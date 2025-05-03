@@ -8,7 +8,7 @@ const props = defineProps({
     options: {type: Array, required: true},
     optionLabel: {type: String, required: true},
     optionValue: {type: String, default: null},
-    isLoading: {type: Boolean, default: false},
+    loading: {type: Boolean, default: false},
     disabled: {type: Boolean, default: false},
     invalid: {type: Boolean, default: false},
     showClear: {type: Boolean, default: false},
@@ -57,7 +57,7 @@ const clear = () => {
 };
 
 const toggleDropdown = () => {
-    showDropdown.value = !props.isLoading && !props.disabled && showDropdown.value === false;
+    showDropdown.value = !props.loading && !props.disabled && showDropdown.value === false;
 };
 
 const setClasses = computed(() => {
@@ -77,16 +77,16 @@ const setClasses = computed(() => {
          v-bind="$attrs"
     >
         <span class="px-2 py-1.5 flex-1 select-none">{{ text }}</span>
-        <span v-if="showClear && model && !isLoading" @click.stop="clear" class="inline-flex items-center p-2">
+        <span v-if="showClear && model && !loading" @click.stop="clear" class="inline-flex items-center p-2">
             <i class="pi pi-times"></i>
         </span>
-        <span v-if="!isLoading" class="inline-flex items-center p-2"><i class="pi pi-angle-down"></i></span>
-        <span v-if="isLoading" class="inline-flex items-center p-2"><i class="pi pi-spinner pi-spin"></i></span>
+        <span v-if="!loading" class="inline-flex items-center p-2"><i class="pi pi-angle-down"></i></span>
+        <span v-if="loading" class="inline-flex items-center p-2"><i class="pi pi-spinner pi-spin"></i></span>
     </div>
 
     <Teleport to="body" v-if="showDropdown">
         <div ref="dropdownRef"
-             class="dropdown z-350 max-h-60"
+             class="dropdown z-1050 max-h-60"
              :class="dropdownClass"
              :style="dropdownStyle"
         >

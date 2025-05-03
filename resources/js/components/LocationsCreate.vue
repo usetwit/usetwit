@@ -1,79 +1,75 @@
 <script setup>
-import { ref, watch } from 'vue'
-import Wrapper from '@/components/Form/Wrapper.vue'
-import InputText from '@/components/Form/InputText.vue'
-import Datepicker from "@/components/Form/Datepicker.vue"
-import Select from '@/components/Form/Select.vue'
-import Button from '@/components/Form/Button.vue'
-import Password from '@/components/Form/Password.vue'
-import useAxios from '@/composables/useAxios.js'
-import { debounce } from 'lodash'
-import { toast } from 'vue3-toastify'
+import {ref, watch} from 'vue';
+import Wrapper from '@/components/Form/Wrapper.vue';
+import InputText from '@/components/Form/InputText.vue';
+import useAxios from '@/composables/useAxios.js';
+import {debounce} from 'lodash';
+import {toast} from 'vue3-toastify';
 
 const props = defineProps({
-    routeCCreate: { type: String, required: true },
-})
+    routeCreate: {type: String, required: true},
+});
 
-const locationExists = ref(false)
-const isLoading = ref(false)
+const locationExists = ref(false);
+const loading = ref(false);
 const location = ref({
     name: '',
-})
-const submitDisabled = ref(false)
-const errorFields = ref([])
+});
+const submitDisabled = ref(false);
+const errorFields = ref([]);
 
 const checkLocation = async () => {
     if (location.value.name) {
-        isLoading.value = true
+        loading.value = true;
 
-        const { data, errors, getResponse } = useAxios(
+        const {data, errors, getResponse} = useAxios(
             props.routeCheckLocation,
-            { name: location.value.name },
-            'post'
-        )
-        await getResponse()
+            {name: location.value.name},
+            'post',
+        );
+        await getResponse();
 
         if (!errors.value.raw) {
-            locationExists.value = data.value.length > 0
+            locationExists.value = data.value.length > 0;
         }
 
-        isLoading.value = false
+        loading.value = false;
     } else {
-        locationExists.value = false
+        locationExists.value = false;
     }
-}
+};
 
 const save = async () => {
-    isLoading.value = true
+    loading.value = true;
 
-    const { data, status, errors, getResponse } = useAxios(
+    const {data, status, errors, getResponse} = useAxios(
         props.routeStore,
         {
             ...location.value,
         },
-        'post'
-    )
-    await getResponse()
+        'post',
+    );
+    await getResponse();
 
     if (status.value === 200) {
-        submitDisabled.value = true
-        errorFields.value = []
+        submitDisabled.value = true;
+        errorFields.value = [];
 
-        toast.success(data.value.message)
+        toast.success(data.value.message);
 
-        setTimeout(() => window.location.replace(data.value.redirect), 2000)
+        setTimeout(() => window.location.replace(data.value.redirect), 2000);
     } else if (errors.value.raw) {
-        errorFields.value = errors.value.fields
+        errorFields.value = errors.value.fields;
     }
 
-    isLoading.value = false
-}
+    loading.value = false;
+};
 
-const debouncedCheckLocation = debounce(checkLocation, 300, { leading: true, trailing: true })
+const debouncedCheckLocation = debounce(checkLocation, 300, {leading: true, trailing: true});
 
 watch(() => location.value.location, (newValue) => {
-    location.value.location = newValue.toLowerCase()
-})
+    location.value.location = newValue.toLowerCase();
+});
 </script>
 
 <template>
@@ -107,9 +103,9 @@ watch(() => location.value.location, (newValue) => {
 
                 <template #input>
                     <textarea class="rounded-md w-full sm:w-60 border p-2"
-                               maxlength="255"
-                               id="description"
-                               placeholder="Description"
+                              maxlength="255"
+                              id="description"
+                              placeholder="Description"
                     ></textarea>
                 </template>
             </Wrapper>

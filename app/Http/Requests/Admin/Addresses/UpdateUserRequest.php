@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Users;
+namespace App\Http\Requests\Admin\Addresses;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Symfony\Component\Intl\Countries;
 
-class UpdateAddressRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class UpdateAddressRequest extends FormRequest
             'address_line1' => 'nullable|string|max:255',
             'address_line2' => 'nullable|string|max:255',
             'address_line3' => 'nullable|string|max:255',
-            'postcode' => 'nullable|string|max:255',
+            'postcode' => 'nullable|string|max:12|regex:/^[A-Za-z0-9\-\s]+$/',
             'country' => [
                 'nullable',
                 Rule::in(Countries::getCountryCodes()),

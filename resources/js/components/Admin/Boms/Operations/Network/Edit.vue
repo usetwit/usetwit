@@ -128,7 +128,7 @@ function onMouseUp() {
 }
 
 const save = async () => {
-    isLoading.value = true;
+    loading.value = true;
 
     const {getResponse, status, data} = useAxios(props.routes.update, {
         operations: operations.value,
@@ -142,7 +142,7 @@ const save = async () => {
         modalIsVisible.value = true;
     }
 
-    isLoading.value = false;
+    loading.value = false;
 };
 
 onMounted(() => {
@@ -240,10 +240,10 @@ const handleColorSelected = (color) => {
 };
 
 const modalIsVisible = ref(false);
-const isLoading = ref(false);
+const loading = ref(false);
 
 const upversion = async () => {
-    isLoading.value = true;
+    loading.value = true;
 
     const {getResponse, status, data} = useAxios(props.routes.upversion, {
         operations: operations.value,
@@ -259,7 +259,7 @@ const upversion = async () => {
         window.location.replace(data.value.redirect);
     }
 
-    isLoading.value = false;
+    loading.value = false;
 };
 
 const handleJoinClicked = () => {
@@ -309,11 +309,11 @@ const handleJoinClicked = () => {
             </div>
             <div>
                 <button type="button"
-                        :disabled="isLoading"
+                        :disabled="loading"
                         @click="save"
                         class="text-green-700 inline-flex items-center bg-green-200 px-2 py-1 rounded-md hover:bg-green-300"
                 >
-                    <i class="pi mr-1" :class="isLoading ? 'pi-spinner pi-spin' : 'pi-save'"></i>Save
+                    <i class="pi mr-1" :class="loading ? 'pi-spinner pi-spin' : 'pi-save'"></i>Save
                 </button>
             </div>
         </div>

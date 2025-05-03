@@ -28,7 +28,7 @@ const accept = () => {
              class="bg-gray-900/50 z-950 w-full h-full left-0 top-0 fixed flex items-center justify-center"
         >
             <div
-                class="rounded-lg bg-white shadow-sm border-gray-200 border flex flex-col overflow-y-auto p-2 md:p-4 max-w-full max-h-full md:max-w-lg md:max-h-[90vh]"
+                class="overflow-y-scroll max-h-full bg-white p-3 rounded-md border border-gray-400"
             >
                 <h2 v-if="title || $slots.title" class="text-lg font-semibold mb-2 md:mb-4">
                     {{ title }}
@@ -38,18 +38,26 @@ const accept = () => {
                     <slot/>
                 </div>
                 <div class="flex justify-end">
-                    <Button type="button" variant="secondary" @click="close" class="mr-1" icon="pi pi-times-circle" border>
+                    <Button type="button"
+                            variant="danger"
+                            @click="close"
+                            class="mr-1"
+                            icon="pi pi-times-circle"
+                            border
+                    >
                         Cancel
                     </Button>
                     <slot name="accept">
-                        <Button type="button" :variant="variant" @click="accept" :icon="icon" :label="label" border></Button>
+                        <Button type="button"
+                                :variant="variant"
+                                @click="accept"
+                                :icon="icon"
+                                :label="label"
+                                border
+                        ></Button>
                     </slot>
                 </div>
             </div>
         </div>
     </Teleport>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

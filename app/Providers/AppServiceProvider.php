@@ -7,6 +7,7 @@ use App\Composers\AdminSidebarComposer;
 use App\Services\BomComparisonService;
 use App\Services\BomUpversionService;
 use Diglactic\Breadcrumbs\Breadcrumbs;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Model::automaticallyEagerLoadRelationships();
+
         Route::pattern('calendar', '[0-9]+');
         Route::pattern('year', '^\d{4}$');
 

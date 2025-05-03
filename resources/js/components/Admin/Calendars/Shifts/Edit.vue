@@ -12,7 +12,7 @@ const year = ref(new Date().getFullYear());
 const dayTexts = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const monthNumbers = Array.from(Array(12).keys());
 const lastDateClicked = ref(null);
-const isLoading = ref(false);
+const loading = ref(false);
 
 const props = defineProps({
     route: {
@@ -110,7 +110,7 @@ const changeYear = direction => {
 };
 
 const save = async () => {
-    isLoading.value = true;
+    loading.value = true;
 
     const {status, data, getResponse} = useAxios(
         props.routeUpdate,
@@ -126,7 +126,7 @@ const save = async () => {
         toast.success(data.value);
     }
 
-    isLoading.value = false;
+    loading.value = false;
 };
 
 const getCalendarShifts = async () => {
@@ -154,7 +154,7 @@ function getIsModified(date) {
 }
 
 const getDates = async () => {
-    isLoading.value = true;
+    loading.value = true;
 
     let dateArray = [];
     let currentDate = new Date(Date.UTC(year.value, 0, 1));
@@ -201,7 +201,7 @@ const getDates = async () => {
     }
 
     dateList.value = dateArray;
-    isLoading.value = false;
+    loading.value = false;
 };
 
 getDates();
@@ -243,8 +243,8 @@ const activeList = computed(() => {
 
         <div class="flex items-center justify-center text-gray-900 text-3xl mb-2 mt-4 lg:mt-8">
             <Button @click="changeYear('decrease')"
-                    :disabled="isLoading || year <= 2020"
-                    :loading="isLoading"
+                    :disabled="loading || year <= 2020"
+                    :loading="loading"
                     size="sm"
                     icon="pi pi-chevron-left"
             />
@@ -252,8 +252,8 @@ const activeList = computed(() => {
             <span class="mx-6 font-bold">{{ year }}</span>
 
             <Button @click="changeYear('increase')"
-                    :disabled="isLoading || year >= 2050"
-                    :loading="isLoading"
+                    :disabled="loading || year >= 2050"
+                    :loading="loading"
                     size="sm"
                     icon="pi pi-chevron-right"
             />
@@ -277,7 +277,7 @@ const activeList = computed(() => {
             <ShiftInput :date="activeList[0]"
                         v-if="activeList.length"
                         @updateShifts="updateShifts"
-                        v-model:isLoading="isLoading"
+                        v-model:loading="loading"
             />
 
         </div>

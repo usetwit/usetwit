@@ -24,9 +24,11 @@
         <users-edit :routes="{{ Js::from($routes) }}"
                     :roles="{{ Js::from($roles) }}"
                     :permissions="{{ Js::from($permissions) }}"
-                    :user="{{ Js::from($user) }}"
+                    :user="{{ Js::from($user->toArray()) }}"
                     :countries="{{ Js::from($countries) }}"
+                    :default-country="{{ Js::from($defaultCountry) }}"
                     :date-settings="{{ Js::from($dateSettings) }}"
+                    :routes="{{ Js::from($routes) }}"
         ></users-edit>
     </div>
 @endsection

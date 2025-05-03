@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 const locationExists = ref(false)
-const isLoading = ref(false)
+const loading = ref(false)
 const tabs = ref([])
 const activeTab = ref(null)
 const errorFields = ref([])
@@ -50,7 +50,7 @@ const handleClick = text => {
 }
 
 const update = async (route, fields) => {
-    isLoading.value = true
+    loading.value = true
 
     const {errors, status, data, getResponse} = useAxios(
         route,
@@ -66,7 +66,7 @@ const update = async (route, fields) => {
         errorFields.value = errors.value.fields
     }
 
-    isLoading.value = false
+    loading.value = false
 }
 
 const updateInfo = async () => {
@@ -87,7 +87,7 @@ const deleteLocationForm = useTemplateRef('deleteLocationForm')
 
 const checkLocation = async () => {
     if (location.value.location) {
-        isLoading.value = true
+        loading.value = true
 
         const {data, errors, getResponse} = useAxios(
             props.routes.check_location,
@@ -100,7 +100,7 @@ const checkLocation = async () => {
             locationExists.value = data.value.length > 0
         }
 
-        isLoading.value = false
+        loading.value = false
     } else {
         locationExists.value = false
     }
@@ -156,8 +156,8 @@ const debouncedCheckLocation = debounce(checkLocation, 300, {leading: true, trai
                     <Button severity="success"
                             type="submit"
                             aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
+                            :loading="loading"
+                            :disabled="loading"
                             label="Save"
                             icon="pi pi-save"
                             class="mx-auto my-4"

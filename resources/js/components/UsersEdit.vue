@@ -13,7 +13,7 @@ import {debounce, pick} from 'lodash';
 import {toast} from 'vue3-toastify';
 import Csrf from '@/components/Form/Csrf.vue';
 import Modal from '@/components/Modal.vue';
-import CreateAddress from '@/components/Addresses/Create.vue';
+import AddressList from '@/components/Addresses/List.vue';
 
 const props = defineProps({
     roles: {type: Array, required: true},
@@ -22,17 +22,19 @@ const props = defineProps({
     user: {type: Object, required: true},
     countries: {type: Array, required: true},
     dateSettings: {type: Object, required: true},
+    defaultCountry: {type: String, required: true},
 });
 
 const usernameExists = ref(false);
 const employeeIdExists = ref(false);
-const isLoading = ref(false);
+const loading = ref(false);
 const tabs = ref([]);
 const activeTab = ref(null);
 const errorFields = ref([]);
+const deleteModalIsVisible = ref(false);
+const deleteUserForm = useTemplateRef('deleteUserForm');
 const {roles, ...rest} = props.user;
 
-// eslint-disable-next-line vue/no-dupe-keys
 const user = ref({
     ...rest,
     role_id: roles?.[0]?.id,
@@ -69,7 +71,7 @@ const handleClick = text => {
 };
 
 const update = async (route, fields) => {
-    isLoading.value = true;
+    loading.value = true;
 
     const {errors, status, data, getResponse} = useAxios(
         route,
@@ -85,7 +87,7 @@ const update = async (route, fields) => {
         errorFields.value = errors.value.fields;
     }
 
-    isLoading.value = false;
+    loading.value = false;
 };
 
 const updatePassword = async () => {
@@ -134,12 +136,9 @@ const updateEmployeeId = async () => {
     await update(props.routes.employee_id, ['employee_id']);
 };
 
-const deleteModalIsVisible = ref(false);
-const deleteUserForm = useTemplateRef('deleteUserForm');
-
 const checkUsername = async () => {
     if (user.value.username) {
-        isLoading.value = true;
+        loading.value = true;
 
         const {data, errors, getResponse} = useAxios(
             props.routes.check_username,
@@ -152,7 +151,7 @@ const checkUsername = async () => {
             usernameExists.value = data.value.length > 0;
         }
 
-        isLoading.value = false;
+        loading.value = false;
     } else {
         usernameExists.value = false;
     }
@@ -160,7 +159,7 @@ const checkUsername = async () => {
 
 const checkEmployeeId = async () => {
     if (user.value.employee_id) {
-        isLoading.value = true;
+        loading.value = true;
 
         const {data, errors, getResponse} = useAxios(
             props.routes.check_employee_id,
@@ -173,7 +172,7 @@ const checkEmployeeId = async () => {
             employeeIdExists.value = data.value.length > 0;
         }
 
-        isLoading.value = false;
+        loading.value = false;
     } else {
         employeeIdExists.value = false;
     }
@@ -343,8 +342,8 @@ watch(() => user.value.username, (newValue) => {
                     <Button severity="success"
                             type="submit"
                             aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
+                            :loading="loading"
+                            :disabled="loading"
                             label="Save"
                             icon="pi pi-save"
                             class="mx-auto my-4"
@@ -444,8 +443,8 @@ watch(() => user.value.username, (newValue) => {
                     <Button severity="success"
                             type="submit"
                             aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
+                            :loading="loading"
+                            :disabled="loading"
                             label="Save"
                             icon="pi pi-save"
                             class="mx-auto my-4"
@@ -454,7 +453,12 @@ watch(() => user.value.username, (newValue) => {
             </form>
         </div>
         <div v-if="activeTab.key === 'address'">
-
+            <AddressList :permissions="permissions"
+                         v-model="user.addresses"
+                         :countries="countries"
+                         :default-country="defaultCountry"
+                         :routes="routes"
+            />
         </div>
         <div v-if="activeTab.key === 'protected_info'">
             <form @submit.prevent="updateUsername" autocomplete="off" v-if="permissions.username">
@@ -486,8 +490,8 @@ watch(() => user.value.username, (newValue) => {
                     <Button severity="success"
                             type="submit"
                             aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
+                            :loading="loading"
+                            :disabled="loading"
                             label="Save"
                             icon="pi pi-save"
                             class="mx-auto my-4"
@@ -524,8 +528,8 @@ watch(() => user.value.username, (newValue) => {
                     <Button severity="success"
                             type="submit"
                             aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
+                            :loading="loading"
+                            :disabled="loading"
                             label="Save"
                             icon="pi pi-save"
                             class="mx-auto my-4"
@@ -605,8 +609,8 @@ watch(() => user.value.username, (newValue) => {
                     <Button severity="success"
                             type="submit"
                             aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
+                            :loading="loading"
+                            :disabled="loading"
                             label="Save"
                             icon="pi pi-save"
                             class="mx-auto my-4"
@@ -721,8 +725,8 @@ watch(() => user.value.username, (newValue) => {
                     <Button severity="success"
                             type="submit"
                             aria-label="Save"
-                            :loading="isLoading"
-                            :disabled="isLoading"
+                            :loading="loading"
+                            :disabled="loading"
                             label="Save"
                             icon="pi pi-save"
                             class="mx-auto my-4"

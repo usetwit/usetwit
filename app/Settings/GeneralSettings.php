@@ -3,6 +3,7 @@
 namespace App\Settings;
 
 use Spatie\LaravelSettings\Settings;
+use Symfony\Component\Intl\Countries;
 
 class GeneralSettings extends Settings
 {
@@ -79,5 +80,15 @@ class GeneralSettings extends Settings
                 'options' => $this->per_page_options,
             ],
         ];
+    }
+
+    public function countriesArray()
+    {
+        return collect(Countries::getNames())
+            ->map(fn($name, $code) => [
+                'code' => $code,
+                'name' => $name,
+            ])
+            ->values();
     }
 }

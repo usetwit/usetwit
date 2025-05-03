@@ -52,7 +52,7 @@ const s = computed(() => ({
     bottom: props.successor.y + width,
 }));
 
-const emit = defineEmits(['clicked'])
+const emit = defineEmits(['clicked']);
 
 const joinClicked = () => {
     emit('clicked');
@@ -436,7 +436,7 @@ const classes = computed(() => {
     </template>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
 .h-line {
     position: absolute;
     height: 3px;

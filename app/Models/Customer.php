@@ -70,7 +70,8 @@ class Customer extends Authenticatable implements Authorizable
 
     public function defaultAddress(): MorphOne
     {
-        return $this->morphOne(Address::class, 'addressable')->where('default_address', true);
+        return $this->morphOne(Address::class, 'addressable')
+                    ->where('is_default', true);
     }
 
     public function contacts(): ?MorphMany

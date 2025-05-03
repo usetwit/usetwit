@@ -100,7 +100,3 @@ const {
         </div>
     </Teleport>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

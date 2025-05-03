@@ -103,7 +103,7 @@ class User extends Authenticatable implements Authorizable
     public function defaultAddress(): MorphOne
     {
         return $this->morphOne(Address::class, 'addressable')
-                    ->where('default_address', true);
+                    ->where('is_default', true);
     }
 
     public function images(): MorphMany
@@ -113,7 +113,8 @@ class User extends Authenticatable implements Authorizable
 
     public function profileImages(): MorphMany
     {
-        return $this->morphMany(Image::class, 'imageable')->whereType('user_profile');
+        return $this->morphMany(Image::class, 'imageable')
+                    ->whereType('user_profile');
     }
 
     public function uploadedImages(): HasMany

@@ -14,13 +14,11 @@
     </title>
 
     @vite(['resources/css/app.css'])
-
     @vite(['resources/js/app.js'])
-
     @yield('javascript')
 
     @include('admin._meta')
-    
+
     @if(session()->has('success') || count($errors))
         @vite(['resources/js/app/flash.js'])
     @endif

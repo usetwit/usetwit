@@ -160,7 +160,3 @@ const create = async () => {
         </div>
     </form>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

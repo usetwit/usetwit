@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
 @reference "../../../css/app.css";
 
 .input-group > :deep(div:first-child) {

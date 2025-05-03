@@ -1,6 +1,5 @@
 <script setup>
 import useDropdown from '@/composables/useDropdown.js';
-import {defineEmits} from 'vue';
 
 const {
     inputRef,

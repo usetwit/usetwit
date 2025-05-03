@@ -1,37 +1,37 @@
 <script setup>
-import { computed } from 'vue'
-import Select from '../Form/Select.vue'
-import { range } from 'lodash'
+import {computed} from 'vue';
+import Select from '../Form/Select.vue';
+import {range} from 'lodash';
 
 const props = defineProps({
-    settings: { type: Object, required: true },
-})
+    settings: {type: Object, required: true},
+});
 
-const emit = defineEmits(['changed'])
+const emit = defineEmits(['changed']);
 
-const model = defineModel()
-const options = props.settings.options.map(num => ({ value: num }))
+const model = defineModel();
+const options = props.settings.options.map(num => ({value: num}));
 
-const from = computed(() => model.value.total === 0 ? 0 : model.value.per_page * (model.value.page - 1) + 1)
-const totalPages = computed(() => model.value.total > 0 ? Math.ceil(model.value.total / model.value.per_page) : 1)
+const from = computed(() => model.value.total === 0 ? 0 : model.value.per_page * (model.value.page - 1) + 1);
+const totalPages = computed(() => model.value.total > 0 ? Math.ceil(model.value.total / model.value.per_page) : 1);
 
-const perSide = 2
-const start = computed(() => Math.max(1, model.value.page - perSide))
-const end = computed(() => Math.min(totalPages.value, model.value.page + perSide))
+const perSide = 2;
+const start = computed(() => Math.max(1, model.value.page - perSide));
+const end = computed(() => Math.min(totalPages.value, model.value.page + perSide));
 
 const pages = computed(() => {
-    return range(start.value, end.value + 1).map(num => ({ number: num, current: num === model.value.page }))
-})
+    return range(start.value, end.value + 1).map(num => ({number: num, current: num === model.value.page}));
+});
 
 const changePerPage = () => {
-    model.value.page = Math.min(model.value.page, end.value)
-    emit('changed')
-}
+    model.value.page = Math.min(model.value.page, end.value);
+    emit('changed');
+};
 
 const selectPage = number => {
-    model.value.page = number
-    emit('changed')
-}
+    model.value.page = number;
+    emit('changed');
+};
 </script>
 
 <template>
@@ -102,7 +102,7 @@ const selectPage = number => {
     </nav>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
 @reference "../../../css/app.css";
 
 .base {

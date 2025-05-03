@@ -70,7 +70,7 @@ const setClasses = computed(() => {
 });
 
 const setSizeClasses = computed(() => {
-    return props.size === 'sm' ? 'text-sm px-2 py-2' : 'px-3 py-1.5';
+    return props.size === 'sm' ? 'text-sm px-1.5 py-1' : 'px-3 py-1.5';
 });
 </script>
 

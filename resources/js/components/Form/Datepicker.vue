@@ -235,7 +235,7 @@ watch(inputModel, (newValue) => {
     </Teleport>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
 @reference "../../../css/app.css";
 
 .month-wrapper {

@@ -16,12 +16,12 @@ const props = defineProps({
 });
 
 const bom = ref(props.bom);
-const isLoading = ref(false);
+const loading = ref(false);
 const errorFields = ref([]);
 const nameExists = ref(false);
 
 const checkName = async () => {
-    if(bom.value.name) {
+    if (bom.value.name) {
         const {data, getResponse} = useAxios(
             props.routes.check_name,
             {name: bom.value.name},
@@ -35,7 +35,7 @@ const checkName = async () => {
 };
 
 const save = async () => {
-    isLoading.value = true;
+    loading.value = true;
 
     const {data, status, errors, getResponse} = useAxios(
         props.routes.update,
@@ -54,7 +54,7 @@ const save = async () => {
         errorFields.value = errors.value.fields;
     }
 
-    isLoading.value = false;
+    loading.value = false;
 };
 
 const debouncedCheckName = debounce(checkName, 300, {leading: true, trailing: true});
@@ -109,8 +109,8 @@ const debouncedCheckName = debounce(checkName, 300, {leading: true, trailing: tr
                 <Button severity="success"
                         type="submit"
                         aria-label="Save BOM"
-                        :loading="isLoading"
-                        :disabled="nameExists || isLoading || errorFields.length"
+                        :loading="loading"
+                        :disabled="nameExists || loading || errorFields.length"
                         label="Save BOM"
                         icon="pi pi-save"
                         class="mx-auto my-4"
@@ -119,7 +119,3 @@ const debouncedCheckName = debounce(checkName, 300, {leading: true, trailing: tr
         </form>
     </div>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

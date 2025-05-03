@@ -32,12 +32,12 @@ const items = ref([{
     id: 0,
 }]);
 
-const isLoading = ref(false);
+const loading = ref(false);
 const submitDisabled = ref(false);
 const errorFields = ref([]);
 
 const save = async () => {
-    isLoading.value = true;
+    loading.value = true;
     errorFields.value = [];
 
     const {status, data, errors, getResponse} = useAxios(props.routeStore, {items: items.value});
@@ -51,7 +51,7 @@ const save = async () => {
         errorFields.value = errors.value.fields;
     }
 
-    isLoading.value = false;
+    loading.value = false;
 };
 </script>
 
@@ -77,7 +77,7 @@ const save = async () => {
                 <Button variant="success"
                         type="submit"
                         aria-label="Create Sales Order"
-                        :loading="isLoading"
+                        :loading="loading"
                         :disabled="submitDisabled"
                         label="Create Sales Order"
                         icon="pi pi-file-plus"

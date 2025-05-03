@@ -24,7 +24,7 @@ class AddressFactory extends Factory
             'postcode' => $this->faker->postcode,
             'country_code' => $country_code,
             'country_name' => $country_name,
-            'default_address' => false,
+            'is_default' => false,
             'deleted_at' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

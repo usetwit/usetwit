@@ -67,7 +67,3 @@ const strengthText = computed(() => !model.value ? 'Enter a password' : texts[st
         </div>
     </Teleport>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

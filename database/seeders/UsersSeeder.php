@@ -38,7 +38,7 @@ class UsersSeeder extends Seeder
 
         Address::factory()
                ->for($mike, 'addressable')
-               ->state(['default_address' => true])
+               ->state(['is_default' => true])
                ->create();
 
 

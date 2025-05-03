@@ -36,11 +36,11 @@ class UserPolicy
      */
     public function createAddress(User $user, User $model): bool
     {
-        if ($user->can('users.addresses.create')) {
+        if ($user->can('addresses.user.create')) {
             return true;
         }
 
-        if ($user->can('users.addresses.create.self')) {
+        if ($user->can('addresses.user.create.self')) {
             return $user->id === $model->id;
         }
 
@@ -52,11 +52,11 @@ class UserPolicy
      */
     public function deleteAddress(User $user, User $model): bool
     {
-        if ($user->can('users.addresses.delete')) {
+        if ($user->can('addresses.user.delete')) {
             return true;
         }
 
-        if ($user->can('users.addresses.delete.self')) {
+        if ($user->can('addresses.user.delete.self')) {
             return $user->id === $model->id;
         }
 

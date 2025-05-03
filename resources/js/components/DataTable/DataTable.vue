@@ -9,7 +9,7 @@ import InputGroup from '@/components/Form/InputGroup.vue';
 import InputGroupAddon from '@/components/Form/InputGroupAddon.vue';
 
 const props = defineProps({
-    isLoading: {type: Boolean, default: false},
+    loading: {type: Boolean, default: false},
     paginationSettings: {type: Object, required: true},
     dateSettings: {type: Object},
 });
@@ -77,7 +77,7 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
                     class="mr-2"
                     icon="pi pi-sync"
                     label="Reset"
-                    :loading="isLoading"
+                    :loading="loading"
             />
             <Button :badge="getFilteredFields().length"
                     @click="clearFilters"
@@ -86,14 +86,14 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
                     border
                     icon="pi pi-filter-slash"
                     label="Clear"
-                    :loading="isLoading"
+                    :loading="loading"
             />
             <Button @click="fetch"
                     variant="success"
                     border
                     icon="pi pi-refresh"
                     label="Refresh"
-                    :loading="isLoading"
+                    :loading="loading"
             />
         </div>
         <InputGroup class="sm:mt-0 mt-2 w-full sm:w-60">
@@ -122,10 +122,11 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
         <table ref="tableRef">
             <thead>
             <tr>
-                <HeaderCell v-for="(col, i) in columns"
+                <HeaderCell v-for="(col, index) in columns"
+                            :key="index"
                             v-model="activeData"
                             v-model:resize-left-style="resizeLeftStyle"
-                            :is-last="i === columns.length - 1"
+                            :is-last="index === columns.length - 1"
                             :column="col"
                             :table="tableRef"
                             @sort="fetch"
@@ -135,10 +136,10 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
             </thead>
             <tbody>
             <tr v-if="rows.length"
-                v-for="(row, i) in rows"
-                :key="row.id || i"
+                v-for="(row, index) in rows"
+                :key="row.id || index"
                 class="hover:bg-gray-100 body-row"
-                :class="{'even': i % 2 === 1, 'odd': i % 2 === 0}"
+                :class="{'even': index % 2 === 1, 'odd': index % 2 === 0}"
             >
                 <Cell v-for="col in columns"
                       :key="col.field + '_' + row.id.toString()"
@@ -155,7 +156,7 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
             </tr>
             </tbody>
         </table>
-        <div v-if="isLoading"
+        <div v-if="loading"
              class="opacity-50 bg-slate-100 z-150 w-full h-full left-0 top-0 absolute text-[4rem] text-slate-700 flex items-center justify-center"
         >
             <i class="pi pi-spinner pi-spin"></i>
@@ -165,7 +166,7 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
     <Paginator v-model="activeData.pagination" :settings="paginationSettings.per_page" @changed="fetch"/>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
 @reference "../../../css/app.css";
 
 .even td {

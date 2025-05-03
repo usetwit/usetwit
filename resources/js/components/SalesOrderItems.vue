@@ -1,19 +1,19 @@
 <script setup>
-import { computed } from 'vue'
-import Datepicker from '@/components/Form/Datepicker.vue'
-import InputText from '@/components/Form/InputText.vue'
-import InputGroup from '@/components/Form/InputGroup.vue'
-import InputGroupAddon from '@/components/Form/InputGroupAddon.vue'
-import Button from '@/components/Form/Button.vue'
-import SalesOrdersAutocomplete from '@/components/SalesOrdersAutocomplete.vue'
+import {computed} from 'vue';
+import Datepicker from '@/components/Form/Datepicker.vue';
+import InputText from '@/components/Form/InputText.vue';
+import InputGroup from '@/components/Form/InputGroup.vue';
+import InputGroupAddon from '@/components/Form/InputGroupAddon.vue';
+import Button from '@/components/Form/Button.vue';
+import SalesOrdersAutocomplete from '@/components/SalesOrdersAutocomplete.vue';
 
 const props = defineProps({
-    routeStockBomSearch: { type: String, required: true },
-    errorFields: { type: Array, required: true },
-    dateSettings: { type: Object, required: true },
+    routeStockBomSearch: {type: String, required: true},
+    errorFields: {type: Array, required: true},
+    dateSettings: {type: Object, required: true},
 });
 
-const items = defineModel()
+const items = defineModel();
 
 const addItem = () => {
     items.value.push({
@@ -23,74 +23,74 @@ const addItem = () => {
         discounted_price: 0,
         batches: [1],
         due_date: null,
-        id: items.value.length
-    })
-}
+        id: items.value.length,
+    });
+};
 
 const removeItem = (index) => {
-    items.value.splice(index, 1)
+    items.value.splice(index, 1);
 
     if (items.value.length === 0) {
-        addItem()
+        addItem();
     }
-}
+};
 
 const formatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',
 });
 
-let symbol = formatter.formatToParts(0).filter(part => part.type === 'currency')[0].value
+let symbol = formatter.formatToParts(0).filter(part => part.type === 'currency')[0].value;
 
 const currencyParts = (price) => {
-    return formatter.formatToParts(price).filter(part => part.type === 'integer' || part.type === 'decimal' || part.type === 'fraction')
-}
+    return formatter.formatToParts(price).filter(part => part.type === 'integer' || part.type === 'decimal' || part.type === 'fraction');
+};
 
 const formatPrice = (price) => {
     if (isNaN(price)) {
-        return '0.00'
+        return '0.00';
     }
 
-    return currencyParts(price).map(part => part.value).join('')
-}
+    return currencyParts(price).map(part => part.value).join('');
+};
 
 const discountedPrice = (item) => {
-    let price = item.price * (1 - item.discount / 100)
-    let roundedPrice = Math.round((price + Number.EPSILON) * 100) / 100
+    let price = item.price * (1 - item.discount / 100);
+    let roundedPrice = Math.round((price + Number.EPSILON) * 100) / 100;
 
-    item.discounted_price = formatPrice(roundedPrice)
+    item.discounted_price = formatPrice(roundedPrice);
 
-    return formatPrice(roundedPrice)
-}
+    return formatPrice(roundedPrice);
+};
 
 const addBatch = (item) => {
-    item.batches.push(1)
-}
+    item.batches.push(1);
+};
 
 const removeBatch = (item, index) => {
-    item.batches.splice(index, 1)
+    item.batches.splice(index, 1);
 
     if (item.batches.length === 0) {
-        addBatch(item)
+        addBatch(item);
     }
-}
+};
 
 const totals = computed(() => {
     return {
         prices: formatPrice(items.value.reduce((s, a) => s + parseFloat(a.price), 0)),
         discounted_prices: formatPrice(items.value.reduce((s, a) => s + parseFloat(a.discounted_price), 0)),
-    }
-})
+    };
+});
 
 const batchTotal = (item) => {
-    let total = item.batches.reduce((s, a) => s + parseFloat(a), 0)
+    let total = item.batches.reduce((s, a) => s + parseFloat(a), 0);
 
     if (isNaN(total)) {
-        return 0
+        return 0;
     }
 
-    return Math.round((total + Number.EPSILON) * 1000) / 1000
-}
+    return Math.round((total + Number.EPSILON) * 1000) / 1000;
+};
 </script>
 
 <template>
@@ -265,7 +265,7 @@ const batchTotal = (item) => {
     />
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
 @reference "../../css/app.css";
 
 .item-row td {

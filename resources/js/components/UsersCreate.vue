@@ -1,28 +1,28 @@
 <script setup>
-import { ref, watch } from 'vue'
-import Wrapper from '@/components/Form/Wrapper.vue'
-import InputText from '@/components/Form/InputText.vue'
-import Datepicker from "@/components/Form/Datepicker.vue"
-import Select from '@/components/Form/Select.vue'
-import Button from '@/components/Form/Button.vue'
-import Password from '@/components/Form/Password.vue'
-import useAxios from '@/composables/useAxios.js'
-import { debounce } from 'lodash'
-import { toast } from 'vue3-toastify'
+import {ref, watch} from 'vue';
+import Wrapper from '@/components/Form/Wrapper.vue';
+import InputText from '@/components/Form/InputText.vue';
+import Datepicker from '@/components/Form/Datepicker.vue';
+import Select from '@/components/Form/Select.vue';
+import Button from '@/components/Form/Button.vue';
+import Password from '@/components/Form/Password.vue';
+import useAxios from '@/composables/useAxios.js';
+import {debounce} from 'lodash';
+import {toast} from 'vue3-toastify';
 
 const props = defineProps({
-    routeCheckUsername: { type: String, required: true },
-    routeStore: { type: String, required: true },
-    routeRedirect: { type: String, required: true },
-    dateSettings: { type: Object, required: true },
-    suggestedId: { type: String, required: true },
-    roles: { type: Array, required: true },
-    countries: { type: Array, required: true },
-    selectedCountry: { type: String, required: true },
-})
+    routeCheckUsername: {type: String, required: true},
+    routeStore: {type: String, required: true},
+    routeRedirect: {type: String, required: true},
+    dateSettings: {type: Object, required: true},
+    suggestedId: {type: String, required: true},
+    roles: {type: Array, required: true},
+    countries: {type: Array, required: true},
+    selectedCountry: {type: String, required: true},
+});
 
-const usernameExists = ref(false)
-const isLoading = ref(false)
+const usernameExists = ref(false);
+const loading = ref(false);
 const user = ref({
     username: '',
     employee_id: props.suggestedId,
@@ -46,62 +46,62 @@ const user = ref({
     joined_at: '',
     role_id: 0,
     country_code: props.selectedCountry,
-})
-const submitDisabled = ref(false)
-const errorFields = ref([])
+});
+const submitDisabled = ref(false);
+const errorFields = ref([]);
 
 const checkUsername = async () => {
     if (user.value.username) {
-        isLoading.value = true
+        loading.value = true;
 
-        const { data, errors, getResponse } = useAxios(
+        const {data, errors, getResponse} = useAxios(
             props.routeCheckUsername,
-            { username: user.value.username },
-            'post'
-        )
-        await getResponse()
+            {username: user.value.username},
+            'post',
+        );
+        await getResponse();
 
         if (!errors.value.raw) {
-            usernameExists.value = data.value.length > 0
+            usernameExists.value = data.value.length > 0;
         }
 
-        isLoading.value = false
+        loading.value = false;
     } else {
-        usernameExists.value = false
+        usernameExists.value = false;
     }
-}
+};
 
 const save = async () => {
-    isLoading.value = true
+    loading.value = true;
 
-    const { data, status, errors, getResponse } = useAxios(
+    const {data, status, errors, getResponse} = useAxios(
         props.routeStore,
         {
             ...user.value,
         },
-        'post'
-    )
-    await getResponse()
+        'post',
+    );
+    await getResponse();
 
     if (status.value === 200) {
-        submitDisabled.value = true
-        errorFields.value = []
+        submitDisabled.value = true;
+        errorFields.value = [];
 
-        toast.success(data.value.message)
+        toast.success(data.value.message);
 
-        setTimeout(() => window.location.replace(data.value.redirect), 2000)
+        setTimeout(() => window.location.replace(data.value.redirect), 2000);
     } else if (errors.value.raw) {
-        errorFields.value = errors.value.fields
+        errorFields.value = errors.value.fields;
     }
 
-    isLoading.value = false
-}
+    loading.value = false;
+};
 
-const debouncedCheckUsername = debounce(checkUsername, 300, { leading: true, trailing: true })
+const debouncedCheckUsername = debounce(checkUsername, 300, {leading: true, trailing: true});
 
 watch(() => user.value.username, (newValue) => {
-    user.value.username = newValue.toLowerCase()
-})
+    user.value.username = newValue.toLowerCase();
+});
 </script>
 
 <template>
@@ -549,7 +549,7 @@ watch(() => user.value.username, (newValue) => {
                 <Button severity="success"
                         type="submit"
                         aria-label="Create User"
-                        :loading="isLoading"
+                        :loading="loading"
                         :disabled="submitDisabled"
                         label="Create User"
                         icon="pi pi-save"

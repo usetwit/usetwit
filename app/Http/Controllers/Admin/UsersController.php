@@ -7,6 +7,7 @@ use App\Http\Requests\Users\CheckEmployeeIdRequest;
 use App\Http\Requests\Users\CheckUsernameRequest;
 use App\Http\Requests\Users\GetUsersRequest;
 use App\Http\Requests\Users\StoreRequest;
+use App\Models\Address;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Settings\GeneralSettings;
@@ -117,10 +118,8 @@ class UsersController extends Controller
             'check_username' => route('admin.users.check-username'),
         ];
 
-        $countries = collect(Countries::getNames())
-            ->map(function (string $name, string $code) {
-                return ['code' => $code, 'name' => $name];
-            })->values();
+        $countries = $settings->countriesArray();
+        $defaultCountry = $settings->default_country;
 
         $user->load([
             'addresses',
@@ -132,7 +131,7 @@ class UsersController extends Controller
 
         $roles = Role::get(['id', 'name']);
 
-        return view('users.users-edit', compact('user', 'routes', 'roles', 'permissions', 'countries', 'dateSettings'));
+        return view('users.users-edit', compact('defaultCountry', 'user', 'routes', 'roles', 'permissions', 'countries', 'dateSettings'));
     }
 
     public function create(GeneralSettings $settings)
@@ -150,11 +149,9 @@ class UsersController extends Controller
 
             return $role;
         });
+
         $selectedCountry = $settings->default_country;
-        $countries = collect(Countries::getNames())
-            ->map(function (string $name, string $code) {
-                return ['code' => $code, 'name' => $name];
-            })->values();
+        $countries = $settings->countriesArray();
 
         return view('users.users-create', compact(
             'routeCheckUsername',
@@ -217,7 +214,7 @@ class UsersController extends Controller
         $addressFields = $request->only(['address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'country_code']);
 
         if (count(Arr::whereNotNull($addressFields)) > 0) {
-            $addressFields['default_address'] = true;
+            $addressFields['is_default'] = true;
             $newUser->address()->create($addressFields);
         }
 

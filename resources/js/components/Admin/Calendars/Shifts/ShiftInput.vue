@@ -11,7 +11,7 @@ const props = defineProps({
     },
 });
 
-const isLoading = defineModel('is-loading', {
+const loading = defineModel('loading', {
     type: Boolean,
     default: false,
 });
@@ -220,7 +220,7 @@ const setTo24Hours = () => {
                         label="Set to 24 hours"
                         class="mx-auto"
                         size="sm"
-                        :loading="isLoading"
+                        :loading="loading"
                         :disabled="!isModified"
                 />
             </div>
@@ -377,8 +377,8 @@ const setTo24Hours = () => {
                 <Button severity="success"
                         type="submit"
                         aria-label="Apply"
-                        :loading="isLoading"
-                        :disabled="isLoading"
+                        :loading="loading"
+                        :disabled="loading"
                         label="Apply"
                         icon="pi pi-save"
                         class="mx-auto mt-2"

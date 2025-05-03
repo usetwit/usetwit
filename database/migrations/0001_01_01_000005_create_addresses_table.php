@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,7 +19,8 @@ return new class extends Migration
             $table->string('country_code', 2)->collation('utf8mb4_bin')->nullable();
             $table->string('country_name')->nullable();
             $table->geography('coords')->nullable();
-            $table->boolean('default_address')->default(false);
+            $table->boolean('active')->default(1);
+            $table->boolean('is_default')->default(false);
             $table->morphs('addressable');
             $table->softDeletes();
             $table->timestamps();

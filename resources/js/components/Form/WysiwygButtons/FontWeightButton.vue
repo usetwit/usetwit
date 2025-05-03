@@ -1,39 +1,39 @@
 <script setup>
-import useDropdown from "@/composables/useDropdown.js";
-import {computed} from "vue";
+import useDropdown from '@/composables/useDropdown.js';
+import {computed} from 'vue';
 
 const props = defineProps({
-    editor: {type: Object, required: true}
-})
+    editor: {type: Object, required: true},
+});
 
 const items = [
-    {label: "Thin", class: "font-thin"},
-    {label: "Extra Light", class: "font-extralight"},
-    {label: "Light", class: "font-light"},
-    {label: "Normal", class: "font-normal"},
-    {label: "Medium", class: "font-medium"},
-    {label: "SemiBold", class: "font-semibold"},
-    {label: "Bold", class: "font-bold"},
-    {label: "Extra Bold", class: "font-extrabold"},
-    {label: "Black", class: "font-black"},
-]
+    {label: 'Thin', class: 'font-thin'},
+    {label: 'Extra Light', class: 'font-extralight'},
+    {label: 'Light', class: 'font-light'},
+    {label: 'Normal', class: 'font-normal'},
+    {label: 'Medium', class: 'font-medium'},
+    {label: 'SemiBold', class: 'font-semibold'},
+    {label: 'Bold', class: 'font-bold'},
+    {label: 'Extra Bold', class: 'font-extrabold'},
+    {label: 'Black', class: 'font-black'},
+];
 
 const {
     inputRef,
     dropdownStyle,
     showDropdown,
     toggleDropdown,
-} = useDropdown()
+} = useDropdown();
 
 const apply = (item) => {
-    props.editor.chain().focus().toggleFontWeight(item.class).run()
-    showDropdown.value = false
-}
+    props.editor.chain().focus().toggleFontWeight(item.class).run();
+    showDropdown.value = false;
+};
 
 const active = computed(() => {
-    const marks = props.editor.getAttributes('fontWeight')
-    return marks?.weight || null
-})
+    const marks = props.editor.getAttributes('fontWeight');
+    return marks?.weight || null;
+});
 </script>
 
 <template>
@@ -64,7 +64,3 @@ const active = computed(() => {
         </div>
     </Teleport>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

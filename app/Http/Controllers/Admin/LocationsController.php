@@ -53,23 +53,24 @@ class LocationsController extends Controller
             $cols = Schema::getColumnListing('locations');
             $cols = array_diff($cols, ['description']);
 
-            return array_map(fn ($value) => 'locations.'.$value, $cols);
+            return array_map(fn($value) => 'locations.'.$value, $cols);
         });
 
         $address_cols = Cache::rememberForever('address_columns', function () {
             $cols = Schema::getColumnListing('addresses');
             $cols = array_diff($cols, ['id']);
 
-            return array_map(fn ($value) => 'addresses.'.$value, $cols);
+            return array_map(fn($value) => 'addresses.'.$value, $cols);
         });
 
         $cols = array_merge($location_cols, $address_cols);
 
         $query = DB::table('locations')
-            ->select($cols)
-            ->leftJoin('addresses', function ($join) {
-                $join->on('addresses.addressable_id', 'locations.id')->where('addresses.addressable_type', Location::class);
-            });
+                   ->select($cols)
+                   ->leftJoin('addresses', function ($join) {
+                       $join->on('addresses.addressable_id', 'locations.id')
+                            ->where('addresses.addressable_type', Location::class);
+                   });
 
         $service->filterAndSort($query, $filters, $global, $visible, ['global'], $substitutions, $sorts);
 
@@ -77,7 +78,7 @@ class LocationsController extends Controller
         $total = $query->total();
 
         $locations = $query->getCollection()->map(function ($location) {
-            return array_merge((array) $location, [
+            return array_merge((array)$location, [
                 'edit_location_route' => route('admin.locations.edit', $location->slug),
                 'created_at' => Carbon::parse($location->created_at)->format('Y-m-d'),
                 'updated_at' => Carbon::parse($location->updated_at)->format('Y-m-d'),
@@ -132,10 +133,7 @@ class LocationsController extends Controller
             'update' => route('admin.locations.update', $location),
         ];
 
-        $countries = collect(Countries::getNames())
-            ->map(function (string $name, string $code) {
-                return ['code' => $code, 'name' => $name];
-            })->values();
+        $countries = $settings->countriesArray();
 
         $location->load([
             'address',
