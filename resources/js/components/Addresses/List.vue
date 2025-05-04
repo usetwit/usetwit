@@ -9,6 +9,7 @@ import Select from '@/components/Form/Select.vue';
 import Checkbox from '@/components/Form/Checkbox.vue';
 import useAxios from '@/composables/useAxios.js';
 import {toast} from 'vue3-toastify';
+import Form from '@/components/Addresses/Form.vue';
 
 const props = defineProps({
     permissions: {
@@ -31,7 +32,7 @@ const sortedAddresses = computed(() => {
             if (a.is_default && !b.is_default) return -1;
             if (!a.is_default && b.is_default) return 1;
 
-            return b.updated_at > a.updated_at;
+            return new Date(b.updated_at) - new Date(a.updated_at);
         });
 });
 
@@ -47,10 +48,10 @@ const newAddress = ref({
     'is_default': false,
 });
 
-const edittingAddress = ref(null);
+const editingAddress = ref(null);
 
 const edit = (address) => {
-    edittingAddress.value = {...address};
+    editingAddress.value = {...address};
     showEditAddressModal.value = true;
 };
 
@@ -78,6 +79,7 @@ const saveNewAddress = async () => {
             'is_default': false,
         };
 
+        showNewAddressModal.value = false;
         toast.success(data.value.message);
     }
 
@@ -128,8 +130,8 @@ const update = async (address) => {
     loading.value = true;
 
     const {data, status, getResponse} = useAxios(
-        edittingAddress.value.routes.update,
-        edittingAddress.value,
+        editingAddress.value.routes.update,
+        editingAddress.value,
         'patch',
     );
 
@@ -138,6 +140,7 @@ const update = async (address) => {
     if (status.value === 200) {
         addresses.value = data.value.addresses;
 
+        showEditAddressModal.value = false;
         toast.success(data.value.message);
     }
 
@@ -155,82 +158,7 @@ const update = async (address) => {
            icon="pi pi-save"
            @accepted="saveNewAddress"
     >
-        <Wrapper>
-            <template #text>
-                <label for="address_line_1">
-                    Address Line 1
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="newAddress.address_line_1"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="address_line_1"
-                           id="address_line_1"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <label for="address_line_2">
-                    Address Line 2
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="newAddress.address_line_2"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="address_line_2"
-                           id="address_line_2"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <label for="address_line_3">
-                    Address Line 3
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="newAddress.address_line_3"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="address_line_3"
-                           id="address_line_3"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <label for="postcode">
-                    Postal Code
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="newAddress.postcode"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="postcode"
-                           id="postcode"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <strong>Country</strong>
-            </template>
-            <template #input>
-                <Select v-model="newAddress.country_code"
-                        :options="countries"
-                        option-label="name"
-                        option-value="code"
-                        placeholder="Select a Country"
-                        class="w-full"
-                        show-clear
-                        filter
-                />
-            </template>
-        </Wrapper>
+        <Form :countries="countries" :default-country="defaultCountry" v-model="newAddress"/>
         <Wrapper>
             <template #input>
                 <Checkbox id="is_default"
@@ -250,82 +178,7 @@ const update = async (address) => {
            icon="pi pi-save"
            @accepted="update"
     >
-        <Wrapper>
-            <template #text>
-                <label for="address_line_1">
-                    Address Line 1
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="edittingAddress.address_line_1"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="address_line_1"
-                           id="address_line_1"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <label for="address_line_2">
-                    Address Line 2
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="edittingAddress.address_line_2"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="address_line_2"
-                           id="address_line_2"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <label for="address_line_3">
-                    Address Line 3
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="edittingAddress.address_line_3"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="address_line_3"
-                           id="address_line_3"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <label for="postcode">
-                    Postal Code
-                </label>
-            </template>
-            <template #input>
-                <InputText v-model="edittingAddress.postcode"
-                           class="rounded-md"
-                           maxlength="255"
-                           name="postcode"
-                           id="postcode"
-                ></InputText>
-            </template>
-        </Wrapper>
-        <Wrapper>
-            <template #text>
-                <strong>Country</strong>
-            </template>
-            <template #input>
-                <Select v-model="edittingAddress.country_code"
-                        :options="countries"
-                        option-label="name"
-                        option-value="code"
-                        placeholder="Select a Country"
-                        class="w-full"
-                        show-clear
-                        filter
-                />
-            </template>
-        </Wrapper>
+        <Form :countries="countries" :default-country="defaultCountry" v-model="editingAddress"/>
     </Modal>
 
     <div class="space-y-4 p-4">
