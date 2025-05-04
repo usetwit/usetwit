@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Users;
 
 use App\Rules\PasswordStrength;
+use App\Rules\Postcode;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -42,10 +43,10 @@ class StoreRequest extends FormRequest
             'employee_id' => 'nullable|string|max:255|unique:users,employee_id',
             'dob' => 'nullable|date_format:Y-m-d|after_or_equal:1900-01-01|before_or_equal:2050-12-31',
             'joined_at' => 'nullable|date_format:Y-m-d|after_or_equal:2024-01-01|before_or_equal:2050-12-31',
-            'address_line1' => 'nullable|string|max:255',
-            'address_line2' => 'nullable|string|max:255',
-            'address_line3' => 'nullable|string|max:255',
-            'postcode' => 'nullable|string|max:255',
+            'address_line_1' => 'nullable|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
+            'address_line_3' => 'nullable|string|max:255',
+            'postcode' => new Postcode,
             'company_ext' => 'nullable|string|regex:/^[0-9 ]*$/|max:255',
             'company_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
             'company_mobile_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
@@ -54,7 +55,7 @@ class StoreRequest extends FormRequest
             'emergency_name' => 'nullable|string|max:255',
             'emergency_number' => 'nullable|string|regex:/^[0-9 \+\(\)\.\-]*$/|max:255',
             'role_id' => 'required|integer|exists:roles,id',
-            'country' => [
+            'country_code' => [
                 'nullable',
                 Rule::in(Countries::getCountryCodes()),
             ],

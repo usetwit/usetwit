@@ -45,7 +45,8 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     /* Addresses */
     Route::prefix('addresses')->name('addresses.')->controller('AddressesController')->group(function () {
         Route::post('user/{user}/create', 'userCreate')->name('user.create')->can('createAddress', 'user');
-        Route::patch('user/{address}', 'update')->name('user.update')->can('updateUserAddress', 'address');
+        Route::patch('user/{user}/{address}', 'userUpdate')
+             ->name('user.update')->can('updateUserAddress', 'address');
         Route::patch('user/{user}/make-default/{address}', 'userMakeDefault')
              ->name('user.make-default')
              ->scopeBindings()

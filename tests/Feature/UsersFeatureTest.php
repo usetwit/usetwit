@@ -14,9 +14,6 @@ class UsersFeatureTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    /**
-     * A basic feature test example.
-     */
     public function test_user_creation_with_address_and_role_saves_correctly_in_database(): void
     {
         $this->setUserWithPermissions('users.create');

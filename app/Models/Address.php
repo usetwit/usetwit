@@ -19,7 +19,7 @@ class Address extends Model
     protected $guarded = [];
 
     public $casts = [
-        'default_address' => 'boolean',
+        'is_default' => 'boolean',
     ];
 
     public static array $validAddressables = [
@@ -63,16 +63,15 @@ class Address extends Model
     {
         return Attribute::get(function () {
             $resource = Str::snake(class_basename($this->addressable_type));
+            $params = [
+                $resource => $this->addressable,
+                'address' => $this,
+            ];
 
             return [
-                'make_default' => route("admin.addresses.{$resource}.make-default", [
-                    $resource => $this->addressable,
-                    'address' => $this,
-                ]),
-                'delete' => route("admin.addresses.{$resource}.destroy", [
-                    $resource => $this->addressable,
-                    'address' => $this,
-                ]),
+                'make_default' => route("admin.addresses.{$resource}.make-default", $params),
+                'delete' => route("admin.addresses.{$resource}.destroy", $params),
+                'update' => route("admin.addresses.{$resource}.update", $params),
             ];
         });
     }
@@ -84,6 +83,6 @@ class Address extends Model
 
     public function scopeDefault(Builder $query): Builder
     {
-        return $query->where('default_address', true);
+        return $query->where('is_default', true);
     }
 }

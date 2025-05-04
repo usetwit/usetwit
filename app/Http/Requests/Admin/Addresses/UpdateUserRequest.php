@@ -14,7 +14,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('updateAddress', $this->route('user'));
+        return $this->user()->can('updateUserAddress', $this->route('address'));
     }
 
     /**
@@ -25,11 +25,11 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'address_line1' => 'nullable|string|max:255',
-            'address_line2' => 'nullable|string|max:255',
-            'address_line3' => 'nullable|string|max:255',
+            'address_line_1' => 'required|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
+            'address_line_3' => 'nullable|string|max:255',
             'postcode' => 'nullable|string|max:12|regex:/^[A-Za-z0-9\-\s]+$/',
-            'country' => [
+            'country_code' => [
                 'nullable',
                 Rule::in(Countries::getCountryCodes()),
             ],

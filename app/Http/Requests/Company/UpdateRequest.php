@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Company;
 
+use App\Rules\Postcode;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -17,7 +19,7 @@ class UpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
@@ -26,8 +28,8 @@ class UpdateRequest extends FormRequest
             'address_line_1' => 'nullable|string|max:100',
             'address_line_2' => 'nullable|string|max:100',
             'address_line_3' => 'nullable|string|max:100',
-            'postcode' => 'nullable|string|max:10',
-            'country' => 'nullable|string|max:2|min:2',
+            'postcode' => new Postcode,
+            'country_code' => 'nullable|string|max:2|min:2',
         ];
     }
 }

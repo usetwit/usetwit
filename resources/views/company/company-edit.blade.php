@@ -55,9 +55,9 @@
 
             <x-forms.select
                 :options="$countries"
-                name="country"
+                name="country_code"
                 placeholder="Country..."
-                :value="$address->country"
+                :value="$address->country_code"
             />
         </x-forms.wrapper>
 

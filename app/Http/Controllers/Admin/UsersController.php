@@ -215,7 +215,7 @@ class UsersController extends Controller
 
         if (count(Arr::whereNotNull($addressFields)) > 0) {
             $addressFields['is_default'] = true;
-            $newUser->address()->create($addressFields);
+            $newUser->addresses()->create($addressFields);
         }
 
         $role = Role::find($request->input('role_id'));

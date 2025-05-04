@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
@@ -30,9 +31,15 @@ class Location extends Model
         });
     }
 
-    public function address(): MorphOne
+    public function addresses(): MorphMany
     {
-        return $this->morphOne(Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
+    }
+
+    public function defaultAddress(): MorphOne
+    {
+        return $this->morphOne(Address::class, 'addressable')
+                    ->where('is_default', true);
     }
 
     public function calendar(): MorphOne
@@ -46,9 +53,9 @@ class Location extends Model
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom(['name'])
-            ->saveSlugsTo('slug')
-            ->slugsShouldBeNoLongerThan(50);
+                          ->generateSlugsFrom(['name'])
+                          ->saveSlugsTo('slug')
+                          ->slugsShouldBeNoLongerThan(50);
     }
 
     /**

@@ -36,17 +36,23 @@ const sortedAddresses = computed(() => {
 });
 
 const showNewAddressModal = ref(false);
+const showEditAddressModal = ref(false);
 
-const newAddress = ref(
-    {
-        'address_line_1': '',
-        'address_line_2': '',
-        'address_line_3': '',
-        'postcode': '',
-        'country_code': '',
-        'is_default': false,
-    },
-);
+const newAddress = ref({
+    'address_line_1': '',
+    'address_line_2': '',
+    'address_line_3': '',
+    'postcode': '',
+    'country_code': '',
+    'is_default': false,
+});
+
+const edittingAddress = ref(null);
+
+const edit = (address) => {
+    edittingAddress.value = {...address};
+    showEditAddressModal.value = true;
+};
 
 newAddress.value.country_code = props.defaultCountry;
 
@@ -105,6 +111,26 @@ const deleteAddress = async (address) => {
         address.routes.delete,
         {},
         'delete',
+    );
+
+    await getResponse();
+
+    if (status.value === 200) {
+        addresses.value = data.value.addresses;
+
+        toast.success(data.value.message);
+    }
+
+    loading.value = false;
+};
+
+const update = async (address) => {
+    loading.value = true;
+
+    const {data, status, getResponse} = useAxios(
+        edittingAddress.value.routes.update,
+        edittingAddress.value,
+        'patch',
     );
 
     await getResponse();
@@ -216,6 +242,91 @@ const deleteAddress = async (address) => {
             </template>
         </Wrapper>
     </Modal>
+    <Modal v-model="showEditAddressModal"
+           v-if="showEditAddressModal"
+           label="Save"
+           variant="success"
+           title="Edit Address"
+           icon="pi pi-save"
+           @accepted="update"
+    >
+        <Wrapper>
+            <template #text>
+                <label for="address_line_1">
+                    Address Line 1
+                </label>
+            </template>
+            <template #input>
+                <InputText v-model="edittingAddress.address_line_1"
+                           class="rounded-md"
+                           maxlength="255"
+                           name="address_line_1"
+                           id="address_line_1"
+                ></InputText>
+            </template>
+        </Wrapper>
+        <Wrapper>
+            <template #text>
+                <label for="address_line_2">
+                    Address Line 2
+                </label>
+            </template>
+            <template #input>
+                <InputText v-model="edittingAddress.address_line_2"
+                           class="rounded-md"
+                           maxlength="255"
+                           name="address_line_2"
+                           id="address_line_2"
+                ></InputText>
+            </template>
+        </Wrapper>
+        <Wrapper>
+            <template #text>
+                <label for="address_line_3">
+                    Address Line 3
+                </label>
+            </template>
+            <template #input>
+                <InputText v-model="edittingAddress.address_line_3"
+                           class="rounded-md"
+                           maxlength="255"
+                           name="address_line_3"
+                           id="address_line_3"
+                ></InputText>
+            </template>
+        </Wrapper>
+        <Wrapper>
+            <template #text>
+                <label for="postcode">
+                    Postal Code
+                </label>
+            </template>
+            <template #input>
+                <InputText v-model="edittingAddress.postcode"
+                           class="rounded-md"
+                           maxlength="255"
+                           name="postcode"
+                           id="postcode"
+                ></InputText>
+            </template>
+        </Wrapper>
+        <Wrapper>
+            <template #text>
+                <strong>Country</strong>
+            </template>
+            <template #input>
+                <Select v-model="edittingAddress.country_code"
+                        :options="countries"
+                        option-label="name"
+                        option-value="code"
+                        placeholder="Select a Country"
+                        class="w-full"
+                        show-clear
+                        filter
+                />
+            </template>
+        </Wrapper>
+    </Modal>
 
     <div class="space-y-4 p-4">
         <div v-if="permissions.create_address" class="text-right">
@@ -233,6 +344,7 @@ const deleteAddress = async (address) => {
                   :address="address"
                   @make-default="makeDefault"
                   @delete="deleteAddress"
+                  @edit="edit"
                   :loading="loading"
             />
 

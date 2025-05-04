@@ -15,7 +15,6 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-//        return true;
         return $this->user()->can('createAddress', $this->route('user'));
     }
 
@@ -26,8 +25,12 @@ class CreateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $hasExisting = $this->route('user')
+                            ->addresses()
+                            ->exists();
+
         return [
-            'address_line_1' => 'nullable|string|max:255',
+            'address_line_1' => 'required|string|max:255',
             'address_line_2' => 'nullable|string|max:255',
             'address_line_3' => 'nullable|string|max:255',
             'postcode' => new Postcode,
@@ -35,7 +38,10 @@ class CreateUserRequest extends FormRequest
                 'nullable',
                 Rule::in(Countries::getCountryCodes()),
             ],
-            'is_default' => 'boolean',
+            'is_default' => [
+                'boolean',
+                Rule::requiredIf($hasExisting),
+            ],
         ];
     }
 }

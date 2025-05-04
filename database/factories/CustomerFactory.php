@@ -16,15 +16,15 @@ class CustomerFactory extends Factory
 
     public function definition(): array
     {
-        $type = Arr::random(['b2b', 'b2c']);
+        $type = Arr::random(['B2B', 'B2C']);
 
         return [
             'type' => $type,
-            'first_name' => $type === 'b2c' ? $this->faker->name() : null,
-            'last_name' => $type === 'b2c' ? $this->faker->name() : null,
-            'company_name' => $type === 'b2b' ? $this->faker->company() : null,
+            'first_name' => $type === 'B2C' ? $this->faker->name() : null,
+            'last_name' => $type === 'B2C' ? $this->faker->name() : null,
+            'company_name' => $type === 'B2B' ? $this->faker->company() : null,
             'password' => static::$password ??= Hash::make('password'),
-            'slug' => fn (array $attributes) => Str::slug($type === 'b2c' ? "{$attributes['first_name']} {$attributes['last_name']}" : $attributes['company_name']),
+            'slug' => fn(array $attributes) => Str::slug($type === 'B2C' ? "{$attributes['first_name']} {$attributes['last_name']}" : $attributes['company_name']),
             'comments' => $this->faker->optional()->text(),
             'created_at' => now(),
             'updated_at' => now(),
