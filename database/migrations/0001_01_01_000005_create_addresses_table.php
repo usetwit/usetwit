@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('address_line_1')->nullable();
             $table->string('address_line_2')->nullable();
             $table->string('address_line_3')->nullable();
-            $table->string('postcode', 10)->nullable();
+            $table->string('postcode', 12)->nullable();
             $table->string('country_code', 2)->collation('utf8mb4_bin')->nullable();
             $table->string('country_name')->nullable();
             $table->geography('coords')->nullable();

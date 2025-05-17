@@ -15,7 +15,7 @@ const props = defineProps({
     permissions: {
         type: Object,
         required: true,
-        validator: p => ['create_address', 'update_address', 'delete_address'].every(k => typeof p[k] === 'boolean'),
+        validator: p => ['create_address', 'edit_address', 'delete_address'].every(k => typeof p[k] === 'boolean'),
     },
     countries: {type: Array, required: true},
     defaultCountry: {type: String, required: true},

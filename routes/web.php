@@ -46,11 +46,13 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     Route::prefix('addresses')->name('addresses.')->controller('AddressesController')->group(function () {
         Route::post('user/{user}/create', 'userCreate')->name('user.create')->can('createAddress', 'user');
         Route::patch('user/{user}/{address}', 'userUpdate')
-             ->name('user.update')->can('updateUserAddress', 'address');
+             ->name('user.update')
+             ->scopeBindings()
+             ->can('editUserAddress', 'address');
         Route::patch('user/{user}/make-default/{address}', 'userMakeDefault')
              ->name('user.make-default')
              ->scopeBindings()
-             ->can('updateUserAddress', 'address');
+             ->can('editUserAddress', 'address');
         Route::delete('user/{user}/delete/{address}', 'userDestroy')
              ->name('user.destroy')
              ->scopeBindings()
@@ -63,7 +65,7 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         Route::delete('{user}', 'destroy')->name('destroy')->can('delete', 'user');
         Route::patch('{user}/restore', 'restore')->name('restore')->withTrashed()->can('restore', 'user');
         Route::get('create', 'create')->name('create')->can('create', User::class);
-        Route::get('{user}/edit', 'edit')->name('edit')->withTrashed()->can('update', 'user');
+        Route::get('{user}/edit', 'edit')->name('edit')->withTrashed()->can('edit', 'user');
 
         /* Users Update */
         Route::prefix('update')->name('update.')->controller('UsersUpdateController')->group(function () {
@@ -108,15 +110,17 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
 
     /* Boms */
     Route::prefix('boms')->name('boms.')->controller('BomController')->group(function () {
-        Route::get('{boms}/edit', 'edit')->name('edit')->can('update', 'boms');
+        Route::get('', 'index')->name('index')->can('viewAny', Bom::class);
+        Route::get('{boms}/edit', 'edit')->name('edit')->can('edit', 'boms');
         Route::post('checkName', 'checkName')->name('checkName');
-        Route::patch('{boms}', 'update')->name('update')->can('update', 'boms');
+        Route::patch('{boms}', 'update')->name('update')->can('edit', 'boms');
 
-        Route::prefix('versions')->name('versions.')->controller('Boms\VersionsController')->group(function () {
-            Route::get('index/{boms}', 'index')->name('index')->can('viewAny', Bom::class);
-            Route::get('bom-version/{bomVersion}', 'edit')->name('edit');
-            Route::patch('bom-version/{bomVersion}', 'update')->name('update');
-        });
+    });
+
+    Route::prefix('bom-versions')->name('bom-versions.')->controller('Boms\VersionsController')->group(function () {
+        Route::get('index/{boms}', 'index')->name('index')->can('viewAny', Bom::class);
+        Route::get('bom-version/{bomVersion}', 'edit')->name('edit');
+        Route::patch('bom-version/{bomVersion}', 'update')->name('update');
     });
 
     /* Calendars */
@@ -145,9 +149,9 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
     Route::prefix('locations')->name('locations.')->controller('LocationsController')->group(function () {
         Route::get('', 'index')->name('index')->can('viewAny', Location::class);
         Route::get('create', 'create')->name('create')->can('create', Location::class);
-        Route::patch('{location}', 'update')->name('update')->can('update', 'location');
+        Route::patch('{location}', 'update')->name('update')->can('edit', 'location');
         Route::post('', 'getLocations')->name('get-locations')->can('viewAny', Location::class);
-        Route::get('{location}/edit', 'edit')->name('edit')->can('update', 'location');
+        Route::get('{location}/edit', 'edit')->name('edit')->can('edit', 'location');
         Route::delete('{location}', 'destroy')->name('destroy')->can('delete', 'location');
         Route::patch('{location}/restore', 'restore')->name('restore')->withTrashed()->can('restore', 'location');
     });

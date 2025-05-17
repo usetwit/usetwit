@@ -88,21 +88,21 @@ class UsersController extends Controller
         $dateSettings = $settings->dateSettings();
 
         $permissions = [
-            'protected_info' => auth()->user()->can('updateProtectedInfo', User::class),
+            'protected_info' => auth()->user()->can('editProtectedInfo', User::class),
             'delete' => auth()->user()->can('delete', User::class),
             'restore' => auth()->user()->can('restore', User::class),
             'create_address' => auth()->user()->can('createAddress', $user),
-            'update_address' => auth()->user()->can('updateAddress', User::class),
+            'edit_address' => auth()->user()->can('editAddress', User::class),
             'delete_address' => auth()->user()->can('deleteAddress', $user),
-            'personal_profile' => auth()->user()->can('updatePersonalProfile', $user),
-            'company_profile' => auth()->user()->can('updateCompanyProfile', $user),
-            'image' => auth()->user()->can('updateProfileImage', $user),
+            'personal_profile' => auth()->user()->can('editPersonalProfile', $user),
+            'company_profile' => auth()->user()->can('editCompanyProfile', $user),
+            'image' => auth()->user()->can('editProfileImage', $user),
             'override_password' => auth()->user()->can('overridePassword', User::class),
-            'username' => auth()->user()->can('updateUsername', User::class),
-            'employee_id' => auth()->user()->can('updateEmployeeId', User::class),
+            'username' => auth()->user()->can('editUsername', User::class),
+            'employee_id' => auth()->user()->can('editEmployeeId', User::class),
         ];
 
-        $permissions['address'] = $permissions['create_address'] || $permissions['update_address'] || $permissions['delete_address'];
+        $permissions['address'] = $permissions['create_address'] || $permissions['edit_address'] || $permissions['delete_address'];
 
         $routes = [
             'delete' => route('admin.users.destroy', $user),
@@ -136,6 +136,7 @@ class UsersController extends Controller
 
     public function create(GeneralSettings $settings)
     {
+        // TODO: combine these routes
         $routeCheckUsername = route('admin.users.check-username');
         $routeStore = route('admin.users.store');
         $routeRedirect = route('admin.users.index');

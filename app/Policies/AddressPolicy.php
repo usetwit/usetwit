@@ -9,15 +9,15 @@ use App\Models\User;
 class AddressPolicy
 {
     /**
-     * Determine whether the user can update a User address.
+     * Determine whether the user can edit a User address.
      */
-    public function updateUserAddress(User $user, Address $address): bool
+    public function editUserAddress(User $user, Address $address): bool
     {
-        if ($user->can('addresses.user.update')) {
+        if ($user->can('addresses.user.edit')) {
             return true;
         }
 
-        if ($user->can('addresses.user.update.self')) {
+        if ($user->can('addresses.user.edit.self')) {
             return $address->addressable instanceof User && $address->addressable->is($user);
         }
 
@@ -25,7 +25,7 @@ class AddressPolicy
     }
 
     /**
-     * Determine whether the user can update a User address.
+     * Determine whether the user can edit a User address.
      */
     public function deleteUserAddress(User $user, Address $address): bool
     {
@@ -41,15 +41,15 @@ class AddressPolicy
     }
 
     /**
-     * Determine whether the user can update a User address.
+     * Determine whether the user can edit a User address.
      */
-    public function updateCustomerAddress(User|Customer $user, Address $address): bool
+    public function editCustomerAddress(User|Customer $user, Address $address): bool
     {
-        if ($user->can('addresses.customer.update')) {
+        if ($user->can('addresses.customer.edit')) {
             return true;
         }
 
-        if ($user->can('addresses.customer.update.self')) {
+        if ($user->can('addresses.customer.edit.self')) {
             return $address->addressable instanceof Customer && $address->addressable->is($user);
         }
 

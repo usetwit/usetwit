@@ -12,7 +12,7 @@ class UpdateCompanyProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('updateCompanyProfile', $this->route('user'));
+        return $this->user()->can('editCompanyProfile', $this->route('user'));
     }
 
     /**

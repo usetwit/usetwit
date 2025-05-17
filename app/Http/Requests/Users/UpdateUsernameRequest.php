@@ -13,7 +13,7 @@ class UpdateUsernameRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('updateUsername', User::class);
+        return $this->user()->can('editUsername', User::class);
     }
 
     /**

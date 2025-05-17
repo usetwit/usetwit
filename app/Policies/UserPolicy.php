@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('users.view') || $user->can('users.update');
+        return $user->can('users.view') || $user->can('users.edit');
     }
 
     /**
@@ -64,11 +64,11 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update an address.
+     * Determine whether the user can edit an address.
      */
-    public function updateAddress(User $user): bool
+    public function editAddress(User $user): bool
     {
-        return $user->can('addresses.user.update') || $user->can('addresses.user.update.self');
+        return $user->can('addresses.user.edit') || $user->can('addresses.user.edit.self');
     }
 
     /**
@@ -80,27 +80,27 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can edit the model.
      */
-    public function update(User $user, User $model): bool
+    public function edit(User $user, User $model): bool
     {
-        return $user->can('users.update')
-            || $user->can('updatePersonalProfile', $model)
-            || $user->can('updateAddress', $model)
-            || $user->can('updateProfileImage', $model)
-            || $user->can('updateCompanyProfile', $model);
+        return $user->can('users.edit')
+            || $user->can('editPersonalProfile', $model)
+            || $user->can('editAddress', $model)
+            || $user->can('editProfileImage', $model)
+            || $user->can('editCompanyProfile', $model);
     }
 
     /**
-     * Determine whether the user can update the model profile.
+     * Determine whether the user can edit the model profile.
      */
-    public function updatePersonalProfile(User $user, User $model): bool
+    public function editPersonalProfile(User $user, User $model): bool
     {
-        if ($user->can('users.update')) {
+        if ($user->can('users.edit')) {
             return true;
         }
 
-        if ($user->can('users.update.self.personal-profile')) {
+        if ($user->can('users.edit.self.personal-profile')) {
             return $user->id === $model->id;
         }
 
@@ -108,15 +108,15 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model profile.
+     * Determine whether the user can edit the model profile.
      */
-    public function updateCompanyProfile(User $user, User $model): bool
+    public function editCompanyProfile(User $user, User $model): bool
     {
-        if ($user->can('users.update')) {
+        if ($user->can('users.edit')) {
             return true;
         }
 
-        if ($user->can('users.update.self.company-profile')) {
+        if ($user->can('users.edit.self.company-profile')) {
             return $user->id === $model->id;
         }
 
@@ -124,15 +124,15 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model profile image.
+     * Determine whether the user can edit the model profile image.
      */
-    public function updateProfileImage(User $user, User $model): bool
+    public function editProfileImage(User $user, User $model): bool
     {
-        if ($user->can('users.update')) {
+        if ($user->can('users.edit')) {
             return true;
         }
 
-        if ($user->can('users.update.self.profile-image')) {
+        if ($user->can('users.edit.self.profile-image')) {
             return $user->id === $model->id;
         }
 
@@ -140,11 +140,11 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model profile image.
+     * Determine whether the user can edit the model profile image.
      */
-    public function updatePassword(User $user, User $model): bool
+    public function editPassword(User $user, User $model): bool
     {
-        if ($user->can('users.update')) {
+        if ($user->can('users.edit')) {
             return true;
         }
 
@@ -156,7 +156,7 @@ class UserPolicy
      */
     public function overridePassword(User $user): bool
     {
-        if ($user->can('users.update')) {
+        if ($user->can('users.edit')) {
             return true;
         }
 
@@ -164,11 +164,11 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model Username.
+     * Determine whether the user can edit the model Username.
      */
-    public function updateUsername(User $user): bool
+    public function editUsername(User $user): bool
     {
-        if ($user->can('users.update')) {
+        if ($user->can('users.edit')) {
             return true;
         }
 
@@ -176,11 +176,11 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model Employee ID.
+     * Determine whether the user can edit the model Employee ID.
      */
-    public function updateEmployeeId(User $user): bool
+    public function editEmployeeId(User $user): bool
     {
-        if ($user->can('users.update')) {
+        if ($user->can('users.edit')) {
             return true;
         }
 
@@ -188,11 +188,11 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the model protected info.
+     * Determine whether the user can edit the model protected info.
      */
-    public function updateProtectedInfo(User $user): bool
+    public function editProtectedInfo(User $user): bool
     {
-        return $user->can('users.update');
+        return $user->can('users.edit');
     }
 
     /**

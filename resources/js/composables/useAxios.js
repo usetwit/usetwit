@@ -22,6 +22,8 @@ export default function useAxios(url, params = {}, method = 'post') {
                 url,
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
                 },
             };
 

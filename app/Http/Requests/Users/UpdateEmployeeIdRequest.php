@@ -13,7 +13,7 @@ class UpdateEmployeeIdRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('updateEmployeeId', User::class);;
+        return $this->user()->can('editEmployeeId', User::class);;
     }
 
     /**

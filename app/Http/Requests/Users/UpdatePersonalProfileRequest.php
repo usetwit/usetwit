@@ -12,7 +12,7 @@ class UpdatePersonalProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('updatePersonalProfile', $this->route('user'));
+        return $this->user()->can('editPersonalProfile', $this->route('user'));
     }
 
     /**

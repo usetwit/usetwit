@@ -27,7 +27,7 @@ const emit = defineEmits(['edit', 'delete', 'make-default']);
         <p class="text-sm">{{ address.country_name }}</p>
 
         <div class="mt-4 flex space-x-2">
-            <Button v-if="permissions.update_address && !address.is_default"
+            <Button v-if="permissions.edit_address && !address.is_default"
                     @click="emit('make-default', address)"
                     icon="pi pi-map-marker"
                     variant="success"
@@ -37,7 +37,7 @@ const emit = defineEmits(['edit', 'delete', 'make-default']);
                 Make Default
             </Button>
 
-            <Button v-if="permissions.update_address"
+            <Button v-if="permissions.edit_address"
                     @click="emit('edit', address)"
                     icon="pi pi-file-edit"
                     variant="warning"

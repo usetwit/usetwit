@@ -6,8 +6,8 @@ use App\Models\User;
 
 class BomVersionPolicy
 {
-    public function update(User $user): bool
+    public function edit(User $user): bool
     {
-        return $user->can('boms-versions.update');
+        return $user->can('boms-versions.edit');
     }
 }

@@ -13,7 +13,7 @@ class CheckEmployeeIdRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', User::class) || $this->user()->can('updateEmployeeId', User::class);
+        return $this->user()->can('create', User::class) || $this->user()->can('editEmployeeId', User::class);
     }
 
     /**

@@ -75,7 +75,7 @@ const address = defineModel();
     </Wrapper>
     <Wrapper>
         <template #text>
-            <strong>Country</strong>
+            <label>Country</label>
         </template>
         <template #input>
             <Select v-model="address.country_code"
@@ -90,7 +90,3 @@ const address = defineModel();
         </template>
     </Wrapper>
 </template>
-
-<style scoped>
-
-</style>

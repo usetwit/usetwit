@@ -18,7 +18,7 @@ class UpdatePasswordRequest extends FormRequest
 
         $authUser = $this->user();
 
-        return $authUser->can('updatePassword', $modifiedUser) || $authUser->can('overridePassword', User::class);
+        return $authUser->can('editPassword', $modifiedUser) || $authUser->can('overridePassword', User::class);
     }
 
     /**

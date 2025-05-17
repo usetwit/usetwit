@@ -13,7 +13,7 @@ class UpdateProtectedInfoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('updateProtectedInfo', User::class);
+        return $this->user()->can('editProtectedInfo', User::class);
     }
 
     /**

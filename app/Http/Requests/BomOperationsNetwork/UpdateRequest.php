@@ -17,7 +17,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', Bom::class);
+        return $this->user()->can('edit', Bom::class);
     }
 
     /**

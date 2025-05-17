@@ -9,7 +9,7 @@ use Illuminate\Translation\PotentiallyTranslatedString;
 class Postcode implements ValidationRule
 {
     public function __construct(
-        protected int $maxLength = 11,
+        protected int $maxLength = 12,
     )
     {
     }
