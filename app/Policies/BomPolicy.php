@@ -11,6 +11,11 @@ class BomPolicy
         return $user->can('boms.view');
     }
 
+    public function viewAny(User $user): bool
+    {
+        return $user->can('boms.view') || $user->can('boms.edit');
+    }
+
     public function edit(User $user): bool
     {
         return $user->can('boms.edit');

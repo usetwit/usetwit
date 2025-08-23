@@ -22,6 +22,7 @@ export default defineConfig({
                 'resources/js/app/locations-index.js',
                 'resources/js/app/locations-edit.js',
                 'resources/js/app/boms-edit.js',
+                'resources/js/app/boms-index.js',
             ],
             refresh: true,
         }),

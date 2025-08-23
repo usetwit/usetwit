@@ -5,7 +5,7 @@
 @endsection
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('admin.boms.versions.edit', $bomVersion) }}
+    {{ Breadcrumbs::render('admin.bom-versions.edit', $bomVersion) }}
 @endsection
 
 @section('javascript')
@@ -18,5 +18,6 @@
     <div id="app">
         <edit :bomVersion="{{ Js::from($bomVersion) }}"
               :routes="{{ Js::from($routes) }}"
+        />
     </div>
 @endsection

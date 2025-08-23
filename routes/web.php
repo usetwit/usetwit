@@ -114,11 +114,11 @@ Route::prefix('admin')->name('admin.')->namespace('App\Http\Controllers\Admin')-
         Route::get('{boms}/edit', 'edit')->name('edit')->can('edit', 'boms');
         Route::post('checkName', 'checkName')->name('checkName');
         Route::patch('{boms}', 'update')->name('update')->can('edit', 'boms');
-
+        Route::post('get-boms', 'getBoms')->name('get-boms')->can('viewAny', User::class);
     });
 
     Route::prefix('bom-versions')->name('bom-versions.')->controller('Boms\VersionsController')->group(function () {
-        Route::get('index/{boms}', 'index')->name('index')->can('viewAny', Bom::class);
+        Route::get('index/{bom}', 'index')->name('index')->can('viewAny', BomVersion::class);
         Route::get('bom-version/{bomVersion}', 'edit')->name('edit');
         Route::patch('bom-version/{bomVersion}', 'update')->name('update');
     });

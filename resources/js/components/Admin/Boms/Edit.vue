@@ -74,8 +74,7 @@ const debouncedCheckName = debounce(checkName, 300, {leading: true, trailing: tr
 
                 <template #help>
                     Changing the name of the BOM will affect all previous uses including those in Purchase Orders and
-                    Sales
-                    Orders. Proceed with caution.
+                    Sales Orders. Proceed with caution.
                 </template>
 
                 <template #input>

@@ -11,7 +11,7 @@ class VersionsController extends Controller
     public function edit(BomVersion $bomVersion)
     {
         $routes = [
-            'update' => route('admin.boms.versions.update', $bomVersion),
+            'update' => route('admin.bom-versions.update', $bomVersion),
         ];
 
         return view('admin.boms.versions.edit', compact('bomVersion', 'routes'));

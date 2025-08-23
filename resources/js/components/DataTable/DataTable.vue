@@ -135,11 +135,11 @@ const {fetch, filter, getFilteredFields, reset, clearFilters} = inject('tableIns
             </tr>
             </thead>
             <tbody>
-            <tr v-if="rows.length"
-                v-for="(row, index) in rows"
+            <tr v-for="(row, index) in rows"
+                v-if="rows.length"
                 :key="row.id || index"
-                class="hover:bg-gray-100 body-row"
                 :class="{'even': index % 2 === 1, 'odd': index % 2 === 0}"
+                class="hover:bg-gray-100 body-row"
             >
                 <Cell v-for="col in columns"
                       :key="col.field + '_' + row.id.toString()"

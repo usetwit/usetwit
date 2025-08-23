@@ -57,7 +57,7 @@ Breadcrumbs::for('admin.users.create', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('admin.users.edit', function (BreadcrumbTrail $trail, User $user) {
     $trail->parent('admin.users.index');
-    $trail->push('Edit User: ' . $user->full_name);
+    $trail->push('Edit User: '.$user->full_name);
 });
 
 /* Locations */
@@ -73,7 +73,7 @@ Breadcrumbs::for('admin.locations.create', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('admin.locations.edit', function (BreadcrumbTrail $trail, Location $location) {
     $trail->parent('admin.locations.index');
-    $trail->push('Edit Location: ' . $location->name);
+    $trail->push('Edit Location: '.$location->name);
 });
 
 /* Company */
@@ -88,7 +88,12 @@ Breadcrumbs::for('admin.boms.edit', function (BreadcrumbTrail $trail, Bom $bom) 
     $trail->push('Edit Boms', route('admin.boms.edit', $bom));
 });
 
-Breadcrumbs::for('admin.boms.versions.edit', function (BreadcrumbTrail $trail, BomVersion $bomVersion) {
+Breadcrumbs::for('admin.boms.index', function (BreadcrumbTrail $trail) {
     $trail->parent('admin.home');
-    $trail->push('Edit Boms', route('admin.boms.edit', $bomVersion));
+    $trail->push('All BOMs', route('admin.boms.index'));
+});
+
+Breadcrumbs::for('admin.bom-versions.edit', function (BreadcrumbTrail $trail, BomVersion $bomVersion) {
+    $trail->parent('admin.home');
+    $trail->push('Edit Bom Versions', route('admin.bom-versions.edit', $bomVersion));
 });
